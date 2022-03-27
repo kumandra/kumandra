@@ -95,7 +95,7 @@ docker run -itd --name=kumandra --network=host kumandra/kumandra_testnet:0.2.0 &
 
 ## Storage Mining
 
-Kumandra supports to obtain incentives by contributing idle storage with [storage mining tool](https://github.com/CESSProject/storage-mining-tool), and click [here](https://github.com/kumandra/kumandra-node/tree/main/docs/designs-of-storage-mining.md) to learn more.
+Kumandra supports to obtain incentives by contributing idle storage with [storage mining tool](https://github.com/kumandra/kumandra-mining-tool), and click [here](https://github.com/kumandra/kumandra-node/tree/main/docs/designs-of-storage-mining.md) to learn more.
 
 ## Run Tests
 
