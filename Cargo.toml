@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    'node',
+    'runtime',
+    'kumandra-pallets/*',
+]
+[profile.release]
+panic = 'unwind'

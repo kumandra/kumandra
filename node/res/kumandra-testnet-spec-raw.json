@@ -1,0 +1,19 @@
+{
+  "name": "kumandra-testnet",
+  "id": "kumandra-testnet",
+  "chainType": "Live",
+  "bootNodes": ["/ip4/139.196.35.64/tcp/30333/p2p/12D3KooWC89fY8Zacufz3SDTNmZSiw9CZjXULVK6qg1c6qh8EyWZ"],
+  "telemetryEndpoints": null,
+  "protocolId": "TKMD",
+  "properties": {
+    "ss58Format": 42,
+    "tokenDecimals": 12,
+    "tokenSymbol": "TKMD"
+  },
+  "consensusEngine": null,
+  "codeSubstitutes": {},
+  "childrenDefault": {},
+  
+    }
+  }
+}
