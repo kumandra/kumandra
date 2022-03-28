@@ -129,3 +129,8 @@ cargo test -p pallet-file-bank --features runtime-benchmarks
 ## Contribute
 
 Please follow the contributions guidelines as outlined in [`docs/CONTRIBUTING.adoc`](https://github.com/kumandra/kumandra-node/tree/main/docs/CONTRIBUTING.adoc). In all communications and contributions, this project follows the [Contributor Covenant Code of Conduct](https://github.com/paritytech/substrate/blob/master/docs/CODE_OF_CONDUCT.md).
+
+
+### License
+
+Kumandra is implement from [CESSProject](https://github.com/CESSProject/cess) under license [Apache 2.0 License](LICENSE-GPL3).
