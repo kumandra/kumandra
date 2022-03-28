@@ -12,7 +12,7 @@ version = '3.0.0-monthly-2021-10'
 targets = ['x86_64-unknown-linux-gnu']
 
 [[bin]]
-name = 'kumandra-node'
+name = 'kumandra'
 
 [build-dependencies.substrate-build-script-utils]
 git = 'https://github.com/paritytech/substrate.git'
