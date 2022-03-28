@@ -898,7 +898,6 @@ construct_runtime!(
 		SegmentBook: pallet_segment_book::{Pallet, Call, Storage, Event<T>},
 		FileBank: pallet_file_bank::{Pallet,Call, Storage, Event<T>},
 		BagsList: pallet_bags_list::{Pallet,Call, Storage, Event<T>},
-
 	}
 );
 
