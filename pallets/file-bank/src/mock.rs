@@ -19,18 +19,15 @@
 
 use super::*;
 use crate as file_bank;
-use frame_support::{
-	parameter_types,
-	weights::Weight,
-};
-use frame_system::{EnsureRoot};
+use frame_support::{parameter_types, weights::Weight};
+use frame_support_test::TestRandomness;
+use frame_system::EnsureRoot;
 use sp_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},
 	Perbill,
 };
-use frame_support_test::TestRandomness;
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
@@ -173,4 +170,3 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	.unwrap();
 	t.into()
 }
-

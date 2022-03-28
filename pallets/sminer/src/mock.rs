@@ -19,11 +19,8 @@
 
 use super::*;
 use crate as sminer;
-use frame_support::{
-	parameter_types,
-	weights::Weight,
-};
-use frame_system::{EnsureRoot};
+use frame_support::{parameter_types, weights::Weight};
+use frame_system::EnsureRoot;
 use sp_core::H256;
 use sp_runtime::{
 	testing::Header,

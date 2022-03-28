@@ -7,7 +7,7 @@
 //! * **Collateral:** The Staking amount when registering storage miner.
 //! * **Earnings:** Store the storage miner's earnings during mining.
 //! * **Locked:** Store the locked amount of the storage miner during mining.
-//! 
+//!
 //! ### Interface
 //!
 //! ### Dispatchable Functions
@@ -24,27 +24,33 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
-use frame_support::traits::{Get, Currency, ReservableCurrency, LockIdentifier, schedule::{Named as ScheduleNamed, DispatchTime}, ExistenceRequirement::AllowDeath};
+use frame_support::traits::{
+	schedule::{DispatchTime, Named as ScheduleNamed},
+	Currency,
+	ExistenceRequirement::AllowDeath,
+	Get, LockIdentifier, ReservableCurrency,
+};
 mod benchmarking;
 pub mod weights;
-pub use pallet::*;
-use sp_runtime::{
-	RuntimeDebug,
-	traits::{AccountIdConversion, StaticLookup},
+use codec::{Decode, Encode};
+use frame_support::{
+	dispatch::{DispatchResult, Dispatchable},
+	pallet_prelude::DispatchError,
+	PalletId,
 };
-use sp_std::prelude::*;
-use codec::{Encode, Decode};
-use scale_info::TypeInfo;
-use sp_std::convert::TryInto;
 use frame_system::{self as system};
-use frame_support::{dispatch::{Dispatchable, DispatchResult}, PalletId};
+pub use pallet::*;
+use scale_info::TypeInfo;
+use sp_runtime::{
+	traits::{AccountIdConversion, CheckedAdd, CheckedSub, StaticLookup},
+	RuntimeDebug,
+};
+use sp_std::{convert::TryInto, prelude::*};
 pub use weights::WeightInfo;
-use sp_runtime::traits::CheckedAdd;
-use sp_runtime::traits::CheckedSub;
-use frame_support::pallet_prelude::DispatchError;
 
 type AccountOf<T> = <T as frame_system::Config>::AccountId;
-type BalanceOf<T> = <<T as pallet::Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+type BalanceOf<T> =
+	<<T as pallet::Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 type BlockNumberOf<T> = <T as frame_system::Config>::BlockNumber;
 /// The custom struct for storing info of storage MinerInfo.
 #[derive(PartialEq, Eq, Default, Encode, Decode, Clone, RuntimeDebug, TypeInfo)]
@@ -53,8 +59,8 @@ pub struct MinerInfo {
 	ip: u32,
 	port: u32,
 	fileport: u32,
-	power: u128,	
-	space: u128,	
+	power: u128,
+	space: u128,
 }
 /// The custom struct for storing info of storage miners.
 #[derive(PartialEq, Eq, Encode, Decode, Clone, RuntimeDebug, TypeInfo)]
@@ -100,7 +106,7 @@ pub struct MinerDetailInfo<T: pallet::Config> {
 	beneficiary: AccountOf<T>,
 	power: u128,
 	space: u128,
-	total_reward: BalanceOf<T>, 
+	total_reward: BalanceOf<T>,
 	total_rewards_currently_available: BalanceOf<T>,
 	totald_not_receive: BalanceOf<T>,
 	collaterals: BalanceOf<T>,
@@ -113,20 +119,20 @@ pub struct MinerStatInfo<T: pallet::Config> {
 	active_miners: u64,
 	staking: BalanceOf<T>,
 	miner_reward: BalanceOf<T>,
-	sum_files: u128, 
+	sum_files: u128,
 }
 /// The custom struct for storing info of storage CalculateRewardOrder.
 #[derive(PartialEq, Eq, Encode, Default, Decode, Clone, RuntimeDebug, TypeInfo)]
 #[scale_info(skip_type_params(T))]
-pub struct CalculateRewardOrder <T: pallet::Config>{
-	calculate_reward:u128,
+pub struct CalculateRewardOrder<T: pallet::Config> {
+	calculate_reward: u128,
 	start_t: BlockNumberOf<T>,
 	deadline: BlockNumberOf<T>,
 }
 /// The custom struct for storing info of storage RewardClaim.
 #[derive(PartialEq, Eq, Encode, Default, Decode, Clone, RuntimeDebug, TypeInfo)]
 #[scale_info(skip_type_params(T))]
-pub struct RewardClaim <T: pallet::Config>{
+pub struct RewardClaim<T: pallet::Config> {
 	total_reward: BalanceOf<T>,
 	total_rewards_currently_available: BalanceOf<T>,
 	have_to_receive: BalanceOf<T>,
@@ -136,25 +142,21 @@ pub struct RewardClaim <T: pallet::Config>{
 /// The custom struct for storing info of storage FaucetRecord.
 #[derive(PartialEq, Eq, Encode, Default, Decode, Clone, RuntimeDebug, TypeInfo)]
 #[scale_info(skip_type_params(T))]
-pub struct FaucetRecord <T: pallet::Config>{
+pub struct FaucetRecord<T: pallet::Config> {
 	last_claim_time: BlockNumberOf<T>,
 }
 
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
-	use frame_support::{
-		ensure,
-		pallet_prelude::*,
-		traits::Get,
-	};
+	use frame_support::{ensure, pallet_prelude::*, traits::Get};
 	use frame_system::{ensure_root, ensure_signed, pallet_prelude::*};
 
 	const DEMOCRACY_IDA: LockIdentifier = *b"msminerA";
 	const DEMOCRACY_IDB: LockIdentifier = *b"msminerB";
 	const DEMOCRACY_IDC: LockIdentifier = *b"msminerC";
 	const DEMOCRACY_IDD: LockIdentifier = *b"msminerD";
-	
+
 	#[pallet::config]
 	pub trait Config: pallet_timestamp::Config + frame_system::Config {
 		/// The overarching event type.
@@ -169,47 +171,46 @@ pub mod pallet {
 		/// Overarching type of all pallets origins.
 		type SPalletsOrigin: From<system::RawOrigin<Self::AccountId>>;
 		/// The SProposal.
-		type SProposal: Parameter + Dispatchable<Origin=Self::Origin> + From<Call<Self>>;
+		type SProposal: Parameter + Dispatchable<Origin = Self::Origin> + From<Call<Self>>;
 		/// The WeightInfo.
 		type WeightInfo: WeightInfo;
-
 	}
 
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		/// A new account was set.
-		Registered{acc: AccountOf<T>, staking_val: BalanceOf<T>},
+		Registered { acc: AccountOf<T>, staking_val: BalanceOf<T> },
 		/// An account was redeemed.
-		Redeemed{acc: AccountOf<T>, deposit: BalanceOf<T>},
+		Redeemed { acc: AccountOf<T>, deposit: BalanceOf<T> },
 		/// An account was claimed.
-		Claimed{acc: AccountOf<T>, deposit: BalanceOf<T>},
+		Claimed { acc: AccountOf<T>, deposit: BalanceOf<T> },
 		/// Storage space is triggered periodically.
 		TimingStorageSpace(),
 		/// Adding a Scheduled Task.
-		AddScheduledTask{acc: AccountOf<T>},
+		AddScheduledTask { acc: AccountOf<T> },
 		/// Updated address successfully.
-		UpdateAddressSucc{acc: AccountOf<T>},
+		UpdateAddressSucc { acc: AccountOf<T> },
 		/// Set Etcd successfully.
-		SetEtcdSucc{acc: AccountOf<T>},
+		SetEtcdSucc { acc: AccountOf<T> },
 		/// An account Add files
-		Add{acc: AccountOf<T>},
+		Add { acc: AccountOf<T> },
 		/// An account Deleted files
-		Del{acc: AccountOf<T>},
+		Del { acc: AccountOf<T> },
 		/// An account Update the file
-		Update{acc: AccountOf<T>},
+		Update { acc: AccountOf<T> },
 		/// An account Get the file
-		Get{acc: AccountOf<T>},
+		Get { acc: AccountOf<T> },
 		/// Scheduled Task Execution
 		TimedTask(),
 		/// Users to withdraw money
-		DrawMoney{acc: AccountOf<T>},
+		DrawMoney { acc: AccountOf<T> },
 		/// Users to withdraw faucet money
 		DrawFaucetMoney(),
 		/// User recharges faucet
-		FaucetTopUpMoney{acc: AccountOf<T>},
+		FaucetTopUpMoney { acc: AccountOf<T> },
 		/// Prompt time
-		LessThan24Hours{last: BlockNumberOf<T>, now: BlockNumberOf<T>},
+		LessThan24Hours { last: BlockNumberOf<T>, now: BlockNumberOf<T> },
 	}
 
 	/// Error for the sminer pallet.
@@ -228,7 +229,7 @@ pub mod pallet {
 		/// No owner.
 		NotOwner,
 		/// User does not exist.
-		NotExisted,	
+		NotExisted,
 		/// Lack of permissions.
 		LackOfPermissions,
 		/// Beyond the requirements.
@@ -257,7 +258,7 @@ pub mod pallet {
 	#[pallet::storage]
 	#[pallet::getter(fn peer_index)]
 	pub(super) type PeerIndex<T: Config> = StorageValue<_, u64, ValueQuery>;
-	
+
 	/// Data structures that control permissions.
 	#[pallet::storage]
 	#[pallet::getter(fn control)]
@@ -301,7 +302,8 @@ pub mod pallet {
 	/// The hashmap for segment info including index of segment, miner's current power and space.
 	#[pallet::storage]
 	#[pallet::getter(fn seg_info)]
-	pub(super) type SegInfo<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, SegmentInfo, ValueQuery>;
+	pub(super) type SegInfo<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, SegmentInfo, ValueQuery>;
 
 	/// A data structure that stores information
 	#[pallet::storage]
@@ -326,17 +328,17 @@ pub mod pallet {
 	#[pallet::getter(fn available_space)]
 	pub(super) type AvailableSpace<T: Config> = StorageValue<_, u128, ValueQuery>;
 
-	/// Store all miner table information 
+	/// Store all miner table information
 	#[pallet::storage]
 	#[pallet::getter(fn miner_table)]
 	pub(super) type MinerTable<T: Config> = StorageMap<_, Twox64Concat, u64, TableInfo<T>>;
 
-	/// Store all miner details information 
+	/// Store all miner details information
 	#[pallet::storage]
 	#[pallet::getter(fn miner_details)]
 	pub(super) type MinerDetails<T: Config> = StorageMap<_, Twox64Concat, u64, MinerDetailInfo<T>>;
 
-	/// Store all miner stat information 
+	/// Store all miner stat information
 	#[pallet::storage]
 	#[pallet::getter(fn miner_stat_value)]
 	pub(super) type MinerStatValue<T: Config> = StorageValue<_, MinerStatInfo<T>>;
@@ -344,17 +346,20 @@ pub mod pallet {
 	/// The hashmap for info of storage miners.
 	#[pallet::storage]
 	#[pallet::getter(fn calculate_reward_order)]
-	pub(super) type CalculateRewardOrderMap<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, Vec<CalculateRewardOrder<T>>, ValueQuery>;
+	pub(super) type CalculateRewardOrderMap<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, Vec<CalculateRewardOrder<T>>, ValueQuery>;
 
 	/// The hashmap for checking registered or not.
 	#[pallet::storage]
 	#[pallet::getter(fn reward_claim)]
-	pub(super) type RewardClaimMap<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, RewardClaim<T>>;
+	pub(super) type RewardClaimMap<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, RewardClaim<T>>;
 
 	/// The hashmap for checking registered or not.
 	#[pallet::storage]
 	#[pallet::getter(fn faucet_record)]
-	pub(super) type FaucetRecordMap<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, FaucetRecord<T>>;
+	pub(super) type FaucetRecordMap<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, FaucetRecord<T>>;
 
 	#[pallet::pallet]
 	#[pallet::generate_store(pub(super) trait Store)]
@@ -373,7 +378,14 @@ pub mod pallet {
 		/// - `fileport`: The number of staking.
 		/// - `staking_val`: The number of staking.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::regnstk())]
-		pub fn regnstk(origin: OriginFor<T>, beneficiary: <T::Lookup as StaticLookup>::Source, ip: u32, port: u32, fileport: u32,  #[pallet::compact] staking_val: BalanceOf<T>) -> DispatchResult {
+		pub fn regnstk(
+			origin: OriginFor<T>,
+			beneficiary: <T::Lookup as StaticLookup>::Source,
+			ip: u32,
+			port: u32,
+			fileport: u32,
+			#[pallet::compact] staking_val: BalanceOf<T>,
+		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 			let beneficiary = T::Lookup::lookup(beneficiary)?;
 			ensure!(!(<MinerItems<T>>::contains_key(&sender)), Error::<T>::AlreadyRegistered);
@@ -392,25 +404,14 @@ pub mod pallet {
 					collaterals: staking_val.clone(),
 					earnings: value.clone(),
 					locked: value.clone(),
-				}
+				},
 			);
 			<WalletMiners<T>>::insert(peerid, 1);
 			<PeerIndex<T>>::put(peerid);
 
-			<SegInfo<T>>::insert(
-				&sender,
-				SegmentInfo {
-					segment_index: 0 as u64,
-				}
-			);
-			let add_minerinfo = MinerInfo {
-				peerid: peerid,
-				ip: ip,
-				port: port,
-				fileport: fileport,
-				power: 0 as u128,
-				space: 0 as u128,
-			};
+			<SegInfo<T>>::insert(&sender, SegmentInfo { segment_index: 0 as u64 });
+			let add_minerinfo =
+				MinerInfo { peerid, ip, port, fileport, power: 0 as u128, space: 0 as u128 };
 			AllMiner::<T>::try_mutate(|s| -> DispatchResult {
 				(*s).push(add_minerinfo);
 				Ok(())
@@ -425,7 +426,7 @@ pub mod pallet {
 					average_daily_data_traffic_in: 0u64,
 					average_daily_data_traffic_out: 0u64,
 					mining_reward: BalanceOf::<T>::from(0u32),
-				}
+				},
 			);
 
 			<MinerDetails<T>>::insert(
@@ -439,7 +440,7 @@ pub mod pallet {
 					total_rewards_currently_available: BalanceOf::<T>::from(0u32),
 					totald_not_receive: BalanceOf::<T>::from(0u32),
 					collaterals: staking_val.clone(),
-				}
+				},
 			);
 
 			MinerStatValue::<T>::try_mutate(|s_opt| -> DispatchResult {
@@ -450,7 +451,10 @@ pub mod pallet {
 				Ok(())
 			})?;
 
-			Self::deposit_event(Event::<T>::Registered{acc: sender.clone(), staking_val: staking_val.clone()});
+			Self::deposit_event(Event::<T>::Registered {
+				acc: sender.clone(),
+				staking_val: staking_val.clone(),
+			});
 			Ok(())
 		}
 		/// Redeem for storage miner.
@@ -477,7 +481,10 @@ pub mod pallet {
 			<WalletMiners<T>>::remove(peerid);
 			<MinerItems<T>>::remove(&sender);
 			<SegInfo<T>>::remove(&sender);
-			Self::deposit_event(Event::<T>::Redeemed{acc: sender.clone(), deposit: deposit.clone()});
+			Self::deposit_event(Event::<T>::Redeemed {
+				acc: sender.clone(),
+				deposit: deposit.clone(),
+			});
 			Ok(())
 		}
 		/// Storage miner gets mi.earnings bonus.
@@ -493,7 +500,10 @@ pub mod pallet {
 			let deposit = mi.earnings;
 			let reward_pot = T::PalletId::get().into_account();
 			let _ = T::Currency::transfer(&reward_pot, &sender, deposit.clone(), AllowDeath);
-			Self::deposit_event(Event::<T>::Claimed{acc: sender.clone(), deposit: deposit.clone()});
+			Self::deposit_event(Event::<T>::Claimed {
+				acc: sender.clone(),
+				deposit: deposit.clone(),
+			});
 			Ok(())
 		}
 		/// Miner information initialization.
@@ -524,7 +534,13 @@ pub mod pallet {
 		/// - `address3`: The account address 3.
 		/// - `address4`: The account address 4.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::setaddress())]
-		pub fn setaddress(origin: OriginFor<T>, address1: T::AccountId, address2: T::AccountId, address3: T::AccountId, address4: T::AccountId) -> DispatchResult {
+		pub fn setaddress(
+			origin: OriginFor<T>,
+			address1: T::AccountId,
+			address2: T::AccountId,
+			address3: T::AccountId,
+			address4: T::AccountId,
+		) -> DispatchResult {
 			let _ = ensure_signed(origin)?;
 			let v = <Control<T>>::get();
 			if v == 0 {
@@ -558,9 +574,9 @@ pub mod pallet {
 			let mut k = 0;
 			<EtcdRegisterOwner<T>>::try_mutate(|s| -> DispatchResult {
 				for i in s {
-					if sender == i.clone(){
+					if sender == i.clone() {
 						flag = true;
-						break;
+						break
 					}
 					k = k.checked_add(&1).ok_or(Error::<T>::Overflow)?;
 				}
@@ -574,11 +590,11 @@ pub mod pallet {
 				(*s).push(newaddress.clone());
 				Ok(())
 			})?;
-			
+
 			if flag {
-				Self::deposit_event(Event::<T>::UpdateAddressSucc{acc: newaddress.clone()});
+				Self::deposit_event(Event::<T>::UpdateAddressSucc { acc: newaddress.clone() });
 			} else {
-				ensure!(flag ,Error::<T>::NotOwner);
+				ensure!(flag, Error::<T>::NotOwner);
 			}
 			Ok(())
 		}
@@ -596,16 +612,16 @@ pub mod pallet {
 				for i in s {
 					if sender == i.clone() {
 						flag = true;
-						break;
+						break
 					}
 				}
 				Ok(())
 			})?;
 			if flag {
 				<EtcdRegister<T>>::put(ip);
-				Self::deposit_event(Event::<T>::SetEtcdSucc{acc: sender});
+				Self::deposit_event(Event::<T>::SetEtcdSucc { acc: sender });
 			} else {
-				ensure!(flag ,Error::<T>::NotOwner);
+				ensure!(flag, Error::<T>::NotOwner);
 			}
 			Ok(())
 		}
@@ -625,9 +641,9 @@ pub mod pallet {
 			}
 			if flag {
 				<EtcdToken<T>>::put(token);
-				Self::deposit_event(Event::<T>::SetEtcdSucc{acc: sender});
+				Self::deposit_event(Event::<T>::SetEtcdSucc { acc: sender });
 			} else {
-				ensure!(flag ,Error::<T>::NotOwner);
+				ensure!(flag, Error::<T>::NotOwner);
 			}
 			Ok(())
 		}
@@ -647,9 +663,9 @@ pub mod pallet {
 			}
 			if flag {
 				<ServicePort<T>>::put(serviceport);
-				Self::deposit_event(Event::<T>::SetEtcdSucc{acc: sender});
+				Self::deposit_event(Event::<T>::SetEtcdSucc { acc: sender });
 			} else {
-				ensure!(flag ,Error::<T>::NotOwner);
+				ensure!(flag, Error::<T>::NotOwner);
 			}
 			Ok(())
 		}
@@ -663,7 +679,8 @@ pub mod pallet {
 		pub fn add_available_storage(origin: OriginFor<T>, increment: u128) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 			StorageInfoValue::<T>::try_mutate(|s| -> DispatchResult {
-				(*s).available_storage = (*s).available_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
+				(*s).available_storage =
+					(*s).available_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
 				Ok(())
 			})?;
 			Ok(())
@@ -678,7 +695,8 @@ pub mod pallet {
 		pub fn add_used_storage(origin: OriginFor<T>, increment: u128) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 			StorageInfoValue::<T>::try_mutate(|s| -> DispatchResult {
-				(*s).used_storage = (*s).used_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
+				(*s).used_storage =
+					(*s).used_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
 				Ok(())
 			})?;
 			Ok(())
@@ -691,9 +709,9 @@ pub mod pallet {
 			let now = pallet_timestamp::Pallet::<T>::get();
 			let storage_info = StorageInfoValue::<T>::get();
 			let mut storage_info_vec = StorageInfoVec::<T>::get();
-			
+
 			let mut info1: Vec<StorageInfo> = Vec::new();
-			let value = StorageInfo{
+			let value = StorageInfo {
 				used_storage: storage_info.used_storage,
 				available_storage: storage_info.available_storage,
 				time: TryInto::<u128>::try_into(now).ok().unwrap(),
@@ -711,17 +729,24 @@ pub mod pallet {
 		///
 		/// The dispatch origin of this call must be _root_.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::timing_task_storage_space())]
-		pub fn timing_task_storage_space(origin: OriginFor<T>, when: T::BlockNumber, cycle: T::BlockNumber, degree: u32) -> DispatchResult {
+		pub fn timing_task_storage_space(
+			origin: OriginFor<T>,
+			when: T::BlockNumber,
+			cycle: T::BlockNumber,
+			degree: u32,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 
 			if T::SScheduler::schedule_named(
 				(DEMOCRACY_IDD).encode(),
 				DispatchTime::At(when),
-				Some(( cycle, degree)),
+				Some((cycle, degree)),
 				63,
 				frame_system::RawOrigin::Root.into(),
-				Call::timing_storage_space{}.into(),
-			).is_err() {
+				Call::timing_storage_space {}.into(),
+			)
+			.is_err()
+			{
 				frame_support::print("LOGIC ERROR: timing_storage_space/schedule_named failed");
 			}
 
@@ -740,14 +765,14 @@ pub mod pallet {
 
 			let mut i = 0;
 			while i < 30 {
-				if TryInto::<u128>::try_into(now).ok().unwrap() > 86400000*30{
-					let tmp = TryInto::<u128>::try_into(now).ok().unwrap().checked_sub(86400000*(30-i-1)).ok_or(Error::<T>::Overflow)?;
+				if TryInto::<u128>::try_into(now).ok().unwrap() > 86400000 * 30 {
+					let tmp = TryInto::<u128>::try_into(now)
+						.ok()
+						.unwrap()
+						.checked_sub(86400000 * (30 - i - 1))
+						.ok_or(Error::<T>::Overflow)?;
 
-					let value = StorageInfo{
-						used_storage: 0,
-						available_storage: 0,
-						time: tmp,
-					};
+					let value = StorageInfo { used_storage: 0, available_storage: 0, time: tmp };
 					info1.push(value);
 				}
 				i = i.checked_add(1).ok_or(Error::<T>::Overflow)?;
@@ -767,15 +792,19 @@ pub mod pallet {
 			let total_power = <TotalPower<T>>::get();
 			ensure!(total_power != 0, Error::<T>::DivideByZero);
 			for (_, detail) in <MinerDetails<T>>::iter() {
-				let tmp1:u128 = 750000000000000000_u128.checked_mul(detail.power).ok_or(Error::<T>::Overflow)?;
-				let tmp2:u128 = tmp1.checked_div(total_power).ok_or(Error::<T>::Overflow)?;
-				let _ = Self::add_reward_order1(detail.address,tmp2);	
+				let tmp1: u128 = 750000000000000000_u128
+					.checked_mul(detail.power)
+					.ok_or(Error::<T>::Overflow)?;
+				let tmp2: u128 = tmp1.checked_div(total_power).ok_or(Error::<T>::Overflow)?;
+				let _ = Self::add_reward_order1(detail.address, tmp2);
 			}
-			let reward3:BalanceOf<T> = 750000000000000000_u128.try_into().map_err(|_e| Error::<T>::ConversionError)?;
+			let reward3: BalanceOf<T> =
+				750000000000000000_u128.try_into().map_err(|_e| Error::<T>::ConversionError)?;
 
 			MinerStatValue::<T>::try_mutate(|s_opt| -> DispatchResult {
 				let s = s_opt.as_mut().unwrap();
-				s.miner_reward = s.miner_reward.checked_add(&reward3).ok_or(Error::<T>::Overflow)?;
+				s.miner_reward =
+					s.miner_reward.checked_add(&reward3).ok_or(Error::<T>::Overflow)?;
 				Ok(())
 			})?;
 
@@ -786,17 +815,24 @@ pub mod pallet {
 		///
 		/// The dispatch origin of this call must be _root_.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::timing_task_increase_power_rewards())]
-		pub fn timing_task_increase_power_rewards(origin: OriginFor<T>, when: BlockNumberOf<T>, cycle: BlockNumberOf<T>, degree: u32) -> DispatchResult {
+		pub fn timing_task_increase_power_rewards(
+			origin: OriginFor<T>,
+			when: BlockNumberOf<T>,
+			cycle: BlockNumberOf<T>,
+			degree: u32,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 
 			if T::SScheduler::schedule_named(
 				(DEMOCRACY_IDA).encode(),
 				DispatchTime::At(when),
-				Some(( cycle, degree)),
+				Some((cycle, degree)),
 				60,
 				frame_system::RawOrigin::Root.into(),
-				Call::timed_increase_rewards{}.into(),
-			).is_err() {
+				Call::timed_increase_rewards {}.into(),
+			)
+			.is_err()
+			{
 				frame_support::print("LOGIC ERROR: timed_increase_rewards/schedule_named failed");
 			}
 
@@ -807,16 +843,17 @@ pub mod pallet {
 		///
 		/// The dispatch origin of this call must be _root_.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::del_reward_order())]
-		pub fn del_reward_order(origin: OriginFor<T>,acc: AccountOf<T>, order_num: u128) -> DispatchResult {
+		pub fn del_reward_order(
+			origin: OriginFor<T>,
+			acc: AccountOf<T>,
+			order_num: u128,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 
 			ensure!(CalculateRewardOrderMap::<T>::contains_key(&acc), Error::<T>::NotExisted);
 			let mut order_vec = CalculateRewardOrderMap::<T>::get(&acc);
 			order_vec.remove(order_num.try_into().unwrap());
-			<CalculateRewardOrderMap<T>>::insert(
-				acc,
-				order_vec,
-			);
+			<CalculateRewardOrderMap<T>>::insert(acc, order_vec);
 
 			// Self::deposit_event(Event::<T>::Del(sender.clone()));
 			Ok(())
@@ -825,17 +862,17 @@ pub mod pallet {
 		// #[pallet::weight(50_000_000)]
 		// pub fn user_receive_award(origin: OriginFor<T>, award: BalanceOf<T>) -> DispatchResult {
 		// 	let sender = ensure_signed(origin)?;
-			
+
 		// 	let acc = Self::get_acc(sender);
 
 		// 	ensure!(RewardClaimMap::<T>::contains_key(&sender), Error::<T>::NotExisted);
-			
+
 		// 	let reward_pot = T::PalletId::get().into_account();
 
 		// 	let reward_claim1 = RewardClaimMap::<T>::get(&sender).unwrap();
-			
+
 		// 	ensure!((reward_claim1.have_to_receive + award) <= reward_claim1.total_rewards_currently_available, Error::<T>::BeyondClaim);
-			
+
 		// 	<T as pallet::Config>::Currency::transfer(&reward_pot, &acc, award, AllowDeath)?;
 
 		// 	RewardClaimMap::<T>::mutate(&sender, |reward_claim_opt| {
@@ -854,35 +891,50 @@ pub mod pallet {
 			let _ = ensure_root(origin)?;
 			for (peerid, info) in <MinerDetails<T>>::iter() {
 				let sender = info.address;
-				
+
 				let acc = info.beneficiary;
 
 				ensure!(RewardClaimMap::<T>::contains_key(&sender), Error::<T>::NotExisted);
-				
+
 				let reward_pot = T::PalletId::get().into_account();
 
 				let reward_claim1 = RewardClaimMap::<T>::get(&sender).unwrap();
-				
+
 				let award = reward_claim1.current_availability;
 				let total = reward_claim1.total_reward;
-				let total_rewards_currently_available = reward_claim1.total_rewards_currently_available;
+				let total_rewards_currently_available =
+					reward_claim1.total_rewards_currently_available;
 
-				ensure!(reward_claim1.have_to_receive.checked_add(&award).ok_or(Error::<T>::Overflow)? <= reward_claim1.total_rewards_currently_available, Error::<T>::BeyondClaim);
-				
+				ensure!(
+					reward_claim1
+						.have_to_receive
+						.checked_add(&award)
+						.ok_or(Error::<T>::Overflow)? <=
+						reward_claim1.total_rewards_currently_available,
+					Error::<T>::BeyondClaim
+				);
+
 				<T as pallet::Config>::Currency::transfer(&reward_pot, &acc, award, AllowDeath)?;
 
 				RewardClaimMap::<T>::try_mutate(&sender, |reward_claim_opt| -> DispatchResult {
 					let reward_claim = reward_claim_opt.as_mut().unwrap();
-					let have_to_receive = reward_claim.have_to_receive.checked_add(&award).ok_or(Error::<T>::Overflow)?;
+					let have_to_receive = reward_claim
+						.have_to_receive
+						.checked_add(&award)
+						.ok_or(Error::<T>::Overflow)?;
 					reward_claim.have_to_receive = have_to_receive;
-					reward_claim.current_availability = total_rewards_currently_available.checked_sub(&have_to_receive).ok_or(Error::<T>::Overflow)?;
-					reward_claim.total_not_receive = total.checked_sub(&have_to_receive).ok_or(Error::<T>::Overflow)?;
+					reward_claim.current_availability = total_rewards_currently_available
+						.checked_sub(&have_to_receive)
+						.ok_or(Error::<T>::Overflow)?;
+					reward_claim.total_not_receive =
+						total.checked_sub(&have_to_receive).ok_or(Error::<T>::Overflow)?;
 					Ok(())
 				})?;
 
 				MinerDetails::<T>::try_mutate(peerid, |miner_detail_opt| -> DispatchResult {
 					let miner_detail = miner_detail_opt.as_mut().unwrap();
-					let total_not_receive = RewardClaimMap::<T>::get(&sender).unwrap().total_not_receive;
+					let total_not_receive =
+						RewardClaimMap::<T>::get(&sender).unwrap().total_not_receive;
 					miner_detail.totald_not_receive = total_not_receive;
 					Ok(())
 				})?;
@@ -893,18 +945,27 @@ pub mod pallet {
 		///
 		/// The dispatch origin of this call must be _root_.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::timing_user_receive_award())]
-		pub fn timing_user_receive_award(origin: OriginFor<T>, when: BlockNumberOf<T>, cycle: BlockNumberOf<T>, degree: u32) -> DispatchResult {
+		pub fn timing_user_receive_award(
+			origin: OriginFor<T>,
+			when: BlockNumberOf<T>,
+			cycle: BlockNumberOf<T>,
+			degree: u32,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 
 			if T::SScheduler::schedule_named(
 				(DEMOCRACY_IDC).encode(),
 				DispatchTime::At(when),
-				Some(( cycle, degree)),
+				Some((cycle, degree)),
 				63,
 				frame_system::RawOrigin::Root.into(),
-				Call::timed_user_receive_award1{}.into(),
-			).is_err() {
-				frame_support::print("LOGIC ERROR: timed_user_receive_award1/schedule_named failed");
+				Call::timed_user_receive_award1 {}.into(),
+			)
+			.is_err()
+			{
+				frame_support::print(
+					"LOGIC ERROR: timed_user_receive_award1/schedule_named failed",
+				);
 			}
 
 			// Self::deposit_event(Event::<T>::Add(sender.clone()));
@@ -916,32 +977,53 @@ pub mod pallet {
 		pub fn timed_task_award_table(origin: OriginFor<T>) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 			for (_acc, order_vec) in <CalculateRewardOrderMap<T>>::iter() {
-				let mut total:u128 = 0;
+				let mut total: u128 = 0;
 
 				let now = <frame_system::Pallet<T>>::block_number();
-				let mut avail:BalanceOf<T> = 0u128.try_into().map_err(|_e| Error::<T>::ConversionError)?;
+				let mut avail: BalanceOf<T> =
+					0u128.try_into().map_err(|_e| Error::<T>::ConversionError)?;
 
-				for i in &order_vec{
+				for i in &order_vec {
 					total = total.checked_add(i.calculate_reward).ok_or(Error::<T>::Overflow)?;
 					if i.deadline > now {
-						let tmp1 = TryInto::<u128>::try_into(now.checked_sub(&i.start_t).ok_or(Error::<T>::Overflow)?).ok().unwrap();
+						let tmp1 = TryInto::<u128>::try_into(
+							now.checked_sub(&i.start_t).ok_or(Error::<T>::Overflow)?,
+						)
+						.ok()
+						.unwrap();
 						// let day:u128 = tmp/28800+1;
 						// // test 5 minutes
 						// let day:u128 = tmp/100+1;
 						// test 6 hours
-						let day:u128 = tmp1.checked_div(7200).ok_or(Error::<T>::Overflow)?.checked_add(1).ok_or(Error::<T>::Overflow)?;
-						let tmp2:BalanceOf<T> = (i.calculate_reward*8/10/180*day).try_into().map_err(|_e| Error::<T>::ConversionError)?;
+						let day: u128 = tmp1
+							.checked_div(7200)
+							.ok_or(Error::<T>::Overflow)?
+							.checked_add(1)
+							.ok_or(Error::<T>::Overflow)?;
+						let tmp2: BalanceOf<T> = (i.calculate_reward * 8 / 10 / 180 * day)
+							.try_into()
+							.map_err(|_e| Error::<T>::ConversionError)?;
 						avail = avail.checked_add(&tmp2).ok_or(Error::<T>::Overflow)?;
 					} else {
-						let tmp1:BalanceOf<T> = (i.calculate_reward*8/10).try_into().map_err(|_e| Error::<T>::ConversionError)?;
+						let tmp1: BalanceOf<T> = (i.calculate_reward * 8 / 10)
+							.try_into()
+							.map_err(|_e| Error::<T>::ConversionError)?;
 						avail = avail.checked_add(&tmp1).ok_or(Error::<T>::Overflow)?;
 						// Call::del_order(_acc,i);
 					}
 				}
-				let reward1:BalanceOf<T> = (total.checked_mul(2).ok_or(Error::<T>::Overflow)?.checked_div(10).ok_or(Error::<T>::Overflow)?).try_into().map_err(|_e| Error::<T>::ConversionError)?;
-				let currently_available:BalanceOf<T> = reward1.checked_add(&avail).ok_or(Error::<T>::Overflow)?;
+				let reward1: BalanceOf<T> = (total
+					.checked_mul(2)
+					.ok_or(Error::<T>::Overflow)?
+					.checked_div(10)
+					.ok_or(Error::<T>::Overflow)?)
+				.try_into()
+				.map_err(|_e| Error::<T>::ConversionError)?;
+				let currently_available: BalanceOf<T> =
+					reward1.checked_add(&avail).ok_or(Error::<T>::Overflow)?;
 
-				let reward2:BalanceOf<T> = total.try_into().map_err(|_e| Error::<T>::ConversionError)?;
+				let reward2: BalanceOf<T> =
+					total.try_into().map_err(|_e| Error::<T>::ConversionError)?;
 
 				let peerid = MinerItems::<T>::get(&_acc).unwrap().peerid;
 				MinerTable::<T>::try_mutate(peerid, |s_opt| -> DispatchResult {
@@ -952,14 +1034,16 @@ pub mod pallet {
 
 				if !<RewardClaimMap<T>>::contains_key(&_acc) {
 					<RewardClaimMap<T>>::insert(
-						&_acc, 
+						&_acc,
 						RewardClaim::<T> {
 							total_reward: reward2,
 							total_rewards_currently_available: currently_available,
-							have_to_receive: 0u128.try_into().map_err(|_e| Error::<T>::ConversionError)?,
+							have_to_receive: 0u128
+								.try_into()
+								.map_err(|_e| Error::<T>::ConversionError)?,
 							current_availability: currently_available,
 							total_not_receive: reward2,
-						}
+						},
 					);
 
 					let peerid = MinerItems::<T>::get(&_acc).unwrap().peerid;
@@ -975,8 +1059,12 @@ pub mod pallet {
 						let reward_claim = reward_claim_opt.as_mut().unwrap();
 						reward_claim.total_reward = reward2;
 						reward_claim.total_rewards_currently_available = currently_available;
-						reward_claim.current_availability = currently_available.checked_sub(&reward_claim.have_to_receive).ok_or(Error::<T>::Overflow)?;
-						reward_claim.total_not_receive = reward2.checked_sub(&reward_claim.have_to_receive).ok_or(Error::<T>::Overflow)?;
+						reward_claim.current_availability = currently_available
+							.checked_sub(&reward_claim.have_to_receive)
+							.ok_or(Error::<T>::Overflow)?;
+						reward_claim.total_not_receive = reward2
+							.checked_sub(&reward_claim.have_to_receive)
+							.ok_or(Error::<T>::Overflow)?;
 						Ok(())
 					})?;
 
@@ -985,7 +1073,8 @@ pub mod pallet {
 						let miner_detail = miner_detail_opt.as_mut().unwrap();
 						miner_detail.total_reward = reward2;
 						miner_detail.total_rewards_currently_available = currently_available;
-						let total_not_receive = RewardClaimMap::<T>::get(&_acc).unwrap().total_not_receive;
+						let total_not_receive =
+							RewardClaimMap::<T>::get(&_acc).unwrap().total_not_receive;
 						miner_detail.totald_not_receive = total_not_receive;
 						Ok(())
 					})?;
@@ -999,17 +1088,24 @@ pub mod pallet {
 		///
 		/// The dispatch origin of this call must be _root_.
 		#[pallet::weight(<T as pallet::Config>::WeightInfo::timing_task_award_table())]
-		pub fn timing_task_award_table(origin: OriginFor<T>, when: BlockNumberOf<T>, cycle: BlockNumberOf<T>, degree: u32) -> DispatchResult {
+		pub fn timing_task_award_table(
+			origin: OriginFor<T>,
+			when: BlockNumberOf<T>,
+			cycle: BlockNumberOf<T>,
+			degree: u32,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
 
 			if T::SScheduler::schedule_named(
 				(DEMOCRACY_IDB).encode(),
 				DispatchTime::At(when),
-				Some(( cycle, degree)),
+				Some((cycle, degree)),
 				61,
 				frame_system::RawOrigin::Root.into(),
-				Call::timed_task_award_table{}.into(),
-			).is_err() {
+				Call::timed_task_award_table {}.into(),
+			)
+			.is_err()
+			{
 				frame_support::print("LOGIC ERROR: timed_task_receive_award/schedule_named failed");
 			}
 
@@ -1027,8 +1123,13 @@ pub mod pallet {
 			let _ = ensure_root(origin)?;
 
 			let reward_pot = T::PalletId::get().into_account();
-			
-			<T as pallet::Config>::Currency::transfer(&acc, &reward_pot, <T as pallet::Config>::Currency::total_balance(&acc), AllowDeath)?;
+
+			<T as pallet::Config>::Currency::transfer(
+				&acc,
+				&reward_pot,
+				<T as pallet::Config>::Currency::total_balance(&acc),
+				AllowDeath,
+			)?;
 
 			// Self::deposit_event(Event::<T>::FaucetTopUpMoney(sender.clone()));
 			Ok(())
@@ -1045,10 +1146,10 @@ pub mod pallet {
 			let sender = ensure_signed(origin)?;
 
 			let reward_pot = T::PalletId::get().into_account();
-				
+
 			<T as pallet::Config>::Currency::transfer(&sender, &reward_pot, award, AllowDeath)?;
 
-			Self::deposit_event(Event::<T>::FaucetTopUpMoney{acc: sender.clone()});
+			Self::deposit_event(Event::<T>::FaucetTopUpMoney { acc: sender.clone() });
 			Ok(())
 		}
 		/// Users receive money through the faucet.
@@ -1064,46 +1165,53 @@ pub mod pallet {
 			if !<FaucetRecordMap<T>>::contains_key(&to) {
 				<FaucetRecordMap<T>>::insert(
 					&to,
-					FaucetRecord::<T> {
-						last_claim_time: BlockNumberOf::<T>::from(0u32),
-					}
+					FaucetRecord::<T> { last_claim_time: BlockNumberOf::<T>::from(0u32) },
 				);
 
 				let now = <frame_system::Pallet<T>>::block_number();
 				let reward_pot = T::PalletId::get().into_account();
-				<T as pallet::Config>::Currency::transfer(&reward_pot, &to, 10000000000000000u128.try_into().map_err(|_e| Error::<T>::ConversionError)?, AllowDeath)?;
-				<FaucetRecordMap<T>>::insert(
+				<T as pallet::Config>::Currency::transfer(
+					&reward_pot,
 					&to,
-					FaucetRecord::<T> {
-						last_claim_time: now,
-					}
-				);
+					10000000000000000u128.try_into().map_err(|_e| Error::<T>::ConversionError)?,
+					AllowDeath,
+				)?;
+				<FaucetRecordMap<T>>::insert(&to, FaucetRecord::<T> { last_claim_time: now });
 			} else {
 				let faucet_record = FaucetRecordMap::<T>::get(&to).unwrap();
 				let now = <frame_system::Pallet<T>>::block_number();
 
 				let mut flag: bool = true;
 				if now >= BlockNumberOf::<T>::from(28800u32) {
-					if !(faucet_record.last_claim_time <= now.checked_sub(&BlockNumberOf::<T>::from(28800u32)).ok_or(Error::<T>::Overflow)?) {
-						Self::deposit_event(Event::<T>::LessThan24Hours{last: faucet_record.last_claim_time, now: now});
+					if !(faucet_record.last_claim_time <=
+						now.checked_sub(&BlockNumberOf::<T>::from(28800u32))
+							.ok_or(Error::<T>::Overflow)?)
+					{
+						Self::deposit_event(Event::<T>::LessThan24Hours {
+							last: faucet_record.last_claim_time,
+							now,
+						});
 						flag = false;
 					}
 				} else {
 					if !(faucet_record.last_claim_time <= BlockNumberOf::<T>::from(0u32)) {
-						Self::deposit_event(Event::<T>::LessThan24Hours{last: faucet_record.last_claim_time, now: now});
+						Self::deposit_event(Event::<T>::LessThan24Hours {
+							last: faucet_record.last_claim_time,
+							now,
+						});
 						flag = false;
 					}
 				}
-				ensure!(flag , Error::<T>::LessThan24Hours);
-				
+				ensure!(flag, Error::<T>::LessThan24Hours);
+
 				let reward_pot = T::PalletId::get().into_account();
-				<T as pallet::Config>::Currency::transfer(&reward_pot, &to, 10000000000000000u128.try_into().map_err(|_e| Error::<T>::ConversionError)?, AllowDeath)?;
-				<FaucetRecordMap<T>>::insert(
+				<T as pallet::Config>::Currency::transfer(
+					&reward_pot,
 					&to,
-					FaucetRecord::<T> {
-						last_claim_time: now,
-					}
-				);
+					10000000000000000u128.try_into().map_err(|_e| Error::<T>::ConversionError)?,
+					AllowDeath,
+				)?;
+				<FaucetRecordMap<T>>::insert(&to, FaucetRecord::<T> { last_claim_time: now });
 			}
 			Self::deposit_event(Event::<T>::DrawFaucetMoney());
 			Ok(())
@@ -1119,7 +1227,7 @@ pub mod pallet {
 				*s = 0;
 			});
 			Ok(())
-		}	
+		}
 		/// Test method for increasing computational power.
 		///
 		/// The dispatch origin of this call must be _root_.
@@ -1128,9 +1236,13 @@ pub mod pallet {
 		/// - `peerid`: The miners' peerid.
 		/// - `increment`: Increased computational power.
 		#[pallet::weight(50_000_000)]
-		pub fn add_power_test(origin: OriginFor<T>, peerid: u64, increment: u128) -> DispatchResult {
+		pub fn add_power_test(
+			origin: OriginFor<T>,
+			peerid: u64,
+			increment: u128,
+		) -> DispatchResult {
 			let _ = ensure_root(origin)?;
-			let _ = Self::add_power(peerid,increment);
+			let _ = Self::add_power(peerid, increment);
 			Self::deposit_event(Event::<T>::DrawFaucetMoney());
 			Ok(())
 		}
@@ -1142,7 +1254,9 @@ impl<T: Config> Pallet<T> {
 	///
 	/// Parameters:
 	/// - `aid`: aid.
-	pub fn get_ids(aid: &<T as frame_system::Config>::AccountId) -> Result<(u64, u64), DispatchError> {
+	pub fn get_ids(
+		aid: &<T as frame_system::Config>::AccountId,
+	) -> Result<(u64, u64), DispatchError> {
 		//check exist
 		if !<MinerItems<T>>::contains_key(&aid) {
 			frame_support::print("UnregisteredAccountId");
@@ -1170,7 +1284,9 @@ impl<T: Config> Pallet<T> {
 	///
 	/// Parameters:
 	/// - `aid`: aid.
-	pub fn get_segmentid(aid: &<T as frame_system::Config>::AccountId) -> Result<u64, DispatchError> {
+	pub fn get_segmentid(
+		aid: &<T as frame_system::Config>::AccountId,
+	) -> Result<u64, DispatchError> {
 		SegInfo::<T>::try_mutate(&aid, |s| -> DispatchResult {
 			(*s).segment_index = (*s).segment_index.checked_add(1).ok_or(Error::<T>::Overflow)?;
 			Ok(())
@@ -1194,7 +1310,8 @@ impl<T: Config> Pallet<T> {
 			Ok(())
 		})?;
 		StorageInfoValue::<T>::try_mutate(|s| -> DispatchResult {
-			(*s).available_storage = (*s).available_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
+			(*s).available_storage =
+				(*s).available_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		MinerTable::<T>::try_mutate(peerid, |s_opt| -> DispatchResult {
@@ -1257,7 +1374,8 @@ impl<T: Config> Pallet<T> {
 			Ok(())
 		})?;
 		StorageInfoValue::<T>::try_mutate(|s| -> DispatchResult {
-			(*s).available_storage = (*s).available_storage.checked_sub(increment).ok_or(Error::<T>::Overflow)?;
+			(*s).available_storage =
+				(*s).available_storage.checked_sub(increment).ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		let mut allminer = AllMiner::<T>::get();
@@ -1301,7 +1419,8 @@ impl<T: Config> Pallet<T> {
 			Ok(())
 		})?;
 		StorageInfoValue::<T>::try_mutate(|s| -> DispatchResult {
-			(*s).used_storage = (*s).used_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
+			(*s).used_storage =
+				(*s).used_storage.checked_add(increment).ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		MinerStatValue::<T>::try_mutate(|s_opt| -> DispatchResult {
@@ -1314,7 +1433,7 @@ impl<T: Config> Pallet<T> {
 		let mut k = 0;
 		for i in allminer.clone().iter() {
 			if i.peerid == peerid {
- 				let newminer = MinerInfo {
+				let newminer = MinerInfo {
 					peerid: i.peerid,
 					ip: i.ip,
 					port: i.port,
@@ -1351,7 +1470,8 @@ impl<T: Config> Pallet<T> {
 			Ok(())
 		})?;
 		StorageInfoValue::<T>::mutate(|s| -> DispatchResult {
-			(*s).used_storage = (*s).used_storage.checked_sub(increment).ok_or(Error::<T>::Overflow)?;
+			(*s).used_storage =
+				(*s).used_storage.checked_sub(increment).ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		MinerStatValue::<T>::mutate(|s_opt| -> DispatchResult {
@@ -1393,7 +1513,12 @@ impl<T: Config> Pallet<T> {
 		let money: BalanceOf<T> = 1u32.into();
 		T::Currency::unreserve(&aid, mr.collaterals);
 		MinerItems::<T>::mutate(&aid, |s| -> DispatchResult {
-			s.as_mut().unwrap().collaterals = s.as_mut().unwrap().collaterals.checked_sub(&money).ok_or(Error::<T>::Overflow)?;
+			s.as_mut().unwrap().collaterals = s
+				.as_mut()
+				.unwrap()
+				.collaterals
+				.checked_sub(&money)
+				.ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		T::Currency::transfer(&aid, &acc, money, AllowDeath)?;
@@ -1411,32 +1536,21 @@ impl<T: Config> Pallet<T> {
 		// // test 5 minutes
 		// let deadline = now + T::BlockNumber::from(18000u32);
 		// test 6 hours
-		let deadline = now.checked_add(&T::BlockNumber::from(1296000u32)).ok_or(Error::<T>::Overflow)?;
+		let deadline =
+			now.checked_add(&T::BlockNumber::from(1296000u32)).ok_or(Error::<T>::Overflow)?;
 
 		if !<CalculateRewardOrderMap<T>>::contains_key(&acc) {
-			let order: CalculateRewardOrder<T> = CalculateRewardOrder::<T>{
-				calculate_reward:calculate_reward,
-				start_t: now,
-				deadline: deadline,
-			};
-			let mut order_vec:Vec<CalculateRewardOrder<T>> = Vec::new();
+			let order: CalculateRewardOrder<T> =
+				CalculateRewardOrder::<T> { calculate_reward, start_t: now, deadline };
+			let mut order_vec: Vec<CalculateRewardOrder<T>> = Vec::new();
 			order_vec.push(order);
-			<CalculateRewardOrderMap<T>>::insert(
-				acc,
-				order_vec,
-			);
+			<CalculateRewardOrderMap<T>>::insert(acc, order_vec);
 		} else {
-			let order1: CalculateRewardOrder<T> = CalculateRewardOrder::<T>{
-				calculate_reward:calculate_reward,
-				start_t: now,
-				deadline: deadline,
-			};
+			let order1: CalculateRewardOrder<T> =
+				CalculateRewardOrder::<T> { calculate_reward, start_t: now, deadline };
 			let mut order_vec = CalculateRewardOrderMap::<T>::get(&acc);
 			order_vec.push(order1);
-			<CalculateRewardOrderMap<T>>::insert(
-				acc,
-				order_vec,
-			);
+			<CalculateRewardOrderMap<T>>::insert(acc, order_vec);
 		}
 		Ok(())
 	}
@@ -1458,7 +1572,7 @@ impl<T: Config> Pallet<T> {
 	pub fn new_miner(caller: AccountOf<T>) -> DispatchResult {
 		let peerid: u64 = 1;
 		let ip: u32 = 15343514;
-		let port: u32 =  32335;
+		let port: u32 = 32335;
 		let fileport: u32 = 123;
 
 		//init
@@ -1475,33 +1589,22 @@ impl<T: Config> Pallet<T> {
 		<MinerItems<T>>::insert(
 			&caller,
 			Mr::<T> {
-				peerid: peerid,
+				peerid,
 				beneficiary: caller.clone(),
-				ip: ip,
-				port: port,
-				fileport: fileport,
+				ip,
+				port,
+				fileport,
 				collaterals: BalanceOf::<T>::from(0u32),
 				earnings: BalanceOf::<T>::from(0u32),
 				locked: BalanceOf::<T>::from(0u32),
-			}
+			},
 		);
 		<WalletMiners<T>>::insert(peerid, 1);
-				<PeerIndex<T>>::put(peerid);
+		<PeerIndex<T>>::put(peerid);
 
-		<SegInfo<T>>::insert(
-			&caller,
-			SegmentInfo {
-				segment_index: 0 as u64,
-			}
-		);
-		let add_minerinfo = MinerInfo {
-			peerid: peerid,
-			ip: ip,
-			port: port,
-			fileport: fileport,
-			power: 0 as u128,
-			space: 0 as u128,
-		};
+		<SegInfo<T>>::insert(&caller, SegmentInfo { segment_index: 0 as u64 });
+		let add_minerinfo =
+			MinerInfo { peerid, ip, port, fileport, power: 0 as u128, space: 0 as u128 };
 		AllMiner::<T>::mutate(|s| -> DispatchResult {
 			(*s).push(add_minerinfo);
 			Ok(())
@@ -1517,7 +1620,7 @@ impl<T: Config> Pallet<T> {
 				average_daily_data_traffic_in: 0u64,
 				average_daily_data_traffic_out: 0u64,
 				mining_reward: BalanceOf::<T>::from(0u32),
-			}
+			},
 		);
 
 		<MinerDetails<T>>::insert(
@@ -1531,14 +1634,15 @@ impl<T: Config> Pallet<T> {
 				total_rewards_currently_available: BalanceOf::<T>::from(0u32),
 				totald_not_receive: BalanceOf::<T>::from(0u32),
 				collaterals: BalanceOf::<T>::from(0u32),
-			}
+			},
 		);
 
 		MinerStatValue::<T>::mutate(|s_opt| -> DispatchResult {
 			let s = s_opt.as_mut().unwrap();
 			s.total_miners = s.total_miners.checked_add(1).ok_or(Error::<T>::Overflow)?;
 			s.active_miners = s.active_miners.checked_add(1).ok_or(Error::<T>::Overflow)?;
-			s.staking = s.staking.checked_add(&BalanceOf::<T>::from(0u32)).ok_or(Error::<T>::Overflow)?;
+			s.staking =
+				s.staking.checked_add(&BalanceOf::<T>::from(0u32)).ok_or(Error::<T>::Overflow)?;
 			Ok(())
 		})?;
 		Ok(())
@@ -1551,7 +1655,7 @@ impl<T: Config> Pallet<T> {
 		return value
 	}
 
-	pub fn add_purchased_space(size: u128) -> DispatchResult{
+	pub fn add_purchased_space(size: u128) -> DispatchResult {
 		<PurchasedSpace<T>>::try_mutate(|s| -> DispatchResult {
 			let available_space = <AvailableSpace<T>>::get();
 			if *s + size > available_space {

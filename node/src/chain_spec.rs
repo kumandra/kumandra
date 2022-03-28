@@ -1,11 +1,11 @@
 use kumandra_runtime::{
-	AccountId, AuthorityDiscoveryConfig, BabeConfig, BalancesConfig, Balance, CouncilConfig,
-	GenesisConfig, GrandpaConfig, 
-	ImOnlineConfig, SessionConfig, Signature, StakingConfig, opaque::SessionKeys, SudoConfig, StakerStatus,
-	SystemConfig, TechnicalCommitteeConfig, wasm_binary_unwrap, MAX_NOMINATIONS, DOLLARS
+	opaque::SessionKeys, wasm_binary_unwrap, AccountId, AuthorityDiscoveryConfig, BabeConfig,
+	Balance, BalancesConfig, CouncilConfig, GenesisConfig, GrandpaConfig, ImOnlineConfig,
+	SessionConfig, Signature, StakerStatus, StakingConfig, SudoConfig, SystemConfig,
+	TechnicalCommitteeConfig, DOLLARS, MAX_NOMINATIONS,
 };
-use sc_service::ChainType;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
+use sc_service::ChainType;
 use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
 use sp_consensus_babe::AuthorityId as BabeId;
 use sp_core::{sr25519, Pair, Public};
@@ -14,7 +14,6 @@ use sp_runtime::{
 	traits::{IdentifyAccount, Verify},
 	Perbill,
 };
-
 
 // The URL for the telemetry server.
 // const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
@@ -49,7 +48,9 @@ where
 }
 
 /// Helper function to generate stash, controller and session key from seed
-pub fn authority_keys_from_seed(seed: &str) -> (AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId) {
+pub fn authority_keys_from_seed(
+	seed: &str,
+) -> (AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId) {
 	(
 		get_account_id_from_seed::<sr25519::Public>(&format!("{}//stash", seed)),
 		get_account_id_from_seed::<sr25519::Public>(seed),
@@ -61,7 +62,8 @@ pub fn authority_keys_from_seed(seed: &str) -> (AccountId, AccountId, GrandpaId,
 }
 
 pub fn kumandra_testnet_config() -> ChainSpec {
-	ChainSpec::from_json_bytes(&include_bytes!("../res/kumandra-testnet-spec-raw.json")[..]).unwrap()
+	ChainSpec::from_json_bytes(&include_bytes!("../res/kumandra-testnet-spec-raw.json")[..])
+		.unwrap()
 }
 
 pub fn development_config() -> ChainSpec {
@@ -79,7 +81,7 @@ pub fn development_config() -> ChainSpec {
 				vec![],
 				// Sudo account
 				get_account_id_from_seed::<sr25519::Public>("Alice"),
-				None
+				None,
 			)
 		},
 		// Bootnodes
@@ -94,7 +96,6 @@ pub fn development_config() -> ChainSpec {
 		Default::default(),
 	)
 }
-
 
 fn local_testnet_genesis() -> GenesisConfig {
 	testnet_genesis(
@@ -140,7 +141,6 @@ fn testnet_genesis(
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
 ) -> GenesisConfig {
-
 	let mut endowed_accounts: Vec<AccountId> = endowed_accounts.unwrap_or_else(|| {
 		vec![
 			get_account_id_from_seed::<sr25519::Public>("Alice"),

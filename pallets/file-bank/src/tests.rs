@@ -19,11 +19,9 @@
 
 use super::*;
 use crate::{mock::*, Error};
-use frame_support::{assert_ok, assert_noop};
-use mock::{
-	new_test_ext, Origin, FileBank,
-};
 use frame_benchmarking::account;
+use frame_support::{assert_noop, assert_ok};
+use mock::{new_test_ext, FileBank, Origin};
 use pallet_sminer::Error as OtherError;
 pub struct FileInfoTest {
 	filename: Vec<u8>,
@@ -70,9 +68,9 @@ fn upload_works_when_not_buy_space() {
 
 		assert_noop!(
 			FileBank::upload(
-				Origin::signed(1), 
-				address, 
-				fit.filename, 
+				Origin::signed(1),
+				address,
+				fit.filename,
 				fileid.clone(),
 				fit.filehash,
 				fit.backups,
@@ -185,7 +183,7 @@ fn buy_file_when_file_none_exis() {
 		let address2 = vec![2];
 		let downloadfee = 1;
 		let fit = create();
-		
+
 		assert_noop!(
 			FileBank::buyfile(Origin::signed(2), [2].to_vec(), address2),
 			Error::<Test>::FileNonExistent
@@ -194,20 +192,15 @@ fn buy_file_when_file_none_exis() {
 }
 
 pub fn create() -> FileInfoTest {
-	FileInfoTest {
-		filename: vec![1],
-		filehash: vec![1],
-		backups: 3,
-		filesize: 1,
-	}
+	FileInfoTest { filename: vec![1], filehash: vec![1], backups: 3, filesize: 1 }
 }
 
 //Registered miners to submit certificates
 pub fn init() {
 	assert_ok!(Sminer::initi(Origin::root()));
-	assert_ok!(Sminer::regnstk(Origin::signed(1),account("source", 0, 0),0,0,0,0));
+	assert_ok!(Sminer::regnstk(Origin::signed(1), account("source", 0, 0), 0, 0, 0, 0));
 }
-//Only when the miner submits the certificate can the available space 
+//Only when the miner submits the certificate can the available space
 //be increased and later purchased by the user
 pub fn add_space() {
 	let value: Vec<u8> = [0].to_vec();

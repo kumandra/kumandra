@@ -18,16 +18,14 @@
 //! Tests for the module.
 
 use super::*;
-use frame_support::{assert_ok};
-use mock::{
-	new_test_ext, Balances, Origin, Sminer, Test,
-};
 use frame_benchmarking::account;
+use frame_support::assert_ok;
+use mock::{new_test_ext, Balances, Origin, Sminer, Test};
 
 #[test]
 fn timing_storage_space_thirty_days_works() {
 	new_test_ext().execute_with(|| {
-		assert_ok!(Sminer::timing_storage_space_thirty_days(Origin::root()));	
+		assert_ok!(Sminer::timing_storage_space_thirty_days(Origin::root()));
 	});
 }
 
@@ -35,36 +33,32 @@ fn timing_storage_space_thirty_days_works() {
 fn timed_increase_rewards_works() {
 	new_test_ext().execute_with(|| {
 		assert_ok!(Sminer::initi(Origin::root()));
-		assert_ok!(Sminer::regnstk(Origin::signed(1),account("source", 0, 0),0,0,0,0));
-		assert_ok!(Sminer::add_power_test(Origin::root(),1,1000));	
-		assert_ok!(Sminer::timed_increase_rewards(Origin::root()));	
+		assert_ok!(Sminer::regnstk(Origin::signed(1), account("source", 0, 0), 0, 0, 0, 0));
+		assert_ok!(Sminer::add_power_test(Origin::root(), 1, 1000));
+		assert_ok!(Sminer::timed_increase_rewards(Origin::root()));
 	});
 }
 
 #[test]
 fn timed_task_award_table_works() {
 	new_test_ext().execute_with(|| {
-		assert_ok!(Sminer::timed_task_award_table(Origin::root()));	
+		assert_ok!(Sminer::timed_task_award_table(Origin::root()));
 	});
 }
 
 #[test]
 fn timed_user_receive_award1_works() {
 	new_test_ext().execute_with(|| {
-		assert_ok!(Sminer::timed_user_receive_award1(Origin::root()));	
+		assert_ok!(Sminer::timed_user_receive_award1(Origin::root()));
 	});
 }
 
 #[test]
 fn faucet_works() {
 	new_test_ext().execute_with(|| {
-		pallet_balances::GenesisConfig::<Test> {
-			balances: vec![
-				(1, 100000000000000000),
-			],
-		};
+		pallet_balances::GenesisConfig::<Test> { balances: vec![(1, 100000000000000000)] };
 		assert_ok!(Sminer::faucet_top_up(Origin::signed(1), 10000000000000000));
-		assert_ok!(Sminer::faucet(Origin::signed(1),5u64));
+		assert_ok!(Sminer::faucet(Origin::signed(1), 5u64));
 		assert_eq!(Balances::free_balance(5), 10000000000000100);
 	});
 }
@@ -72,11 +66,11 @@ fn faucet_works() {
 #[test]
 fn etcd_works() {
 	new_test_ext().execute_with(|| {
-		assert_ok!(Sminer::setaddress(Origin::signed(1),1,2,3,4));
-		assert_ok!(Sminer::updateaddress(Origin::signed(1),account("source", 0, 0)));
-		assert_ok!(Sminer::setetcd(Origin::signed(2),vec![127]));
-		assert_ok!(Sminer::setetcdtoken(Origin::signed(4),vec![127]));
-		assert_ok!(Sminer::setserviceport(Origin::signed(4),vec![127]));
+		assert_ok!(Sminer::setaddress(Origin::signed(1), 1, 2, 3, 4));
+		assert_ok!(Sminer::updateaddress(Origin::signed(1), account("source", 0, 0)));
+		assert_ok!(Sminer::setetcd(Origin::signed(2), vec![127]));
+		assert_ok!(Sminer::setetcdtoken(Origin::signed(4), vec![127]));
+		assert_ok!(Sminer::setserviceport(Origin::signed(4), vec![127]));
 	});
 }
 
@@ -84,7 +78,7 @@ fn etcd_works() {
 fn redeem_works() {
 	new_test_ext().execute_with(|| {
 		assert_ok!(Sminer::initi(Origin::root()));
-		assert_ok!(Sminer::regnstk(Origin::signed(1),account("source", 0, 0),0,0,0,0));
+		assert_ok!(Sminer::regnstk(Origin::signed(1), account("source", 0, 0), 0, 0, 0, 0));
 		assert_ok!(Sminer::redeem(Origin::signed(1)));
 	});
 }

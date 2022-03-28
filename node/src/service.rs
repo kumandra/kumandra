@@ -279,8 +279,6 @@ pub fn new_full(
 		);
 	}
 
-
-
 	let _justification_import = grandpa_block_import.clone();
 
 	let (_block_import, _babe_link) = sc_consensus_babe::block_import(
@@ -306,8 +304,6 @@ pub fn new_full(
 	// let shared_voter_state = grandpa::SharedVoterState::empty();
 	// let rpc_setup = shared_voter_state.clone();
 	// let justification_stream = grandpa_link.justification_stream();
-	
-
 
 	// let rpc_extensions_builder = {
 	// 	let client = client.clone();
@@ -456,10 +452,9 @@ pub fn new_full(
 
 		// the GRANDPA voter task is considered infallible, i.e.
 		// if it fails we take down the service with it.
-		task_manager.spawn_essential_handle().spawn_blocking(
-			"grandpa-voter",
-			grandpa::run_grandpa_voter(grandpa_config)?,
-		);
+		task_manager
+			.spawn_essential_handle()
+			.spawn_blocking("grandpa-voter", grandpa::run_grandpa_voter(grandpa_config)?);
 	}
 
 	network_starter.start_network();

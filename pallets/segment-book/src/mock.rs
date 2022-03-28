@@ -19,18 +19,15 @@
 
 use super::*;
 use crate as segment_book;
-use frame_support::{
-	parameter_types,
-	weights::Weight,
-};
-use frame_system::{EnsureRoot};
+use frame_support::{parameter_types, weights::Weight};
+use frame_support_test::TestRandomness;
+use frame_system::EnsureRoot;
 use sp_core::H256;
 use sp_runtime::{
 	testing::Header,
 	traits::{BlakeTwo256, IdentityLookup},
 	Perbill,
 };
-use frame_support_test::TestRandomness;
 
 type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
 type Block = frame_system::mocking::MockBlock<Test>;
@@ -126,7 +123,7 @@ impl pallet_scheduler::Config for Test {
 parameter_types! {
 	pub const RewardPalletId: PalletId = PalletId(*b"rewardpt");
 }
-  
+
 impl pallet_sminer::Config for Test {
 	type Currency = Balances;
 	type Event = Event;

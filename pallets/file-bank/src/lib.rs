@@ -7,8 +7,8 @@
 //! * **Is Public:** Public or private.
 //! * **Backups:** Number of duplicate.
 //! * **Deadline:** Expiration time.
-//! 
-//! 
+//!
+//!
 //! ### Interface
 //!
 //! ### Dispatchable Functions
@@ -25,24 +25,25 @@ mod mock;
 #[cfg(test)]
 mod tests;
 
-use frame_support::traits::{Currency, ReservableCurrency, ExistenceRequirement::AllowDeath};
+use frame_support::traits::{Currency, ExistenceRequirement::AllowDeath, ReservableCurrency};
 pub use pallet::*;
 mod benchmarking;
 pub mod weights;
 use sp_std::convert::TryInto;
 
+use codec::{Decode, Encode};
+use frame_support::{dispatch::DispatchResult, PalletId};
 use scale_info::TypeInfo;
 use sp_runtime::{
+	traits::{AccountIdConversion, SaturatedConversion},
 	RuntimeDebug,
-	traits::{AccountIdConversion,SaturatedConversion}
 };
 use sp_std::prelude::*;
-use codec::{Encode, Decode};
-use frame_support::{dispatch::DispatchResult, PalletId};
 pub use weights::WeightInfo;
 
 type AccountOf<T> = <T as frame_system::Config>::AccountId;
-type BalanceOf<T> = <<T as pallet::Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+type BalanceOf<T> =
+	<<T as pallet::Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 type BlockNumberOf<T> = <T as frame_system::Config>::BlockNumber;
 
 /// The custom struct for storing file info.
@@ -81,11 +82,7 @@ pub struct FileSlice {
 #[frame_support::pallet]
 pub mod pallet {
 	use super::*;
-	use frame_support::{
-		ensure,
-		pallet_prelude::*,
-		traits::Get,
-	};
+	use frame_support::{ensure, pallet_prelude::*, traits::Get};
 	//pub use crate::weights::WeightInfo;
 	use frame_system::{ensure_signed, pallet_prelude::*};
 
@@ -106,21 +103,21 @@ pub mod pallet {
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		//file uploaded.
-		FileUpload{acc: AccountOf<T>},
+		FileUpload { acc: AccountOf<T> },
 		//file updated.
-		FileUpdate{acc: AccountOf<T>},
+		FileUpdate { acc: AccountOf<T> },
 		//file bought.
-		BuyFile{acc: AccountOf<T>, money: BalanceOf<T>, fileid: Vec<u8>},
+		BuyFile { acc: AccountOf<T>, money: BalanceOf<T>, fileid: Vec<u8> },
 		//file purchased before.
-		Purchased{acc: AccountOf<T>, fileid: Vec<u8>},
+		Purchased { acc: AccountOf<T>, fileid: Vec<u8> },
 		//Storage information of scheduling storage file slice
-		InsertFileSlice{fileid: Vec<u8>},		
+		InsertFileSlice { fileid: Vec<u8> },
 		//User purchase space
-		BuySpace{acc: AccountOf<T>, size: u128, fee: BalanceOf<T>},
+		BuySpace { acc: AccountOf<T>, size: u128, fee: BalanceOf<T> },
 		//Expired storage space
-		LeaseExpired{acc: AccountOf<T>, size: u128},
+		LeaseExpired { acc: AccountOf<T>, size: u128 },
 		//Storage space expiring within 24 hours
-		LeaseExpireIn24Hours{acc: AccountOf<T>, size: u128},
+		LeaseExpireIn24Hours { acc: AccountOf<T>, size: u128 },
 	}
 	#[pallet::error]
 	pub enum Error<T> {
@@ -154,24 +151,28 @@ pub mod pallet {
 
 	#[pallet::storage]
 	#[pallet::getter(fn seg_info)]
-	pub(super) type UserFileSize<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, u128, ValueQuery>;
+	pub(super) type UserFileSize<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, u128, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn file_slice_location)]
-	pub(super) type FileSliceLocation<T: Config> = StorageMap<_, Twox64Concat, Vec<u8>, Vec<FileSlice>>;
-
+	pub(super) type FileSliceLocation<T: Config> =
+		StorageMap<_, Twox64Concat, Vec<u8>, Vec<FileSlice>>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn user_hold_file_list)]
-	pub(super) type UserHoldFileList<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, Vec<Vec<u8>>, ValueQuery>;
+	pub(super) type UserHoldFileList<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, Vec<Vec<u8>>, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn user_hold_storage_space)]
-	pub(super) type UserHoldSpaceDetails<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, StorageSpace>;
+	pub(super) type UserHoldSpaceDetails<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, StorageSpace>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn user_spance_details)]
-	pub(super) type UserSpaceList<T: Config> = StorageMap<_, Twox64Concat, T::AccountId, Vec<SpaceInfo<T>>, ValueQuery>;
+	pub(super) type UserSpaceList<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, Vec<SpaceInfo<T>>, ValueQuery>;
 
 	#[pallet::pallet]
 	#[pallet::generate_store(pub(super) trait Store)]
@@ -181,7 +182,7 @@ pub mod pallet {
 	impl<T: Config> Hooks<BlockNumberOf<T>> for Pallet<T> {
 		//Used to calculate whether it is implied to submit spatiotemporal proof
 		//Cycle every 7.2 hours
-		//When there is an uncommitted space-time certificate, the corresponding miner will be punished 
+		//When there is an uncommitted space-time certificate, the corresponding miner will be punished
 		//and the corresponding data segment will be removed
 		fn on_initialize(now: BlockNumberOf<T>) -> Weight {
 			let number: u128 = now.saturated_into();
@@ -194,7 +195,7 @@ pub mod pallet {
 					for s in value.iter() {
 						if now >= s.deadline {
 							list.remove(k);
-							<UserHoldSpaceDetails<T>>::mutate(&key, |s_opt|{
+							<UserHoldSpaceDetails<T>>::mutate(&key, |s_opt| {
 								let v = s_opt.as_mut().unwrap();
 								v.purchased_space = v.purchased_space - 512 * 1024;
 								if v.remaining_space > 512 * 1024 {
@@ -202,15 +203,21 @@ pub mod pallet {
 								}
 							});
 							let _ = pallet_sminer::Pallet::<T>::sub_purchased_space(512);
-							Self::deposit_event(Event::<T>::LeaseExpired{acc: key.clone(), size: 512});
-							k-= 1;
+							Self::deposit_event(Event::<T>::LeaseExpired {
+								acc: key.clone(),
+								size: 512,
+							});
+							k -= 1;
 						} else if s.deadline < now && now >= s.deadline - block_oneday {
 							count += 1;
-						} 
-						k+= 1;
+						}
+						k += 1;
 					}
 					<UserSpaceList<T>>::insert(&key, list);
-					Self::deposit_event(Event::<T>::LeaseExpireIn24Hours{acc: key.clone(), size: 512 * (count as u128)});
+					Self::deposit_event(Event::<T>::LeaseExpireIn24Hours {
+						acc: key.clone(),
+						size: 512 * (count as u128),
+					});
 				}
 			}
 			0
@@ -219,11 +226,10 @@ pub mod pallet {
 
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
-
 		/// Upload info of stored file.
-		/// 
+		///
 		/// The dispatch origin of this call must be _Signed_.
-		/// 
+		///
 		/// Parameters:
 		/// - `filename`: name of file.
 		/// - `address`: address of file.
@@ -243,18 +249,21 @@ pub mod pallet {
 		pub fn upload(
 			origin: OriginFor<T>,
 			address: Vec<u8>,
-			filename:Vec<u8>,
+			filename: Vec<u8>,
 			fileid: Vec<u8>,
 			filehash: Vec<u8>,
 			backups: u8,
 			filesize: u128,
-			downloadfee:BalanceOf<T>
+			downloadfee: BalanceOf<T>,
 		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 			// let acc = T::FilbakPalletId::get().into_account();
 			// T::Currency::transfer(&sender, &acc, uploadfee, AllowDeath)?;
 
-			ensure!(<UserHoldSpaceDetails<T>>::contains_key(&sender), Error::<T>::NotPurchasedSpace);
+			ensure!(
+				<UserHoldSpaceDetails<T>>::contains_key(&sender),
+				Error::<T>::NotPurchasedSpace
+			);
 			ensure!(!<File<T>>::contains_key(&fileid), Error::<T>::FileExistent);
 			Self::update_user_space(sender.clone(), 1, filesize * (backups as u128))?;
 
@@ -266,10 +275,7 @@ pub mod pallet {
 				invoice.push(*i);
 			}
 
-			<Invoice<T>>::insert(
-				invoice,
-				0 
-			);
+			<Invoice<T>>::insert(invoice, 0);
 			<File<T>>::insert(
 				fileid.clone(),
 				FileInfo::<T> {
@@ -279,21 +285,21 @@ pub mod pallet {
 					backups,
 					filesize,
 					downloadfee: downloadfee.clone(),
-				}
+				},
 			);
-			UserFileSize::<T>::try_mutate(sender.clone(), |s| -> DispatchResult{
+			UserFileSize::<T>::try_mutate(sender.clone(), |s| -> DispatchResult {
 				*s = (*s).checked_add(filesize).ok_or(Error::<T>::Overflow)?;
 				Ok(())
 			})?;
 			Self::add_user_hold_file(sender.clone(), fileid.clone());
-			Self::deposit_event(Event::<T>::FileUpload{acc: sender.clone()});
+			Self::deposit_event(Event::<T>::FileUpload { acc: sender.clone() });
 			Ok(())
 		}
 
 		/// Update info of uploaded file.
-		/// 
+		///
 		/// The dispatch origin of this call must be _Signed_.
-		/// 
+		///
 		/// Parameters:
 		/// - `fileid`: id of file, each file will have different number, even for the same file.
 		/// - `is_public`: public or private.
@@ -314,14 +320,14 @@ pub mod pallet {
 		// }
 
 		/// Update info of uploaded file.
-		/// 
+		///
 		/// The dispatch origin of this call must be _Signed_.
-		/// 
+		///
 		/// Parameters:
 		/// - `fileid`: id of file, each file will have different number, even for the same file.
 		/// - `address`: address of file.
 		#[pallet::weight(2_000_000)]
-		pub fn buyfile(origin: OriginFor<T>, fileid: Vec<u8>, address: Vec<u8>) -> DispatchResult{
+		pub fn buyfile(origin: OriginFor<T>, fileid: Vec<u8>, address: Vec<u8>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
 			ensure!((<File<T>>::contains_key(fileid.clone())), Error::<T>::FileNonExistent);
@@ -335,34 +341,55 @@ pub mod pallet {
 			for i in &address {
 				invoice.push(*i);
 			}
-				
+
 			if <Invoice<T>>::contains_key(fileid.clone()) {
-				Self::deposit_event(Event::<T>::Purchased{acc: sender.clone(), fileid: fileid.clone()});
+				Self::deposit_event(Event::<T>::Purchased {
+					acc: sender.clone(),
+					fileid: fileid.clone(),
+				});
 			} else {
 				let zh = TryInto::<u128>::try_into(group_id.downloadfee).ok().unwrap();
 				//let umoney = zh * 8 / 10;
-				let umoney = zh.checked_mul(8).ok_or(Error::<T>::Overflow)?
-					.checked_div(10).ok_or(Error::<T>::Overflow)?;
+				let umoney = zh
+					.checked_mul(8)
+					.ok_or(Error::<T>::Overflow)?
+					.checked_div(10)
+					.ok_or(Error::<T>::Overflow)?;
 				let money: Option<BalanceOf<T>> = umoney.try_into().ok();
 				let acc = T::FilbakPalletId::get().into_account();
-				<T as pallet::Config>::Currency::transfer(&sender, &group_id.owner, money.unwrap(), AllowDeath)?;
-				<T as pallet::Config>::Currency::transfer(&sender, &acc, group_id.downloadfee - money.unwrap(), AllowDeath)?;
-				<Invoice<T>>::insert(
-					invoice,
-					0
-				);
-				Self::deposit_event(Event::<T>::BuyFile{acc: sender.clone(), money: group_id.downloadfee.clone(), fileid: fileid.clone()});
+				<T as pallet::Config>::Currency::transfer(
+					&sender,
+					&group_id.owner,
+					money.unwrap(),
+					AllowDeath,
+				)?;
+				<T as pallet::Config>::Currency::transfer(
+					&sender,
+					&acc,
+					group_id.downloadfee - money.unwrap(),
+					AllowDeath,
+				)?;
+				<Invoice<T>>::insert(invoice, 0);
+				Self::deposit_event(Event::<T>::BuyFile {
+					acc: sender.clone(),
+					money: group_id.downloadfee.clone(),
+					fileid: fileid.clone(),
+				});
 			}
-			
+
 			Ok(())
 		}
 
 		#[pallet::weight(2_000_000)]
-		pub fn insert_file_slice_location(origin: OriginFor<T>, fileid: Vec<u8>, slice: Vec<FileSlice>) -> DispatchResult {
+		pub fn insert_file_slice_location(
+			origin: OriginFor<T>,
+			fileid: Vec<u8>,
+			slice: Vec<FileSlice>,
+		) -> DispatchResult {
 			let _ = ensure_signed(origin)?;
 
 			<FileSliceLocation<T>>::insert(&fileid, slice);
-			Self::deposit_event(Event::<T>::InsertFileSlice{fileid: fileid});
+			Self::deposit_event(Event::<T>::InsertFileSlice { fileid });
 			Ok(())
 		}
 
@@ -380,7 +407,7 @@ pub mod pallet {
 			let space = 512 * count;
 			//Because there are three backups, it is charged at one-third of the price
 			let price = unit_price * (space) / 3;
-			//Increase the space purchased by users 
+			//Increase the space purchased by users
 			//and judge whether there is still space available for purchase
 			pallet_sminer::Pallet::<T>::add_purchased_space(space)?;
 
@@ -388,14 +415,19 @@ pub mod pallet {
 			<T as pallet::Config>::Currency::transfer(&sender, &acc, money.unwrap(), AllowDeath)?;
 			let now = <frame_system::Pallet<T>>::block_number();
 			let deadline: BlockNumberOf<T> = (864000 as u32).into();
-			let mut list: Vec<SpaceInfo<T>> = vec![SpaceInfo::<T>{size: 512, deadline: now + deadline}; count as usize];
+			let mut list: Vec<SpaceInfo<T>> =
+				vec![SpaceInfo::<T> { size: 512, deadline: now + deadline }; count as usize];
 
-			<UserSpaceList<T>>::mutate(&sender, |s|{
+			<UserSpaceList<T>>::mutate(&sender, |s| {
 				s.append(&mut list);
 			});
 			Self::user_buy_space_update(sender.clone(), space * 1024)?;
 
-			Self::deposit_event(Event::<T>::BuySpace{acc: sender.clone(), size: space, fee: money.unwrap()});
+			Self::deposit_event(Event::<T>::BuySpace {
+				acc: sender.clone(),
+				size: space,
+				fee: money.unwrap(),
+			});
 			Ok(())
 		}
 
@@ -415,63 +447,58 @@ pub mod pallet {
 			}
 			Ok(())
 		}
-		
 	}
 }
 
 impl<T: Config> Pallet<T> {
 	//operation: 1 upload files, 2 delete file
-	fn update_user_space(acc: AccountOf<T>, operation: u8, size: u128) -> DispatchResult{
+	fn update_user_space(acc: AccountOf<T>, operation: u8, size: u128) -> DispatchResult {
 		match operation {
-			1 => {
-				<UserHoldSpaceDetails<T>>::try_mutate(&acc, |s_opt| -> DispatchResult {
-					let s = s_opt.as_mut().unwrap();
-					if size > s.remaining_space {
-						Err(Error::<T>::InsufficientStorage)?;
-					}
-					if false == Self::check_lease_expired(acc.clone()) {
-						Err(Error::<T>::LeaseExpired)?;
-					}
-					s.remaining_space = s.remaining_space.checked_sub(size).ok_or(Error::<T>::Overflow)?;
-					s.used_space = s.used_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
-					Ok(())
-				})?
-			}
-			2 => {
-				<UserHoldSpaceDetails<T>>::try_mutate(&acc, |s_opt| -> DispatchResult {
-					let s = s_opt.as_mut().unwrap();
-					s.remaining_space = s.remaining_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
-					s.used_space = s.used_space.checked_sub(size).ok_or(Error::<T>::Overflow)?;
-					Ok(())
-				})?
-			}
-			_ => Err(Error::<T>::WrongOperation)?			
+			1 => <UserHoldSpaceDetails<T>>::try_mutate(&acc, |s_opt| -> DispatchResult {
+				let s = s_opt.as_mut().unwrap();
+				if size > s.remaining_space {
+					Err(Error::<T>::InsufficientStorage)?;
+				}
+				if false == Self::check_lease_expired(acc.clone()) {
+					Err(Error::<T>::LeaseExpired)?;
+				}
+				s.remaining_space =
+					s.remaining_space.checked_sub(size).ok_or(Error::<T>::Overflow)?;
+				s.used_space = s.used_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
+				Ok(())
+			})?,
+			2 => <UserHoldSpaceDetails<T>>::try_mutate(&acc, |s_opt| -> DispatchResult {
+				let s = s_opt.as_mut().unwrap();
+				s.remaining_space =
+					s.remaining_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
+				s.used_space = s.used_space.checked_sub(size).ok_or(Error::<T>::Overflow)?;
+				Ok(())
+			})?,
+			_ => Err(Error::<T>::WrongOperation)?,
 		}
 		Ok(())
 	}
 
-	fn user_buy_space_update(acc: AccountOf<T>, size: u128) -> DispatchResult{
-		
+	fn user_buy_space_update(acc: AccountOf<T>, size: u128) -> DispatchResult {
 		if <UserHoldSpaceDetails<T>>::contains_key(&acc) {
 			<UserHoldSpaceDetails<T>>::try_mutate(&acc, |s_opt| -> DispatchResult {
 				let s = s_opt.as_mut().unwrap();
-				s.purchased_space = s.purchased_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
-				s.remaining_space = s.remaining_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
+				s.purchased_space =
+					s.purchased_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
+				s.remaining_space =
+					s.remaining_space.checked_add(size).ok_or(Error::<T>::Overflow)?;
 				Ok(())
 			})?;
 		} else {
-			let value = StorageSpace {
-				purchased_space: size,
-				used_space: 0,
-				remaining_space: size,
-			};
+			let value =
+				StorageSpace { purchased_space: size, used_space: 0, remaining_space: size };
 			<UserHoldSpaceDetails<T>>::insert(&acc, value);
 		}
 		Ok(())
 	}
 
 	fn add_user_hold_file(acc: AccountOf<T>, fileid: Vec<u8>) {
-		<UserHoldFileList<T>>::mutate(&acc, |s|{
+		<UserHoldFileList<T>>::mutate(&acc, |s| {
 			s.push(fileid);
 		});
 	}
@@ -496,5 +523,3 @@ impl<T: Config> Pallet<T> {
 		}
 	}
 }
-
-

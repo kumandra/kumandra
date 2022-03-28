@@ -22,22 +22,27 @@ use pallet_grandpa::{
 /*** Add This Line ***/
 // use frame_system::EnsureRoot;
 
-use sp_api::impl_runtime_apis;
+use codec::Decode;
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
 use pallet_session::historical as pallet_session_historical;
+use sp_api::impl_runtime_apis;
 use sp_authority_discovery::AuthorityId as AuthorityDiscoveryId;
 use sp_core::{
 	crypto::KeyTypeId,
 	u32_trait::{_1, _2, _3, _4, _5},
-	OpaqueMetadata
+	OpaqueMetadata,
 };
-use codec::Decode;
 use sp_inherents::{CheckInherentsResult, InherentData};
 use sp_runtime::{
-	create_runtime_str, generic, impl_opaque_keys, curve::PiecewiseLinear,
-	traits::{AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, Verify, OpaqueKeys, },
-	transaction_validity::{TransactionSource, TransactionValidity, TransactionPriority},
-	ApplyExtrinsicResult, MultiSignature, Perbill, Permill, Percent,
+	create_runtime_str,
+	curve::PiecewiseLinear,
+	generic, impl_opaque_keys,
+	traits::{
+		AccountIdLookup, BlakeTwo256, Block as BlockT, IdentifyAccount, NumberFor, OpaqueKeys,
+		Verify,
+	},
+	transaction_validity::{TransactionPriority, TransactionSource, TransactionValidity},
+	ApplyExtrinsicResult, MultiSignature, Perbill, Percent, Permill,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -47,13 +52,12 @@ use sp_version::RuntimeVersion;
 // A few exports that help ease life for downstream crates.
 pub use frame_support::{
 	construct_runtime, parameter_types,
-	traits::{KeyOwnerProofSystem, Randomness, StorageInfo, U128CurrencyToVote, Nothing},
+	traits::{KeyOwnerProofSystem, Nothing, Randomness, StorageInfo, U128CurrencyToVote},
 	weights::{
 		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
 		DispatchClass, IdentityFee, Weight,
 	},
-	StorageValue,
-	PalletId,
+	PalletId, StorageValue,
 };
 
 use frame_system::{
@@ -179,7 +183,6 @@ pub const MILLISECS_PER_BLOCK: u64 = 3000;
 // NOTE: Currently it is not possible to change the slot duration after the chain has started.
 //       Attempting to do so will brick block production.
 pub const SLOT_DURATION: u64 = MILLISECS_PER_BLOCK;
-
 
 // 1 in 4 blocks (on average, not counting collisions) will be primary BABE blocks.
 pub const PRIMARY_PROBABILITY: (u64, u64) = (1, 4);
@@ -774,10 +777,10 @@ impl pallet_sudo::Config for Runtime {
 
 /*** Add This Block ***/
 parameter_types! {
-	pub const RewardPalletId: PalletId = PalletId(*b"rewardpt");
-  }
-  
-  impl pallet_sminer::Config for Runtime {
+  pub const RewardPalletId: PalletId = PalletId(*b"rewardpt");
+}
+
+impl pallet_sminer::Config for Runtime {
 	type Currency = Balances;
 	// The ubiquitous event type.
 	type Event = Event;
@@ -786,7 +789,7 @@ parameter_types! {
 	type SPalletsOrigin = OriginCaller;
 	type SProposal = Call;
 	type WeightInfo = pallet_sminer::weights::SubstrateWeight<Runtime>;
-  }
+}
 parameter_types! {
 	pub const SegbkPalletId: PalletId = PalletId(*b"rewardpt");
 }
@@ -1171,7 +1174,7 @@ impl_runtime_apis! {
 
 			/*** Add This Line ***/
 			// list_benchmark!(list, extra, pallet_scheduler, Scheduler);
-					
+
 			let storage_info = AllPalletsWithSystem::storage_info();
 
 			return (list, storage_info)
