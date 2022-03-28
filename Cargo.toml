@@ -2,7 +2,7 @@
 members = [
     'node',
     'runtime',
-    'kumandra-pallets/*',
+    'pallets/*',
 ]
 [profile.release]
 panic = 'unwind'

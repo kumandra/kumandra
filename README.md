@@ -122,9 +122,9 @@ cargo test -p pallet-file-bank --features runtime-benchmarks
 ## Module Documentation
 
 
-* [Files Bank](https://github.com/kumandra/kumandra-node/tree/main/kumandra-pallets/file-bank)
-* [Segment Book](https://github.com/kumandra/kumandra-node/tree/main/kumandra-pallets/segment-book)
-* [Sminer](https://github.com/kumandra/kumandra-node/tree/main/kumandra-pallets/sminer)
+* [Files Bank](https://github.com/kumandra/kumandra-node/tree/main/pallets/file-bank)
+* [Segment Book](https://github.com/kumandra/kumandra-node/tree/main/pallets/segment-book)
+* [Sminer](https://github.com/kumandra/kumandra-node/tree/main/pallets/sminer)
 
 ## Contribute
 

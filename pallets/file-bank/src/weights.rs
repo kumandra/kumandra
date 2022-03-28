@@ -53,7 +53,7 @@
 
 // --template=./.maintain/frame-weight-template.hbs
 
-// --output=./kumandra-pallets/file-bank/src/weights.rs
+// --output=./pallets/file-bank/src/weights.rs
 
 
 #![cfg_attr(rustfmt, rustfmt_skip)]

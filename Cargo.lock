@@ -1648,6 +1648,7 @@ dependencies = [
  "sp-core",
  "sp-io",
  "sp-runtime",
+ "sp-state-machine",
  "sp-std",
  "sp-version",
  "trybuild",
