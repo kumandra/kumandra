@@ -26,7 +26,7 @@ use sc_service::PartialComponents;
 
 impl SubstrateCli for Cli {
 	fn impl_name() -> String {
-		"Substrate Node".into()
+		"Kumandra".into()
 	}
 
 	fn impl_version() -> String {
@@ -42,11 +42,11 @@ impl SubstrateCli for Cli {
 	}
 
 	fn support_url() -> String {
-		"support.anonymous.an".into()
+		"https://github.com/kumandra/kumandra-node/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
-		2017
+		2022
 	}
 
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
