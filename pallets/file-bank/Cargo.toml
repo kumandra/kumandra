@@ -1,10 +1,9 @@
 [package]
 name = "pallet-file-bank"
-authors = ["Kumandra"]
 version = "0.1.0"
+authors = ["Kumandra"]
 edition = "2018"
 license = "Apache-2.0"
-repository = ""
 description = "FRAME pallet for file-bank management"
 readme = "README.md"
 

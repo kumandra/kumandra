@@ -1,4 +1,4 @@
-use kumandra_node_runtime::{
+use kumandra_runtime::{
 	AccountId, AuthorityDiscoveryConfig, BabeConfig, BalancesConfig, Balance, CouncilConfig,
 	GenesisConfig, GrandpaConfig, 
 	ImOnlineConfig, SessionConfig, Signature, StakingConfig, opaque::SessionKeys, SudoConfig, StakerStatus,
@@ -234,7 +234,7 @@ fn testnet_genesis(
 		},
 		babe: BabeConfig {
 			authorities: vec![],
-			epoch_config: Some(kumandra_node_runtime::BABE_GENESIS_EPOCH_CONFIG),
+			epoch_config: Some(kumandra_runtime::BABE_GENESIS_EPOCH_CONFIG),
 		},
 		im_online: ImOnlineConfig { keys: vec![] },
 		authority_discovery: AuthorityDiscoveryConfig { keys: vec![] },
