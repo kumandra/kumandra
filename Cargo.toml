@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    # "runtime",
+    "runtime",
+
     "primitives/core-primitives",
     "primitives/executor",
     "primitives/consensus",
