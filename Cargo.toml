@@ -1,7 +1,8 @@
 [workspace]
 members = [
     # "runtime",
-    "primitives/core-primitives"
+    "primitives/core-primitives",
+    "primitives",
 ]
 
 [profile.release]

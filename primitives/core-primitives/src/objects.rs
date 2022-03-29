@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Data structures related to objects (useful data) stored on Subspace Network.
+//! Data structures related to objects (useful data) stored on Kumandra Network.
 //!
 //! Mappings provided are of 3 kinds:
 //! * for objects within a block

@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Core primitives for Subspace Network.
+//! Core primitives for Kumandra Network.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![forbid(unsafe_code)]
@@ -36,7 +36,7 @@ use serde::{Deserialize, Serialize};
 /// Size of Sha2-256 hash output (in bytes)
 pub const SHA256_HASH_SIZE: usize = 32;
 
-/// Byte size of a piece in Subspace Network, 4KiB.
+/// Byte size of a piece in Kumandra Network, 4KiB.
 ///
 /// This can not changed after the network is launched.
 pub const PIECE_SIZE: usize = 4096;
@@ -62,10 +62,10 @@ pub const SALT_SIZE: usize = 8;
 /// Salt used for creating commitment tags for pieces.
 pub type Salt = [u8; SALT_SIZE];
 
-/// Block number in Subspace network.
+/// Block number in Kumandra network.
 pub type BlockNumber = u32;
 
-/// Slot number in Subspace network.
+/// Slot number in Kumandra network.
 pub type SlotNumber = u64;
 
 const PUBLIC_KEY_LENGTH: usize = 32;
@@ -192,7 +192,7 @@ impl LocalChallenge {
     }
 }
 
-/// A piece of archival history in Subspace Network.
+/// A piece of archival history in Kumandra Network.
 ///
 /// Internally piece contains a record and corresponding witness that together with [`RootBlock`] of
 /// the segment this piece belongs to can be used to verify that a piece belongs to the actual
