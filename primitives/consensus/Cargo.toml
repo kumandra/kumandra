@@ -1,5 +1,5 @@
 [package]
-name = "pp-consensus"
+name = "kp-consensus"
 version = "0.1.0"
 authors = ["Kumandra"]
 description = "Primitives for Kumandra Consensus. Based on a fork of `sp_consensus_babe"
