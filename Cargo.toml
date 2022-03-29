@@ -7,6 +7,7 @@ members = [
     "primitives",
 
     "pallets/pallet-executor",
+    "pallets/pallet-feeds",
 ]
 
 [profile.release]

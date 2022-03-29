@@ -1129,6 +1129,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-feeds"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "kumandra-core-primitives",
+ "log",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "parity-scale-codec"
 version = "3.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
