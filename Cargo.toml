@@ -6,12 +6,16 @@ members = [
     "primitives/consensus",
     "primitives",
 
+    # Kumandra Pallet
     "pallets/executor",
     "pallets/feeds",
     "pallets/object-store",
     "pallets/offences",
     "pallets/rewards",
-    "pallets/kumandra-space"
+    "pallets/kumandra-space",
+
+    # Modules
+    "modules/solving"
 ]
 
 [profile.release]
