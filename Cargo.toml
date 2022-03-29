@@ -6,9 +6,9 @@ members = [
     "primitives/consensus",
     "primitives",
 
-    "pallets/pallet-executor",
-    "pallets/pallet-feeds",
-    "pallets/pallet-object-store",
+    "pallets/executor",
+    "pallets/feeds",
+    "pallets/object-store",
 ]
 
 [profile.release]
