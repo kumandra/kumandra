@@ -1,27 +1,28 @@
 [package]
-name = "pallet-feeds"
+name = "pallet-object-store"
 version = "0.1.0"
 authors = ["Kumandra"]
 edition = "2021"
-description = "Pallet for interaction with Kumandra storage"
+description = "Kumandra pallet for simple objects storage"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
+hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 log = { version = "0.4.14", default-features = false }
 scale-info = { version = "2.0.1", default-features = false, features = ["derive"] }
 codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
 
 frame-support = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false }
 frame-system = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false }
-sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false }
 sp-std = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false }
 
 kumandra-core-primitives = { default-features = false, path = "../../primitives/core-primitives" }
 
 [dev-dependencies]
 serde = "1.0.136"
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-io = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 
@@ -29,11 +30,11 @@ sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c364008a6
 default = ["std"]
 std = [
   "codec/std",
+  "hex/std",
   "log/std",
   "scale-info/std",
   "frame-support/std",
   "frame-system/std",
-  "sp-core/std",
   "sp-std/std",
   "kumandra-core-primitives/std",
 ]

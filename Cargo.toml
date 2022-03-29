@@ -8,6 +8,7 @@ members = [
 
     "pallets/pallet-executor",
     "pallets/pallet-feeds",
+    "pallets/pallet-object-store",
 ]
 
 [profile.release]
