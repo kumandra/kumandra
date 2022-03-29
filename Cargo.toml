@@ -3,6 +3,7 @@ members = [
     # "runtime",
     "primitives/core-primitives",
     "primitives/executor",
+    "primitives/consensus",
     "primitives",
 ]
 
