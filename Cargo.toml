@@ -9,6 +9,7 @@ members = [
     "pallets/executor",
     "pallets/feeds",
     "pallets/object-store",
+    "pallets/offences-subspace",
 ]
 
 [profile.release]
