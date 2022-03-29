@@ -13,9 +13,10 @@ members = [
     "pallets/offences",
     "pallets/rewards",
     "pallets/kumandra-space",
+    "pallets/transaction-fees",
 
     # Modules
-    "modules/solving"
+    "modules/solving",
 ]
 
 [profile.release]
