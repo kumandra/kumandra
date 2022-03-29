@@ -9,6 +9,9 @@ members = [
     "pallets/executor",
     "pallets/feeds",
     "pallets/object-store",
+    "pallets/offences",
+    "pallets/rewards",
+    "pallets/kumandra-space"
 ]
 
 [profile.release]
