@@ -5,6 +5,8 @@ members = [
     "primitives/executor",
     "primitives/consensus",
     "primitives",
+
+    "pallets/pallet-executor",
 ]
 
 [profile.release]
