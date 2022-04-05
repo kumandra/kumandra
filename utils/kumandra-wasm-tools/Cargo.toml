@@ -1,0 +1,11 @@
+[package]
+name = "kumandra-wasm-tools"
+description = "Utilities for building WASM bundles"
+license = "Apache-2.0"
+version = "0.1.0"
+authors = ["Kumandra"]
+edition = "2021"
+include = [
+    "/src",
+    "/Cargo.toml",
+]

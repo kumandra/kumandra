@@ -1,5 +1,4 @@
 // Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2021 Subspace Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -142,7 +141,7 @@ where
             ),
             Err(e) => log::error!(
                 target: "runtime::kumandra",
-                "Error submitting Kumandra equivocation report: {:?}",
+                "Error submitting kumandra equivocation report: {:?}",
                 e,
             ),
         }

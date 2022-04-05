@@ -18,6 +18,9 @@ members = [
 
     # Modules
     "modules/solving",
+
+    # Utilities
+    "utils/kumandra-wasm-tools",
 ]
 
 [profile.release]

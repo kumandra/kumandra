@@ -1,5 +1,5 @@
 // Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 Kumandra, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
