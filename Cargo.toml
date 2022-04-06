@@ -6,6 +6,7 @@ members = [
     "primitives/executor",
     "primitives/consensus",
     "primitives/rpc",
+    "primitives/neak-node",
     "primitives",
 
     # Kumandra Pallet
