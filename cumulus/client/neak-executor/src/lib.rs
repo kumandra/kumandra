@@ -61,7 +61,7 @@ use std::{borrow::Cow, sync::Arc};
 use tracing::Instrument;
 
 /// The logging target.
-const LOG_TARGET: &str = "cirrus::executor";
+const LOG_TARGET: &str = "neak::executor";
 
 /// The implementation of the Neak `Executor`.
 pub struct Executor<Block: BlockT, Client, TransactionPool, Backend, E> {

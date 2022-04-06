@@ -382,7 +382,7 @@ impl<
 		>::apply_extrinsic(uxt);
 		// TODO: Critical!!! https://github.com/paritytech/substrate/pull/10922#issuecomment-1068997467
 		frame_support::log::info!(
-			target: "cirrus::runtime::executive",
+			target: "neak::runtime::executive",
 			"[apply_extrinsic] after: {:?}",
 			{
 				use codec::Decode;

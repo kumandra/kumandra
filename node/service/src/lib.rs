@@ -442,7 +442,7 @@ where
                 "overseer",
                 Some("overseer"),
                 Box::pin(async move {
-                    use cirrus_node_primitives::ExecutorSlotInfo;
+                    use neak_node_primitives::ExecutorSlotInfo;
                     use futures::{pin_mut, select, FutureExt, StreamExt};
 
                     let forward = selendra_overseer::forward_events(

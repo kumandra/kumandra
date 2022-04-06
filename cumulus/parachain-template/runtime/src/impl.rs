@@ -307,7 +307,7 @@ impl neak_pallet_executive::Config for Runtime {
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
 //
-// NOTE: Currently cirrus runtime does not naturally support the pallets with inherent extrinsics.
+// NOTE: Currently neak runtime does not naturally support the pallets with inherent extrinsics.
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,

@@ -63,7 +63,7 @@ $ ./target/release/kumandra-executor \
     --force-authoring \
     --base-path first-db \
     --port 40333 \
-    --log=cirrus=trace,txpool=trace,gossip=trace \
+    --log=neak=trace,txpool=trace,gossip=trace \
     --rpc-port 8845 \
     --ws-port 8846 \
     -- \
@@ -79,14 +79,14 @@ The log for running the secondary node will be prefixed as `[Secondarychain]`, y
 
 ```
 ...
-2022-04-01 09:34:56.010 TRACE tokio-runtime-worker cirrus::executor: [Secondarychain] Origin deduplicated extrinsics extrinsics=[]
-2022-04-01 09:34:56.011 TRACE tokio-runtime-worker cirrus::executor: [Secondarychain] Shuffled extrinsics shuffled_extrinsics=[]
+2022-04-01 09:34:56.010 TRACE tokio-runtime-worker neak::executor: [Secondarychain] Origin deduplicated extrinsics extrinsics=[]
+2022-04-01 09:34:56.011 TRACE tokio-runtime-worker neak::executor: [Secondarychain] Shuffled extrinsics shuffled_extrinsics=[]
 2022-04-01 09:34:56.013 TRACE tokio-runtime-worker txpool: [Secondarychain] Pruning transactions: []
 2022-04-01 09:34:56.013 DEBUG tokio-runtime-worker txpool: [Secondarychain] Starting pruning of block BlockId::Hash(0x7089dfba167eeb17b361126db248dbb0bb2a1ded9f485e20c517b3a8f5800604) (extrinsics: 0)
 2022-04-01 09:34:56.013 DEBUG tokio-runtime-worker txpool: [Secondarychain] Pruning at BlockId::Hash(0x7089dfba167eeb17b361126db248dbb0bb2a1ded9f485e20c517b3a8f5800604)
 2022-04-01 09:34:56.013 TRACE tokio-runtime-worker txpool: [Secondarychain] Pruning at BlockId::Hash(0x7089dfba167eeb17b361126db248dbb0bb2a1ded9f485e20c517b3a8f5800604). Resubmitting transactions.
 2022-04-01 09:34:56.013  INFO tokio-runtime-worker substrate: [Secondarychain] ✨ Imported #18 (0x7089…0604)
-2022-04-01 09:34:56.013 DEBUG tokio-runtime-worker cirrus::executor: [Secondarychain] Trace root calculated for #0x7089…0604 trace=[0xe99ff5a2f994e4832ffc093c10b4d1d294a401b0bbd9d52db7523716d9864140, 0x63cf7a793cc3c20f68cd3d683ba9effe7d87245ddf3b0c52ba9bac43eef7b653] trace_root=[23, 87, 107, 20, 223, 81, 204, 197, 221, 24, 70, 36, 204, 4, 23, 135, 162, 250, 135, 179, 131, 83, 169, 73, 9, 72, 122, 237, 90, 139, 239, 25]
+2022-04-01 09:34:56.013 DEBUG tokio-runtime-worker neak::executor: [Secondarychain] Trace root calculated for #0x7089…0604 trace=[0xe99ff5a2f994e4832ffc093c10b4d1d294a401b0bbd9d52db7523716d9864140, 0x63cf7a793cc3c20f68cd3d683ba9effe7d87245ddf3b0c52ba9bac43eef7b653] trace_root=[23, 87, 107, 20, 223, 81, 204, 197, 221, 24, 70, 36, 204, 4, 23, 135, 162, 250, 135, 179, 131, 83, 169, 73, 9, 72, 122, 237, 90, 139, 239, 25]
 ...
 
 ```
@@ -98,7 +98,7 @@ $ ./target/release/kumandra-executor \
     --alice \
     --base-path second-db \
     --port 40233 \
-    --log=cirrus=trace,txpool=trace,gossip=trace \
+    --log=neak=trace,txpool=trace,gossip=trace \
     --rpc-port 8745 \
     --ws-port 8746 \
     -- \

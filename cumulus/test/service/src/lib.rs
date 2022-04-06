@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Cumulus.  If not, see <http://www.gnu.org/licenses/>.
 
-//! Crate used for testing with Cirrus.
+//! Crate used for testing with Neak.
 
 #![warn(missing_docs)]
 

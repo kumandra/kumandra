@@ -26,7 +26,7 @@ sp-trie = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7d
 parking_lot = "0.12.0"
 tracing = "0.1.32"
 
-# Cirrus
+# Neak
 neak-client-executor = { path = "../neak-executor" }
 neak-client-executor-gossip = { path = "../executor-gossip" }
 neak-node-primitives = { path = "../../../primitives/neak-node" }
