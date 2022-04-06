@@ -48,7 +48,7 @@ sp-session = { version = "4.0.0-dev", default-features = false, git = "https://g
 sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-transaction-pool = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-version = { version = "5.0.0", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
-kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../primitives/core-primitives" }
+kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../primitives/core" }
 kumandra-runtime-primitives = { version = "0.1.0", default-features = false, path = "../primitives" }
 
 # Used for the node template's RPCs

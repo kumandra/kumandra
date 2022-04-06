@@ -13,4 +13,4 @@ include = [
 [dependencies]
 hex-buffer-serde = "0.3.0"
 serde = { version = "1.0.136", features = ["derive"] }
-kumandra-core-primitives = { version = "0.1.0", path = "../core-primitives" }
+kumandra-core-primitives = { version = "0.1.0", path = "../core" }

@@ -22,7 +22,7 @@ sp-inherents = { version = "4.0.0-dev", default-features = false, git = "https:/
 sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-timestamp = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false }
-kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core-primitives", default-features = false }
+kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core", default-features = false }
 
 [features]
 default = ["std"]
