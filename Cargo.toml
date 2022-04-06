@@ -2,9 +2,10 @@
 members = [
     "runtime",
 
-    "primitives/core-primitives",
+    "primitives/core",
     "primitives/executor",
     "primitives/consensus",
+    "primitives/rpc",
     "primitives",
 
     # Kumandra Pallet
@@ -13,14 +14,25 @@ members = [
     "pallets/object-store",
     "pallets/offences",
     "pallets/rewards",
-    "pallets/kumandra-space",
+    "pallets/kumandra",
     "pallets/transaction-fees",
 
     # Modules
     "modules/solving",
+    "modules/archiving",
+    "modules/consensus",
 
     # Utilities
     "utils/kumandra-wasm-tools",
+    "utils/fraud-proof",
+
+    # Node
+    "node",
+    "node/network",
+    "node/service",
+
+    # RPC
+    "rpc",
 ]
 
 [profile.release]
