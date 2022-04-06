@@ -1,0 +1,20 @@
+[package]
+name = "neak-client-executor-gossip"
+version = "0.1.0"
+authors = ["Liu-Cheng Xu <xuliuchengxlc@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+# Substrate dependencies
+sc-network = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-network-gossip = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-utils = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+
+futures = "0.3.21"
+parity-scale-codec = { version = "3.1.2", features = ["derive"] }
+parking_lot = "0.12.0"
+tracing = "0.1.32"
+
+kp-executor = { path = "../../../primitives/executor" }

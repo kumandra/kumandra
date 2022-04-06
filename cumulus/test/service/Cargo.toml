@@ -1,0 +1,53 @@
+[package]
+name = "neak-test-service"
+version = "0.1.0"
+authors = ["Kumandra"]
+edition = "2021"
+license = "GPL-3.0-or-later"
+include = [
+	"/src",
+	"/Cargo.toml",
+]
+
+[dependencies]
+rand = "0.8.5"
+async-trait = "0.1.42"
+tokio = { version = "1.17.0", features = ["macros"] }
+tracing = "0.1.32"
+
+# Substrate
+frame-system = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-consensus = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-executor = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-network = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-rpc = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-service = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-tracing = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-transaction-pool = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-arithmetic = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-blockchain = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-keyring = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-inherents = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", default-features = false, rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-timestamp = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-trie = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+substrate-test-client = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+
+# RPC related dependencies
+jsonrpc-core = "18.0.0"
+
+neak-client-executor = { path = "../../client/neak-executor" }
+neak-client-service = { path = "../../client/neak-service" }
+neak-test-runtime = { path = "../runtime" }
+cumulus-client-consensus-relay-chain = { path = "../../client/consensus/relay-chain" }
+
+kumandra-service = { path = "../../../node/service" }
+kumandra-test-client = { path = "../../../test/kumandra-test-client" }
+kumandra-test-runtime = { path = "../../../test/kumandra-test-runtime" }
+kumandra-test-service = { path = "../../../test/kumandra-test-service" }
+
+[dev-dependencies]
+futures = "0.3.21"
