@@ -34,6 +34,17 @@ members = [
 
     # RPC
     "rpc",
+
+    # Selendra
+    "selendra/node/collation-generation",
+    "selendra/node/core/chain-api",
+    "selendra/node/core/runtime-api",
+    "selendra/node/metered-channel",
+    "selendra/node/overseer",
+    "selendra/node/overseer/overseer-gen",
+    "selendra/node/overseer/overseer-gen/proc-macro",
+    "selendra/node/subsystem",
+    "selendra/node/subsystem-types",
 ]
 
 [profile.release]
