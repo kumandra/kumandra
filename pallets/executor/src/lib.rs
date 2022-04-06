@@ -212,7 +212,7 @@ mod pallet {
                 }
                 Call::submit_fraud_proof { fraud_proof } => {
                     // TODO: prevent the spamming of fraud proof transaction.
-                    if !sp_executor::fraud_proof_ext::fraud_proof::verify(fraud_proof) {
+                    if !kp_executor::fraud_proof_ext::fraud_proof::verify(fraud_proof) {
                         log::error!(target: "runtime::kumandra::executor", "Invalid fraud proof: {:?}", fraud_proof);
                         return InvalidTransaction::Custom(INVALID_FRAUD_PROOF).into();
                     }

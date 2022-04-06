@@ -49,7 +49,7 @@ pub trait RuntimeApiCollection:
     sp_api::ApiExt<Block>
     + sp_api::Metadata<Block>
     + sp_block_builder::BlockBuilder<Block>
-    + sp_executor::ExecutorApi<Block>
+    + kp_executor::ExecutorApi<Block>
     + sp_offchain::OffchainWorkerApi<Block>
     + sp_session::SessionKeys<Block>
     + kp_consensus::KumandraApi<Block>
@@ -66,7 +66,7 @@ where
     Api: sp_api::ApiExt<Block>
         + sp_api::Metadata<Block>
         + sp_block_builder::BlockBuilder<Block>
-        + sp_executor::ExecutorApi<Block>
+        + kp_executor::ExecutorApi<Block>
         + sp_offchain::OffchainWorkerApi<Block>
         + sp_session::SessionKeys<Block>
         + kp_consensus::KumandraApi<Block>

@@ -22,7 +22,7 @@ use scale_info::TypeInfo;
 use serde::{Deserialize, Serialize};
 use sp_consensus_slots::Slot;
 use sp_core::bytes;
-use sp_executor::{OpaqueBundle, OpaqueExecutionReceipt};
+use kp_executor::{OpaqueBundle, OpaqueExecutionReceipt};
 use sp_runtime::traits::Hash as HashT;
 use std::{borrow::Cow, pin::Pin};
 use kumandra_core_primitives::{Randomness, Tag};

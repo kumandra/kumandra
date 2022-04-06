@@ -40,7 +40,7 @@ sp-block-builder = { git = "https://github.com/paritytech/substrate", rev = "c36
 kp-consensus = { version = "0.1.0", default-features = false, path = "../primitives/consensus" }
 sp-consensus-slots = { version = "0.10.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-core = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
-sp-executor = { version = "0.1.0", default-features = false, path = "../sp-executor" }
+kp-executor = { version = "0.1.0", default-features = false, path = "../primitives/executor" }
 sp-inherents = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998", default-features = false, version = "4.0.0-dev"}
 sp-offchain = { version = "4.0.0-dev", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
@@ -94,7 +94,7 @@ std = [
 	"kp-consensus/std",
 	"sp-consensus-slots/std",
 	"sp-core/std",
-	"sp-executor/std",
+	"kp-executor/std",
 	"sp-inherents/std",
 	"sp-offchain/std",
 	"sp-runtime/std",
