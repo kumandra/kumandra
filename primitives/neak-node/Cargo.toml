@@ -20,6 +20,6 @@ serde = { version = "1.0.136", features = ["derive"] }
 sp-core = { version = "6.0.0", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-consensus-slots = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sp-runtime = { version = "6.0.0", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
-sp-executor = { path = "../sp-executor" }
+kp-executor = { path = "../executor" }
 kumandra-core-primitives = { version = "0.1.0", path = "../core" }
 kumandra-runtime-primitives = { version = "0.1.0", path = "../" }
