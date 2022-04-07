@@ -4932,6 +4932,7 @@ dependencies = [
  "kumandra-test-service",
  "neak-client-executor",
  "neak-client-service",
+ "neak-node-primitives",
  "neak-test-runtime",
  "pallet-transaction-payment",
  "rand 0.8.5",
