@@ -18,6 +18,7 @@ tracing = "0.1.32"
 # Substrate
 frame-system = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sc-basic-authorship = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sc-consensus = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sc-executor = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
@@ -40,6 +41,7 @@ substrate-test-client = { git = "https://github.com/paritytech/substrate", rev =
 jsonrpc-core = "18.0.0"
 
 neak-client-executor = { path = "../../client/neak-executor" }
+neak-node-primitives = { path = "../../../primitives/neak-node" }
 neak-client-service = { path = "../../client/neak-service" }
 neak-test-runtime = { path = "../runtime" }
 cumulus-client-consensus-relay-chain = { path = "../../client/consensus/relay-chain" }

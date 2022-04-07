@@ -5,7 +5,7 @@ use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
 use kumandra_test_runtime::{
-    BalancesConfig, GenesisConfig, SudoConfig, SystemConfig, VestingConfig, SSC, WASM_BINARY,
+    BalancesConfig, GenesisConfig, SudoConfig, SystemConfig, VestingConfig, KMD, WASM_BINARY,
 };
 
 /// The `ChainSpec` parameterized for Kumandra test runtime.
@@ -39,18 +39,18 @@ pub fn kumandra_local_testnet_config() -> TestChainSpec {
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob"), 1_000 * SSC),
-                    (get_account_id_from_seed("Charlie"), 1_000 * SSC),
-                    (get_account_id_from_seed("Dave"), 1_000 * SSC),
-                    (get_account_id_from_seed("Eve"), 1_000 * SSC),
-                    (get_account_id_from_seed("Ferdie"), 1_000 * SSC),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Charlie//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Dave//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Eve//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
+                    (get_account_id_from_seed("Charlie"), 1_000 * KMD),
+                    (get_account_id_from_seed("Dave"), 1_000 * KMD),
+                    (get_account_id_from_seed("Eve"), 1_000 * KMD),
+                    (get_account_id_from_seed("Ferdie"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Charlie//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Dave//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Eve//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * KMD),
                 ],
                 vec![],
             )

@@ -43,7 +43,7 @@ use sp_consensus::{CanAuthorWithNativeVersion, Error as ConsensusError, SelectCh
 use sp_consensus_slots::Slot;
 use sp_runtime::traits::{BlakeTwo256, Block as BlockT, Header as HeaderT};
 use std::sync::Arc;
-use kuamandra_runtime_primitives::{
+use kumandra_runtime_primitives::{
     opaque::{Block, BlockId},
     AccountId, Balance, Index as Nonce,
 };
@@ -183,7 +183,7 @@ where
 
     let client = Arc::new(client);
 
-    let proof_verifier = kuamandra_fraud_proof::ProofVerifier::new(
+    let proof_verifier = kumandra_fraud_proof::ProofVerifier::new(
         client.clone(),
         backend.clone(),
         executor,
@@ -210,7 +210,7 @@ where
         client.clone(),
     );
 
-    let (block_import, kuamandra_link) = kc_consensus::block_import(
+    let (block_import, kumandra_link) = kc_consensus::block_import(
         kc_consensus::Config::get(&*client)?,
         client.clone(),
         client.clone(),
@@ -218,7 +218,7 @@ where
         {
             let client = client.clone();
 
-            move |parent_hash, kuamandra_link: KumandraLink<Block>| {
+            move |parent_hash, kumandra_link: KumandraLink<Block>| {
                 let client = client.clone();
 
                 async move {
@@ -231,11 +231,11 @@ where
                         .expect("Parent header must always exist when block is created; qed")
                         .number;
 
-                    let kuamandra_inherents =
+                    let kumandra_inherents =
                         kp_consensus::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
                             *timestamp,
-                            kuamandra_link.config().slot_duration(),
-                            kuamandra_link.root_blocks_for_block(parent_block_number + 1),
+                            kumandra_link.config().slot_duration(),
+                            kumandra_link.root_blocks_for_block(parent_block_number + 1),
                         );
 
                     let uncles = sc_consensus_uncles::create_uncles_inherent_data_provider(
@@ -243,19 +243,19 @@ where
                         parent_hash,
                     )?;
 
-                    Ok((timestamp, kuamandra_inherents, uncles))
+                    Ok((timestamp, kumandra_inherents, uncles))
                 }
             }
         },
     )?;
 
-    kc_consensus::start_kuamandra_archiver(
-        &kuamandra_link,
+    kc_consensus::start_kumandra_archiver(
+        &kumandra_link,
         client.clone(),
         &task_manager.spawn_essential_handle(),
     );
 
-    let slot_duration = kuamandra_link.config().slot_duration();
+    let slot_duration = kumandra_link.config().slot_duration();
     let import_queue = kc_consensus::import_queue(
         block_import.clone(),
         None,
@@ -279,7 +279,7 @@ where
         keystore_container,
         select_chain,
         transaction_pool,
-        other: (block_import, kuamandra_link, telemetry),
+        other: (block_import, kumandra_link, telemetry),
     })
 }
 
@@ -379,7 +379,7 @@ where
         keystore_container,
         select_chain,
         transaction_pool,
-        other: (block_import, kuamandra_link, mut telemetry),
+        other: (block_import, kumandra_link, mut telemetry),
     } = new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
 
     let (network, system_rpc_tx, network_starter) =
@@ -405,9 +405,9 @@ where
     let backoff_authoring_blocks: Option<()> = None;
     let prometheus_registry = config.prometheus_registry().cloned();
 
-    let new_slot_notification_stream = kuamandra_link.new_slot_notification_stream();
-    let block_signing_notification_stream = kuamandra_link.block_signing_notification_stream();
-    let archived_segment_notification_stream = kuamandra_link.archived_segment_notification_stream();
+    let new_slot_notification_stream = kumandra_link.new_slot_notification_stream();
+    let block_signing_notification_stream = kumandra_link.block_signing_notification_stream();
+    let archived_segment_notification_stream = kumandra_link.archived_segment_notification_stream();
 
     // TODO: In the future we want `--executor` CLI flag instead
     let overseer_handle = if config.role.is_authority() {
@@ -435,7 +435,7 @@ where
                         |BlockInfo {
                              hash,
                              parent_hash: _,
-                             number,
+                             number,    
                          }| (hash, number),
                     )
                     .collect(),
@@ -460,7 +460,7 @@ where
                 "overseer",
                 Some("overseer"),
                 Box::pin(async move {
-                    use cirrus_node_primitives::ExecutorSlotInfo;
+                    use neak_node_primitives::ExecutorSlotInfo;
                     use futures::{pin_mut, select, FutureExt, StreamExt};
 
                     let forward = selendra_overseer::forward_events(
@@ -505,7 +505,7 @@ where
             telemetry.as_ref().map(|x| x.handle()),
         );
 
-        let kuamandra_config = kc_consensus::KumandraParams {
+        let kumandra_config = kc_consensus::KumandraParams {
             client: client.clone(),
             select_chain,
             env: proposer_factory,
@@ -514,11 +514,11 @@ where
             justification_sync_link: network.clone(),
             create_inherent_data_providers: {
                 let client = client.clone();
-                let kuamandra_link = kuamandra_link.clone();
+                let kumandra_link = kumandra_link.clone();
 
                 move |parent_hash, ()| {
                     let client = client.clone();
-                    let kuamandra_link = kuamandra_link.clone();
+                    let kumandra_link = kumandra_link.clone();
 
                     async move {
                         let timestamp = sp_timestamp::InherentDataProvider::from_system_time();
@@ -530,11 +530,11 @@ where
                             .expect("Parent header must always exist when block is created; qed")
                             .number;
 
-                        let kuamandra_inherents =
+                        let kumandra_inherents =
                             kp_consensus::inherents::InherentDataProvider::from_timestamp_and_slot_duration(
                                 *timestamp,
-                                kuamandra_link.config().slot_duration(),
-                                kuamandra_link.root_blocks_for_block(parent_block_number + 1),
+                                kumandra_link.config().slot_duration(),
+                                kumandra_link.root_blocks_for_block(parent_block_number + 1),
                             );
 
                         let uncles = sc_consensus_uncles::create_uncles_inherent_data_provider(
@@ -542,20 +542,20 @@ where
                             parent_hash,
                         )?;
 
-                        Ok((timestamp, kuamandra_inherents, uncles))
+                        Ok((timestamp, kumandra_inherents, uncles))
                     }
                 }
             },
             force_authoring: config.force_authoring,
             backoff_authoring_blocks,
-            kuamandra_link,
+            kumandra_link,
             can_author_with: CanAuthorWithNativeVersion::new(client.executor().clone()),
             block_proposal_slot_portion: SlotProportion::new(2f32 / 3f32),
             max_block_proposal_slot_portion: None,
             telemetry: None,
         };
 
-        let kumandra = kc_consensus::start_kumandra(kuamandra_config)?;
+        let kumandra = kc_consensus::start_kumandra(kumandra_config)?;
 
         // Kumandra authoring task is considered essential, i.e. if it fails we take down the
         // service with it.

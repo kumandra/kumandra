@@ -107,7 +107,7 @@ pub const SHANNON: Balance = 1;
 /// Kumandra Credits have 18 decimal places.
 pub const DECIMAL_PLACES: u8 = 18;
 /// One Kumandra Credit.
-pub const SSC: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
+pub const KMD: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
 
 // TODO: Many of below constants should probably be updatable but currently they are not
 
@@ -465,7 +465,7 @@ impl pallet_executor::Config for Runtime {
 }
 
 parameter_types! {
-    pub const BlockReward: Balance = SSC;
+    pub const BlockReward: Balance = KMD;
 }
 
 impl pallet_rewards::Config for Runtime {

@@ -27,7 +27,7 @@ use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
 // The URL for the telemetry server.
 const SELENDRA_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 
-/// List of accounts which should receive token grants, amounts are specified in SSC.
+/// List of accounts which should receive token grants, amounts are specified in KMD.
 const TOKEN_GRANTS: &[(&str, u128)] = &[
     (
         "5Dns1SVEeDqnbSm2fVUqHJPCvQFXHVsgiw28uMBwmuaoKFYi",
@@ -77,7 +77,7 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
 }
 #[cfg(not(feature = "json-chain-spec"))]
 pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::{SS58Prefix, SSC};
+    use kumandra_runtime::{SS58Prefix, KMD};
 
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
@@ -85,7 +85,7 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
         "tokenDecimals".into(),
         kumandra_runtime::DECIMAL_PLACES.into(),
     );
-    properties.insert("tokenSymbol".into(), "tSSC".into());
+    properties.insert("tokenSymbol".into(), "tKMD".into());
 
     Ok(KumandraChainSpec::from_genesis(
         // Name
@@ -101,16 +101,16 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
             // Pre-funded accounts
             // TODO: Remove these later, this is just for testing
             let mut balances = vec![
-                (sudo_account.clone(), 1_000 * SSC),
-                (get_account_id_from_seed("Alice"), 1_000 * SSC),
-                (get_account_id_from_seed("Bob"), 1_000 * SSC),
+                (sudo_account.clone(), 1_000 * KMD),
+                (get_account_id_from_seed("Alice"), 1_000 * KMD),
+                (get_account_id_from_seed("Bob"), 1_000 * KMD),
             ];
             let vesting_schedules = TOKEN_GRANTS
                 .iter()
                 .flat_map(|&(account_address, amount)| {
                     let account_id = AccountId::from_ss58check(account_address)
                         .expect("Wrong vesting account address");
-                    let amount: Balance = amount * SSC;
+                    let amount: Balance = amount * KMD;
 
                     // TODO: Adjust start block to real value before mainnet launch
                     let start_block = 100_000_000;
@@ -167,7 +167,7 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
 }
 
 pub fn kumandra_development_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::SSC;
+    use kumandra_runtime::KMD;
 
     let wasm_binary = kumandra_runtime::WASM_BINARY
         .ok_or_else(|| "Development wasm not available".to_string())?;
@@ -185,10 +185,10 @@ pub fn kumandra_development_config() -> Result<KumandraChainSpec, String> {
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob"), 1_000 * SSC),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
                 ],
                 vec![],
             )
@@ -208,7 +208,7 @@ pub fn kumandra_development_config() -> Result<KumandraChainSpec, String> {
 }
 
 pub fn kumandra_local_testnet_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::SSC;
+    use kumandra_runtime::KMD;
 
     let wasm_binary = kumandra_runtime::WASM_BINARY
         .ok_or_else(|| "Development wasm not available".to_string())?;
@@ -226,18 +226,18 @@ pub fn kumandra_local_testnet_config() -> Result<KumandraChainSpec, String> {
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob"), 1_000 * SSC),
-                    (get_account_id_from_seed("Charlie"), 1_000 * SSC),
-                    (get_account_id_from_seed("Dave"), 1_000 * SSC),
-                    (get_account_id_from_seed("Eve"), 1_000 * SSC),
-                    (get_account_id_from_seed("Ferdie"), 1_000 * SSC),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Charlie//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Dave//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Eve//stash"), 1_000 * SSC),
-                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
+                    (get_account_id_from_seed("Charlie"), 1_000 * KMD),
+                    (get_account_id_from_seed("Dave"), 1_000 * KMD),
+                    (get_account_id_from_seed("Eve"), 1_000 * KMD),
+                    (get_account_id_from_seed("Ferdie"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Charlie//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Dave//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Eve//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * KMD),
                 ],
                 vec![],
             )

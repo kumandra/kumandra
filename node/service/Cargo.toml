@@ -1,8 +1,8 @@
 [package]
 name = "kumandra-service"
 version = "0.1.0"
-authors = ["Kumandra"]
-description = "Kumandra service."
+authors = ["Subspace Labs <https://subspace.network>"]
+description = "Subspace service."
 edition = "2021"
 license = "GPL-3.0-or-later"
 include = [
@@ -24,6 +24,7 @@ selendra-overseer = { path = "../../selendra/node/overseer" }
 selendra-node-collation-generation = { path = "../../selendra/node/collation-generation" }
 selendra-node-core-chain-api = { path = "../../selendra/node/core/chain-api" }
 selendra-node-core-runtime-api = { path = "../../selendra/node/core/runtime-api" }
+selendra-node-subsystem-util = { path = "../../selendra/node/subsystem-util" }
 sc-basic-authorship = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sc-client-api = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
 sc-consensus = { version = "0.10.0-dev", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
