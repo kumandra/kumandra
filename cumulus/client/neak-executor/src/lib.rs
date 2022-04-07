@@ -41,8 +41,8 @@ use sp_runtime::{
 };
 use sp_trie::StorageProof;
 
-use polkadot_node_subsystem::messages::CollationGenerationMessage;
-use polkadot_overseer::Handle as OverseerHandle;
+use selendra_node_subsystem::messages::CollationGenerationMessage;
+use selendra_overseer::Handle as OverseerHandle;
 
 use neak_client_executor_gossip::{Action, GossipMessageHandler};
 use neak_node_primitives::{

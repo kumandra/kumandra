@@ -1,0 +1,20 @@
+[package]
+name = "selendra-node-core-runtime-api"
+version = "0.9.13"
+authors = ["Parity Technologies <admin@parity.io>"]
+edition = "2021"
+
+[dependencies]
+futures = "0.3.21"
+tracing = "0.1.32"
+memory-lru = "0.1.0"
+parity-util-mem = { version = "0.11.0", default-features = false }
+
+sp-api = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+
+selendra-subsystem = { package = "selendra-node-subsystem", path = "../../subsystem" }
+selendra-node-subsystem-util = { path = "../../subsystem-util" }
+
+kp-executor = { path = "../../../../primitives/executor" }
+kumandra-runtime-primitives = { path = "../../../../primitives" }

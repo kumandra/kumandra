@@ -48,7 +48,7 @@ use kp_consensus::{
     EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SolutionRanges,
 };
 use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
-use sp_executor::{FraudProof, OpaqueBundle};
+use kp_executor::{FraudProof, OpaqueBundle};
 use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, DispatchInfoOf, PostDispatchInfoOf, Zero};
 use sp_runtime::transaction_validity::{
     InvalidTransaction, TransactionSource, TransactionValidity, TransactionValidityError,
@@ -883,11 +883,11 @@ impl_runtime_apis! {
         }
     }
 
-    impl sp_executor::ExecutorApi<Block> for Runtime {
+    impl kp_executor::ExecutorApi<Block> for Runtime {
         fn submit_execution_receipt_unsigned(
-            opaque_execution_receipt: sp_executor::OpaqueExecutionReceipt,
+            opaque_execution_receipt: kp_executor::OpaqueExecutionReceipt,
         ) -> Option<()> {
-            <sp_executor::ExecutionReceipt<<Block as BlockT>::Hash>>::decode(
+            <kp_executor::ExecutionReceipt<<Block as BlockT>::Hash>>::decode(
                 &mut opaque_execution_receipt.encode().as_slice(),
             )
             .ok()
@@ -905,13 +905,13 @@ impl_runtime_apis! {
         }
 
         fn submit_bundle_equivocation_proof_unsigned(
-            bundle_equivocation_proof: sp_executor::BundleEquivocationProof,
+            bundle_equivocation_proof: kp_executor::BundleEquivocationProof,
         ) -> Option<()> {
             Executor::submit_bundle_equivocation_proof_unsigned(bundle_equivocation_proof).ok()
         }
 
         fn submit_invalid_transaction_proof_unsigned(
-            invalid_transaction_proof: sp_executor::InvalidTransactionProof,
+            invalid_transaction_proof: kp_executor::InvalidTransactionProof,
         ) -> Option<()> {
             Executor::submit_invalid_transaction_proof_unsigned(invalid_transaction_proof).ok()
         }

@@ -19,7 +19,7 @@
 #![warn(missing_docs, unused_crate_dependencies)]
 
 use futures::future::Future;
-use polkadot_overseer::Handle;
+use selendra_overseer::Handle;
 use sc_client_api::execution_extensions::ExecutionStrategies;
 use sc_executor::NativeElseWasmExecutor;
 use sc_network::{
@@ -202,7 +202,7 @@ pub fn run_validator_node(
     }
 }
 
-/// A Subspace test node instance used for testing.
+/// A Kumandra test node instance used for testing.
 pub struct KumandraTestNode {
     /// `TaskManager`'s instance.
     pub task_manager: TaskManager,

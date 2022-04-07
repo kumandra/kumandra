@@ -1,0 +1,19 @@
+[package]
+name = "selendra-node-collation-generation"
+version = "0.9.13"
+authors = ["Parity Technologies <admin@parity.io>"]
+edition = "2021"
+
+[dependencies]
+futures = "0.3.21"
+tracing = "0.1.32"
+selendra-node-subsystem = { path = "../subsystem" }
+selendra-node-subsystem-util = { path = "../subsystem-util" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+sp-maybe-compressed-blob  = { git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+thiserror = "1.0.30"
+parity-scale-codec = { version = "3.1.2", default-features = false, features = ["bit-vec", "derive"] }
+
+neak-node-primitives = { path = "../../../primitives/neak-node" }
+kp-executor  = { path = "../../../primitives/executor" }
+kumandra-runtime-primitives = { path = "../../../primitives" }

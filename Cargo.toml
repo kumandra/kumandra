@@ -31,9 +31,8 @@ members = [
     "node",
     "node/network",
     "node/service",
+    "node/rpc",
 
-    # RPC
-    "rpc",
 
     # Selendra
     "selendra/node/collation-generation",

@@ -32,8 +32,8 @@ tracing = "0.1.23"
 thiserror = "1.0.29"
 tokio = "1.17.0"
 
-polkadot-overseer = { path = "../../../polkadot/node/overseer" }
-polkadot-node-subsystem = { path = "../../../polkadot/node/subsystem" }
+selendra-overseer = { path = "../../../selendra/node/overseer" }
+selendra-node-subsystem = { path = "../../../selendra/node/subsystem" }
 
 neak-block-builder = { path = "../block-builder" }
 neak-client-executor-gossip = { path = "../executor-gossip" }

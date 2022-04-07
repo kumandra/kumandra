@@ -150,7 +150,7 @@ where
 #[sc_tracing::logging::prefix_logs_with("Secondarychain")]
 async fn start_node_impl<RuntimeApi, Executor, RB, BIQ>(
 	mut parachain_config: Configuration,
-	polkadot_config: Configuration,
+	selendra_config: Configuration,
 	_rpc_ext_builder: RB,
 	build_import_queue: BIQ,
 ) -> sc_service::error::Result<(
@@ -214,7 +214,7 @@ where
 		let _enter = span.enter();
 
 		kumandra_service::new_full::<kumandra_runtime::RuntimeApi, kumandra_node::ExecutorDispatch>(
-			polkadot_config,
+			selendra_config,
 			false,
 		)
 		.await
@@ -313,14 +313,14 @@ pub fn parachain_build_import_queue(
 /// Start a parachain node.
 pub async fn start_parachain_node(
 	parachain_config: Configuration,
-	polkadot_config: Configuration,
+	selendra_config: Configuration,
 ) -> sc_service::error::Result<(
 	TaskManager,
 	Arc<TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<TemplateRuntimeExecutor>>>,
 )> {
 	start_node_impl::<RuntimeApi, TemplateRuntimeExecutor, _, _>(
 		parachain_config,
-		polkadot_config,
+		selendra_config,
 		|_| Ok(Default::default()),
 		parachain_build_import_queue,
 	)
