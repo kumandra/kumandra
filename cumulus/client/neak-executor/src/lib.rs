@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Cumulus.  If not, see <http://www.gnu.org/licenses/>.
 
-//! Neak Executor implementation for Kumandra.
+//! Neawk Executor implementation for Kumandra.
 #![allow(clippy::all)]
 
 mod aux_schema;
@@ -35,11 +35,14 @@ use sp_core::{
 	traits::{CodeExecutor, SpawnNamed},
 	H256,
 };
+use sp_inherents::CreateInherentDataProviders;
 use sp_runtime::{
 	generic::BlockId,
 	traits::{Block as BlockT, HashFor, Header as HeaderT, Zero},
 };
 use sp_trie::StorageProof;
+
+use cumulus_client_consensus_common::ParachainConsensus;
 
 use selendra_node_subsystem::messages::CollationGenerationMessage;
 use selendra_overseer::Handle as OverseerHandle;
@@ -48,25 +51,25 @@ use neak_client_executor_gossip::{Action, GossipMessageHandler};
 use neak_node_primitives::{
 	BundleResult, CollationGenerationConfig, ExecutorSlotInfo, ProcessorResult,
 };
-use neak_primitives::{AccountId, SecondaryApi};
+use neak_primitives::{AccountId, Hash, SecondaryApi};
 use kp_executor::{
 	Bundle, BundleEquivocationProof, ExecutionPhase, ExecutionReceipt, FraudProof,
 	InvalidTransactionProof, OpaqueBundle,
 };
 use kumandra_core_primitives::Randomness;
-use kumandra_runtime_primitives::{opaque::Block as PBlock, Hash as PHash};
+use kumandra_runtime_primitives::Hash as PHash;
 
 use futures::FutureExt;
-use std::{borrow::Cow, sync::Arc};
+use std::sync::Arc;
 use tracing::Instrument;
 
 /// The logging target.
 const LOG_TARGET: &str = "neak::executor";
 
-/// The implementation of the Neak `Executor`.
-pub struct Executor<Block: BlockT, Client, TransactionPool, Backend, E> {
+/// The implementation of the neak `Executor`.
+pub struct Executor<Block: BlockT, Client, TransactionPool, Backend, CIDP, E> {
 	// TODO: no longer used in executor, revisit this with ParachainBlockImport together.
-	primary_chain_client: Arc<dyn HeaderBackend<PBlock>>,
+	parachain_consensus: Box<dyn ParachainConsensus<Block>>,
 	client: Arc<Client>,
 	spawner: Box<dyn SpawnNamed + Send + Sync>,
 	overseer_handle: OverseerHandle,
@@ -74,16 +77,17 @@ pub struct Executor<Block: BlockT, Client, TransactionPool, Backend, E> {
 	bundle_sender: Arc<TracingUnboundedSender<Bundle<Block::Extrinsic>>>,
 	execution_receipt_sender: Arc<TracingUnboundedSender<ExecutionReceipt<Block::Hash>>>,
 	backend: Arc<Backend>,
+	create_inherent_data_providers: Arc<CIDP>,
 	code_executor: Arc<E>,
 	is_authority: bool,
 }
 
-impl<Block: BlockT, Client, TransactionPool, Backend, E> Clone
-	for Executor<Block, Client, TransactionPool, Backend, E>
+impl<Block: BlockT, Client, TransactionPool, Backend, CIDP, E> Clone
+	for Executor<Block, Client, TransactionPool, Backend, CIDP, E>
 {
 	fn clone(&self) -> Self {
 		Self {
-			primary_chain_client: self.primary_chain_client.clone(),
+			parachain_consensus: self.parachain_consensus.clone(),
 			client: self.client.clone(),
 			spawner: self.spawner.clone(),
 			overseer_handle: self.overseer_handle.clone(),
@@ -91,6 +95,7 @@ impl<Block: BlockT, Client, TransactionPool, Backend, E> Clone
 			bundle_sender: self.bundle_sender.clone(),
 			execution_receipt_sender: self.execution_receipt_sender.clone(),
 			backend: self.backend.clone(),
+			create_inherent_data_providers: self.create_inherent_data_providers.clone(),
 			code_executor: self.code_executor.clone(),
 			is_authority: self.is_authority,
 		}
@@ -102,8 +107,8 @@ type TransactionFor<Backend, Block> =
 		HashFor<Block>,
 	>>::Transaction;
 
-impl<Block, Client, TransactionPool, Backend, E>
-	Executor<Block, Client, TransactionPool, Backend, E>
+impl<Block, Client, TransactionPool, Backend, CIDP, E>
+	Executor<Block, Client, TransactionPool, Backend, CIDP, E>
 where
 	Block: BlockT,
 	Client: HeaderBackend<Block> + BlockBackend<Block> + AuxStore + ProvideRuntimeApi<Block>,
@@ -121,11 +126,12 @@ where
 	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	TransactionFor<Backend, Block>: sp_trie::HashDBT<HashFor<Block>, sp_trie::DBValue>,
 	TransactionPool: sc_transaction_pool_api::TransactionPool<Block = Block> + 'static,
+	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
 	E: CodeExecutor,
 {
 	/// Create a new instance.
 	fn new(
-		primary_chain_client: Arc<dyn HeaderBackend<PBlock>>,
+		parachain_consensus: Box<dyn ParachainConsensus<Block>>,
 		client: Arc<Client>,
 		spawner: Box<dyn SpawnNamed + Send + Sync>,
 		overseer_handle: OverseerHandle,
@@ -133,11 +139,12 @@ where
 		bundle_sender: Arc<TracingUnboundedSender<Bundle<Block::Extrinsic>>>,
 		execution_receipt_sender: Arc<TracingUnboundedSender<ExecutionReceipt<Block::Hash>>>,
 		backend: Arc<Backend>,
+		create_inherent_data_providers: Arc<CIDP>,
 		code_executor: Arc<E>,
 		is_authority: bool,
 	) -> Self {
 		Self {
-			primary_chain_client,
+			parachain_consensus,
 			client,
 			spawner,
 			overseer_handle,
@@ -145,6 +152,7 @@ where
 			bundle_sender,
 			execution_receipt_sender,
 			backend,
+			create_inherent_data_providers,
 			code_executor,
 			is_authority,
 		}
@@ -320,7 +328,7 @@ where
 
 		let execution_phase = ExecutionPhase::ApplyExtrinsic { call_data: encoded_extrinsic };
 
-		let block_builder = BlockBuilder::new(
+		let block_builder = BlockBuilder::with_extrinsics(
 			&*self.client,
 			parent_header.hash(),
 			*parent_header.number(),
@@ -391,18 +399,13 @@ where
 		self.produce_bundle_impl(primary_hash, slot_info).await
 	}
 
-	/// Processes the bundles extracted from the primary block.
-	pub async fn process_bundles(
+	async fn process_bundles(
 		self,
 		primary_hash: PHash,
 		bundles: Vec<OpaqueBundle>,
 		shuffling_seed: Randomness,
-		maybe_new_runtime: Option<Cow<'static, [u8]>>,
 	) -> Option<ProcessorResult> {
-		match self
-			.process_bundles_impl(primary_hash, bundles, shuffling_seed, maybe_new_runtime)
-			.await
-		{
+		match self.process_bundles_impl(primary_hash, bundles, shuffling_seed).await {
 			Ok(res) => res,
 			Err(err) => {
 				tracing::error!(
@@ -417,7 +420,7 @@ where
 	}
 }
 
-/// Error type for Neak gossip handling.
+/// Error type for neak gossip handling.
 #[derive(Debug, thiserror::Error)]
 pub enum GossipMessageError {
 	#[error("Bundle equivocation error")]
@@ -434,8 +437,8 @@ pub enum GossipMessageError {
 	SendError,
 }
 
-impl<Block, Client, TransactionPool, Backend, E> GossipMessageHandler<Block>
-	for Executor<Block, Client, TransactionPool, Backend, E>
+impl<Block, Client, TransactionPool, Backend, CIDP, E> GossipMessageHandler<Block>
+	for Executor<Block, Client, TransactionPool, Backend, CIDP, E>
 where
 	Block: BlockT,
 	Client: HeaderBackend<Block>
@@ -459,6 +462,7 @@ where
 	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	TransactionFor<Backend, Block>: sp_trie::HashDBT<HashFor<Block>, sp_trie::DBValue>,
 	TransactionPool: sc_transaction_pool_api::TransactionPool<Block = Block> + 'static,
+	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
 	E: CodeExecutor,
 {
 	type Error = GossipMessageError;
@@ -517,7 +521,7 @@ where
 
 		let block_hash = execution_receipt.secondary_hash;
 		let block_number = self
-			.primary_chain_client
+			.parachain_consensus
 			.block_number_from_id(&BlockId::Hash(execution_receipt.primary_hash))?
 			.ok_or(sp_blockchain::Error::Backend(format!(
 				"Primary block number not found for {:?}",
@@ -627,7 +631,7 @@ where
 				let post_state_root = as_h256(local_root)?;
 				let execution_phase = ExecutionPhase::FinalizeBlock;
 
-				let block_builder = BlockBuilder::new(
+				let block_builder = BlockBuilder::with_extrinsics(
 					&*self.client,
 					parent_header.hash(),
 					*parent_header.number(),
@@ -687,34 +691,38 @@ where
 }
 
 /// Parameters for [`start_executor`].
-pub struct StartExecutorParams<Block: BlockT, Spawner, Client, TransactionPool, Backend, E> {
+pub struct StartExecutorParams<Block: BlockT, Spawner, Client, TransactionPool, Backend, CIDP, E> {
 	pub client: Arc<Client>,
+	pub announce_block: Arc<dyn Fn(Block::Hash, Option<Vec<u8>>) + Send + Sync>,
 	pub overseer_handle: OverseerHandle,
 	pub spawner: Box<Spawner>,
-	pub primary_chain_client: Arc<dyn HeaderBackend<PBlock>>,
+	pub parachain_consensus: Box<dyn ParachainConsensus<Block>>,
 	pub transaction_pool: Arc<TransactionPool>,
 	pub bundle_sender: TracingUnboundedSender<Bundle<Block::Extrinsic>>,
 	pub execution_receipt_sender: TracingUnboundedSender<ExecutionReceipt<Block::Hash>>,
 	pub backend: Arc<Backend>,
+	pub create_inherent_data_providers: Arc<CIDP>,
 	pub code_executor: Arc<E>,
 	pub is_authority: bool,
 }
 
 /// Start the executor.
-pub async fn start_executor<Block, Spawner, Client, TransactionPool, Backend, E>(
+pub async fn start_executor<Block, Spawner, Client, TransactionPool, Backend, CIDP, E>(
 	StartExecutorParams {
 		client,
+		announce_block: _,
 		mut overseer_handle,
 		spawner,
-		primary_chain_client,
+		parachain_consensus,
 		transaction_pool,
 		bundle_sender,
 		execution_receipt_sender,
 		backend,
+		create_inherent_data_providers,
 		code_executor,
 		is_authority,
-	}: StartExecutorParams<Block, Spawner, Client, TransactionPool, Backend, E>,
-) -> Executor<Block, Client, TransactionPool, Backend, E>
+	}: StartExecutorParams<Block, Spawner, Client, TransactionPool, Backend, CIDP, E>,
+) -> Executor<Block, Client, TransactionPool, Backend, CIDP, E>
 where
 	Block: BlockT,
 	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
@@ -740,10 +748,11 @@ where
 	>,
 	TransactionPool:
 		sc_transaction_pool_api::TransactionPool<Block = Block> + Send + Sync + 'static,
+	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
 	E: CodeExecutor,
 {
 	let executor = Executor::new(
-		primary_chain_client,
+		parachain_consensus,
 		client,
 		spawner,
 		overseer_handle.clone(),
@@ -751,6 +760,7 @@ where
 		Arc::new(bundle_sender),
 		Arc::new(execution_receipt_sender),
 		backend,
+		create_inherent_data_providers,
 		code_executor,
 		is_authority,
 	);
@@ -772,10 +782,10 @@ where
 		processor: {
 			let executor = executor.clone();
 
-			Box::new(move |primary_hash, bundles, shuffling_seed, maybe_new_runtime| {
+			Box::new(move |primary_hash, bundles, shuffling_seed| {
 				let executor = executor.clone();
 				executor
-					.process_bundles(primary_hash, bundles, shuffling_seed, maybe_new_runtime)
+					.process_bundles(primary_hash, bundles, shuffling_seed)
 					.instrument(span.clone())
 					.boxed()
 			})

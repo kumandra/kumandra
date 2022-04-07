@@ -1242,9 +1242,19 @@ name = "cumulus-client-consensus-common"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "dyn-clone",
+ "futures 0.3.21",
+ "kumandra-runtime-primitives",
+ "neak-node-primitives",
+ "parity-scale-codec",
+ "sc-client-api",
  "sc-consensus",
+ "sp-api",
+ "sp-blockchain",
  "sp-consensus",
  "sp-runtime",
+ "sp-trie",
+ "tracing",
 ]
 
 [[package]]
@@ -1253,12 +1263,22 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "cumulus-client-consensus-common",
+ "futures 0.3.21",
+ "kumandra-runtime-primitives",
+ "kumandra-service",
+ "neak-node-primitives",
+ "parking_lot 0.12.0",
+ "sc-client-api",
  "sc-consensus",
+ "sp-api",
+ "sp-block-builder",
  "sp-blockchain",
  "sp-consensus",
  "sp-core",
+ "sp-inherents",
  "sp-runtime",
  "substrate-prometheus-endpoint",
+ "tracing",
 ]
 
 [[package]]
@@ -4720,6 +4740,7 @@ name = "neak-client-executor"
 version = "0.1.0"
 dependencies = [
  "crossbeam",
+ "cumulus-client-consensus-common",
  "futures 0.3.21",
  "futures-timer",
  "kp-executor",
@@ -4751,9 +4772,9 @@ dependencies = [
  "sp-consensus",
  "sp-consensus-slots",
  "sp-core",
+ "sp-inherents",
  "sp-keyring",
  "sp-runtime",
- "sp-state-machine",
  "sp-trie",
  "substrate-test-runtime",
  "substrate-test-runtime-client",
@@ -4819,6 +4840,7 @@ dependencies = [
  "parity-scale-codec",
  "scale-info",
  "serde",
+ "sp-application-crypto",
  "sp-consensus-slots",
  "sp-core",
  "sp-runtime",

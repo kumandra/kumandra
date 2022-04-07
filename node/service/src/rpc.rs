@@ -66,7 +66,7 @@ where
     C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Index>
         + pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>
         + BlockBuilder<Block>
-        + sp_consensus_kumandra::KumandraApi<Block>,
+        + kp_consensus::KumandraApi<Block>,
     P: TransactionPool + 'static,
 {
     use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApi};
@@ -93,8 +93,8 @@ where
         client.clone(),
     )));
 
-    io.extend_with(sc_consensus_kumandra_rpc::KumandraRpcApi::to_delegate(
-        sc_consensus_kumandra_rpc::KumandraRpcHandler::new(
+    io.extend_with(kc_consensus_rpc::KumandraRpcApi::to_delegate(
+        kc_consensus_rpc::KumandraRpcHandler::new(
             client,
             subscription_executor,
             new_slot_notification_stream,

@@ -1,4 +1,4 @@
-// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// Copyright (C) 2018-2021 Parity Technologies (UK) Ltd.
 // Copyright (C) 2021 Subspace Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -16,72 +16,75 @@
 
 //! Test utilities
 
-use crate::equivocation::EquivocationHandler;
-use crate::{
-    self as pallet_kumandra, Config, CurrentSlot, FarmerPublicKey, NormalEonChange,
-    NormalEraChange, NormalGlobalRandomnessInterval,
-};
-use frame_support::parameter_types;
-use frame_support::traits::{ConstU128, ConstU32, ConstU64, OnInitialize};
-use schnorrkel::Keypair;
-use sp_consensus_slots::Slot;
-use kp_consensus::digests::{CompatibleDigestItem, PreDigest};
-use sp_core::crypto::UncheckedFrom;
-use sp_core::sr25519::Pair;
-use sp_core::{Pair as PairTrait, H256};
-use sp_runtime::{
-    testing::{Digest, DigestItem, Header, TestXt},
-    traits::{Header as _, IdentityLookup},
-    Perbill,
-};
-use kumandra_core_primitives::{
-    ArchivedBlockProgress, LastArchivedBlock, LocalChallenge, Piece, RootBlock, Sha256Hash,
-    Solution, Tag,
-};
-use kumandra_solving::{KumandraCodec, SOLUTION_SIGNING_CONTEXT};
+#![cfg(test)]
 
-type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Test>;
-type Block = frame_system::mocking::MockBlock<Test>;
+use crate as pallet_offences_kumandra;
+use crate::Config;
+use codec::Encode;
+use frame_support::traits::{ConstU32, ConstU64};
+use frame_support::weights::{constants::RocksDbWeight, Weight};
+use kp_consensus::{
+    offence::{self, Kind, OffenceDetails},
+    FarmerPublicKey,
+};
+use sp_core::H256;
+use sp_runtime::testing::Header;
+use sp_runtime::traits::{BlakeTwo256, IdentityLookup};
+use sp_runtime::Perbill;
+use std::cell::RefCell;
+
+pub struct OnOffenceHandler;
+
+thread_local! {
+    pub static ON_OFFENCE_PERBILL: RefCell<Vec<Perbill>> = RefCell::new(Default::default());
+    pub static OFFENCE_WEIGHT: RefCell<Weight> = RefCell::new(Default::default());
+}
+
+impl<Offender> offence::OnOffenceHandler<Offender> for OnOffenceHandler {
+    fn on_offence(_offenders: &[OffenceDetails<Offender>]) {
+        ON_OFFENCE_PERBILL.with(|f| {
+            *f.borrow_mut() = vec![Perbill::from_percent(25)];
+        });
+    }
+}
+
+pub fn with_on_offence_fractions<R, F: FnOnce(&mut Vec<Perbill>) -> R>(f: F) -> R {
+    ON_OFFENCE_PERBILL.with(|fractions| f(&mut *fractions.borrow_mut()))
+}
+
+type UncheckedExtrinsic = frame_system::mocking::MockUncheckedExtrinsic<Runtime>;
+type Block = frame_system::mocking::MockBlock<Runtime>;
 
 frame_support::construct_runtime!(
-    pub enum Test where
+    pub enum Runtime where
         Block = Block,
         NodeBlock = Block,
         UncheckedExtrinsic = UncheckedExtrinsic,
     {
-        System: frame_system,
-        Balances: pallet_balances,
-        Kumandra: pallet_kumandra,
-        OffencesKumandra: pallet_offences_kumandra,
-        Timestamp: pallet_timestamp,
+        System: frame_system::{Pallet, Call, Config, Storage, Event<T>},
+        OffencesKumandra: pallet_offences_kumandra::{Pallet, Storage, Event},
     }
 );
 
-parameter_types! {
-    pub const DisabledValidatorsThreshold: Perbill = Perbill::from_percent(16);
-    pub BlockWeights: frame_system::limits::BlockWeights =
-        frame_system::limits::BlockWeights::simple_max(1024);
-}
-
-impl frame_system::Config for Test {
+impl frame_system::Config for Runtime {
     type BaseCallFilter = frame_support::traits::Everything;
     type BlockWeights = ();
     type BlockLength = ();
-    type DbWeight = ();
+    type DbWeight = RocksDbWeight;
     type Origin = Origin;
     type Index = u64;
     type BlockNumber = u64;
     type Call = Call;
     type Hash = H256;
-    type Version = ();
-    type Hashing = sp_runtime::traits::BlakeTwo256;
+    type Hashing = BlakeTwo256;
     type AccountId = u64;
     type Lookup = IdentityLookup<Self::AccountId>;
     type Header = Header;
     type Event = Event;
     type BlockHashCount = ConstU64<250>;
+    type Version = ();
     type PalletInfo = PalletInfo;
-    type AccountData = pallet_balances::AccountData<u128>;
+    type AccountData = ();
     type OnNewAccount = ();
     type OnKilledAccount = ();
     type SystemWeightInfo = ();
@@ -90,219 +93,53 @@ impl frame_system::Config for Test {
     type MaxConsumers = ConstU32<16>;
 }
 
-impl<C> frame_system::offchain::SendTransactionTypes<C> for Test
-where
-    Call: From<C>,
-{
-    type OverarchingCall = Call;
-    type Extrinsic = TestXt<Call, ()>;
-}
-
-impl pallet_timestamp::Config for Test {
-    type Moment = u64;
-    type OnTimestampSet = Kumandra;
-    type MinimumPeriod = ConstU64<1>;
-    type WeightInfo = ();
-}
-
-impl pallet_balances::Config for Test {
-    type MaxLocks = ();
-    type MaxReserves = ();
-    type ReserveIdentifier = [u8; 8];
-    type Balance = u128;
-    type DustRemoval = ();
+impl Config for Runtime {
     type Event = Event;
-    type ExistentialDeposit = ConstU128<1>;
-    type AccountStore = System;
-    type WeightInfo = ();
-}
-
-impl pallet_offences_Kumandra::Config for Test {
-    type Event = Event;
-    type OnOffenceHandler = Kumandra;
-}
-
-/// 1 in 6 slots (on average, not counting collisions) will have a block.
-pub const SLOT_PROBABILITY: (u64, u64) = (3, 10);
-
-pub const INITIAL_SOLUTION_RANGE: u64 =
-    u64::MAX / (1024 * 1024 * 1024 / 4096) * SLOT_PROBABILITY.0 / SLOT_PROBABILITY.1;
-
-parameter_types! {
-    pub const GlobalRandomnessUpdateInterval: u64 = 10;
-    pub const EraDuration: u32 = 4;
-    pub const EonDuration: u32 = 5;
-    pub const EonNextSaltReveal: u64 = 3;
-    // 1GB
-    pub const InitialSolutionRange: u64 = INITIAL_SOLUTION_RANGE;
-    pub const SlotProbability: (u64, u64) = SLOT_PROBABILITY;
-    pub const ConfirmationDepthK: u32 = 10;
-    pub const RecordSize: u32 = 3840;
-    pub const RecordedHistorySegmentSize: u32 = 3840 * 256 / 2;
-    pub const ReplicationFactor: u16 = 1;
-    pub const ReportLongevity: u64 = 34;
-    pub const MaxPlotSize: u64 = 10 * 2u64.pow(18);
-}
-
-impl Config for Test {
-    type Event = Event;
-    type GlobalRandomnessUpdateInterval = GlobalRandomnessUpdateInterval;
-    type EraDuration = EraDuration;
-    type EonDuration = EonDuration;
-    type EonNextSaltReveal = EonNextSaltReveal;
-    type InitialSolutionRange = InitialSolutionRange;
-    type SlotProbability = SlotProbability;
-    type ExpectedBlockTime = ConstU64<1>;
-    type MaxPlotSize = MaxPlotSize;
-    type ConfirmationDepthK = ConfirmationDepthK;
-    type RecordSize = RecordSize;
-    type RecordedHistorySegmentSize = RecordedHistorySegmentSize;
-    type GlobalRandomnessIntervalTrigger = NormalGlobalRandomnessInterval;
-    type EraChangeTrigger = NormalEraChange;
-    type EonChangeTrigger = NormalEonChange;
-
-    type HandleEquivocation = EquivocationHandler<OffencesKumandra, ReportLongevity>;
-
-    type WeightInfo = ();
-}
-
-pub fn go_to_block(keypair: &Keypair, block: u64, slot: u64) {
-    use frame_support::traits::OnFinalize;
-
-    Kumandra::on_finalize(System::block_number());
-
-    let parent_hash = if System::block_number() > 1 {
-        let hdr = System::finalize();
-        hdr.hash()
-    } else {
-        System::parent_hash()
-    };
-
-    let kumandra_solving = KumandraCodec::new(&keypair.public);
-    let ctx = schnorrkel::context::signing_context(SOLUTION_SIGNING_CONTEXT);
-    let piece_index = 0;
-    let mut encoding = Piece::default();
-    kumandra_solving.encode(&mut encoding, piece_index).unwrap();
-    let tag: Tag = kumandra_solving::create_tag(&encoding, {
-        let salts = Kumandra::salts();
-        if salts.switch_next_block {
-            salts.next.unwrap()
-        } else {
-            salts.current
-        }
-    });
-
-    let pre_digest = make_pre_digest(
-        slot.into(),
-        Solution {
-            public_key: FarmerPublicKey::unchecked_from(keypair.public.to_bytes()),
-            reward_address: FarmerPublicKey::unchecked_from(keypair.public.to_bytes()),
-            piece_index: 0,
-            encoding,
-            signature: keypair.sign(ctx.bytes(&tag)).to_bytes().into(),
-            local_challenge: LocalChallenge::default(),
-            tag,
-        },
-    );
-
-    System::reset_events();
-    System::initialize(&block, &parent_hash, &pre_digest);
-
-    Kumandra::on_initialize(block);
-}
-
-/// Slots will grow accordingly to blocks
-pub fn progress_to_block(keypair: &Keypair, n: u64) {
-    let mut slot = u64::from(Kumandra::current_slot()) + 1;
-    for i in System::block_number() + 1..=n {
-        go_to_block(keypair, i, slot);
-        slot += 1;
-    }
-}
-
-pub fn make_pre_digest(slot: Slot, solution: Solution<FarmerPublicKey>) -> Digest {
-    let log = DigestItem::kumandra_pre_digest(&PreDigest { slot, solution });
-    Digest { logs: vec![log] }
+    type OnOffenceHandler = OnOffenceHandler;
 }
 
 pub fn new_test_ext() -> sp_io::TestExternalities {
-    frame_system::GenesisConfig::default()
-        .build_storage::<Test>()
-        .unwrap()
-        .into()
+    let t = frame_system::GenesisConfig::default()
+        .build_storage::<Runtime>()
+        .unwrap();
+    let mut ext = sp_io::TestExternalities::new(t);
+    ext.execute_with(|| System::set_block_number(1));
+    ext
 }
 
-/// Creates an equivocation at the current block, by generating two headers.
-pub fn generate_equivocation_proof(
-    keypair: &Keypair,
-    slot: Slot,
-) -> kp_consensus::EquivocationProof<Header> {
-    let current_block = System::block_number();
-    let current_slot = CurrentSlot::<Test>::get();
+pub const KIND: [u8; 16] = *b"test_report_1234";
 
-    let ctx = schnorrkel::context::signing_context(SOLUTION_SIGNING_CONTEXT);
-    let encoding = Piece::default();
-    let tag: Tag = [(current_block % 8) as u8; 8];
+/// Returns all offence details for the specific `kind` happened at the specific time slot.
+pub fn offence_reports(kind: Kind, time_slot: u128) -> Vec<OffenceDetails<FarmerPublicKey>> {
+    <crate::ConcurrentReportsIndex<Runtime>>::get(&kind, &time_slot.encode())
+        .into_iter()
+        .map(|report_id| {
+            <crate::Reports<Runtime>>::get(&report_id)
+                .expect("dangling report id is found in ConcurrentReportsIndex")
+        })
+        .collect()
+}
 
-    let public_key = FarmerPublicKey::unchecked_from(keypair.public.to_bytes());
-    let signature = keypair.sign(ctx.bytes(&tag)).to_bytes();
+#[derive(Clone)]
+pub struct Offence<T> {
+    pub offenders: Vec<T>,
+    pub time_slot: u128,
+}
 
-    let make_header = |piece_index| {
-        let parent_hash = System::parent_hash();
-        let pre_digest = make_pre_digest(
-            slot,
-            Solution {
-                public_key: public_key.clone(),
-                reward_address: public_key.clone(),
-                piece_index,
-                encoding,
-                signature: signature.into(),
-                local_challenge: LocalChallenge::default(),
-                tag,
-            },
-        );
-        System::reset_events();
-        System::initialize(&current_block, &parent_hash, &pre_digest);
-        System::set_block_number(current_block);
-        Timestamp::set_timestamp(current_block);
-        System::finalize()
-    };
+impl<T: Clone> offence::Offence<T> for Offence<T> {
+    const ID: offence::Kind = KIND;
+    type TimeSlot = u128;
 
-    // sign the header prehash and sign it, adding it to the block as the seal
-    // digest item
-    let seal_header = |header: &mut Header| {
-        let prehash = header.hash();
-        let signature = Pair::from(keypair.secret.clone()).sign(prehash.as_ref());
-        let seal = DigestItem::kumandra_seal(signature.into());
-        header.digest_mut().push(seal);
-    };
+    fn offenders(&self) -> Vec<T> {
+        self.offenders.clone()
+    }
 
-    // generate two headers at the current block
-    let mut h1 = make_header(0);
-    let mut h2 = make_header(1);
-
-    seal_header(&mut h1);
-    seal_header(&mut h2);
-
-    // restore previous runtime state
-    go_to_block(keypair, current_block, *current_slot);
-
-    kp_consensus::EquivocationProof {
-        slot,
-        offender: public_key,
-        first_header: h1,
-        second_header: h2,
+    fn time_slot(&self) -> u128 {
+        self.time_slot
     }
 }
 
-pub fn create_root_block(segment_index: u64) -> RootBlock {
-    RootBlock::V0 {
-        segment_index,
-        records_root: Sha256Hash::default(),
-        prev_root_block_hash: Sha256Hash::default(),
-        last_archived_block: LastArchivedBlock {
-            number: 0,
-            archived_progress: ArchivedBlockProgress::Complete,
-        },
-    }
+/// Create the report id for the given `offender` and `time_slot` combination.
+pub fn report_id(time_slot: u128, offender: FarmerPublicKey) -> H256 {
+    OffencesKumandra::report_id::<Offence<FarmerPublicKey>>(&time_slot, &offender)
 }

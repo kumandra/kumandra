@@ -2,8 +2,10 @@
 name = "kp-consensus"
 version = "0.1.0"
 authors = ["Kumandra"]
-description = "Primitives for Kumandra Consensus. Based on a fork of `sp_consensus_babe"
+description = "Primitives for Kumandra consensus"
 edition = "2021"
+license = "Apache-2.0"
+readme = "README.md"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]

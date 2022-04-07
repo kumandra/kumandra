@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2022 Kumandra, Inc.
+// Copyright (C) 2021 Subspace Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 // limitations under the License.
 
 //! Common traits and types that are useful for describing offences for usage in environments
-//! that use kumandra consensus.
+//! that use Kumandra consensus.
 //!
 //! ## Comparison with [sp_staking::offence]
 //!
