@@ -113,7 +113,7 @@ async fn follow_new_best<P, R, Block, B>(
 		select! {
 			h = new_best_heads.next() => {
 				match h {
-					Some(h) => handle_new_best_parachain_head_subspace(
+					Some(h) => handle_new_best_parachain_head_kumandra(
 						h,
 						&*parachain,
 						&mut unset_best_header,
@@ -205,7 +205,7 @@ async fn handle_new_block_imported<Block, P>(
 }
 
 /// Handle the new best parachain head as extracted from the new best relay chain.
-async fn handle_new_best_parachain_head_subspace<Block, P>(
+async fn handle_new_best_parachain_head_kumandra<Block, P>(
 	encoded_head_hash: Vec<u8>,
 	parachain: &P,
 	unset_best_header: &mut Option<Block::Header>,

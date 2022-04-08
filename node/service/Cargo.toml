@@ -1,8 +1,8 @@
 [package]
 name = "kumandra-service"
 version = "0.1.0"
-authors = ["Subspace Labs <https://subspace.network>"]
-description = "Subspace service."
+authors = ["Kumandra"]
+description = "Kumandra service."
 edition = "2021"
 license = "GPL-3.0-or-later"
 include = [

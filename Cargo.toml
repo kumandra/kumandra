@@ -71,6 +71,9 @@ members = [
     "test/kumandra-test-client",
     "test/kumandra-test-runtime",
     "test/kumandra-test-service",
+
+    # Farm
+    "farmer/",
 ]
 
 [profile.release]

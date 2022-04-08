@@ -1,0 +1,67 @@
+[package]
+name = "kumandra-farmer"
+description = "Farmer for the Kumandra Network Blockchain"
+license = "MIT OR Apache-2.0"
+version = "0.3.0"
+authors = ["Kumandra"]
+edition = "2021"
+include = [
+    "/src",
+    "/Cargo.toml",
+]
+
+[dependencies]
+anyhow = "1.0.56"
+arc-swap = "1.5.0"
+async-oneshot = "0.5.0"
+async-trait = "0.1.52"
+clap = { version = "3.1.6", features = ["color", "derive"] }
+dirs = "4.0.0"
+env_logger = "0.9.0"
+event-listener-primitives = "2.0.1"
+futures = "0.3.21"
+hex = "0.4.3"
+hex-buffer-serde = "0.3.0"
+jsonrpsee = { version = "0.8.0", features = ["client", "macros", "server"] }
+log = "0.4.14"
+lru = "0.7.3"
+parity-scale-codec = "3.1.2"
+parking_lot = "0.12.0"
+rayon = "1.5.1"
+schnorrkel = "0.9.1"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.79"
+sp-core = { version = "6.0.0", git = "https://github.com/paritytech/substrate", rev = "c364008a6c7da8456e17967f55edf51e45146998" }
+ss58-registry = "1.17.0"
+kumandra-archiving = { version = "0.1.0", path = "../modules/archiving" }
+kumandra-solving = { version = "0.1.0", path = "../modules/solving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../primitives/core" }
+kumandra-networking = { version = "0.1.0", path = "../node/network" }
+kumandra-rpc-primitives = { version = "0.1.0", path = "../primitives/rpc" }
+thiserror = "1.0.30"
+tiny-bip39 = "0.8.2"
+tokio = { version = "1.17.0", features = ["macros", "parking_lot", "rt-multi-thread"] }
+zeroize = "1.4.3"
+
+[dependencies.rocksdb]
+# This disables compression algorithms that cause issues during linking due to
+# https://github.com/rust-rocksdb/rust-rocksdb/issues/514
+default-features = false
+# `zstd` causes compilation errors, others are unnecessary for now
+features = ["snappy"]
+version = "0.18.0"
+
+[dev-dependencies]
+rand = "0.8.5"
+tempfile = "3.3.0"
+
+[features]
+default = []
+# Compile with CUDA support and use it if compatible GPU is available
+cuda = [
+    "kumandra-solving/cuda",
+]
+
+[[bench]]
+name = "plot-write"
+harness = false

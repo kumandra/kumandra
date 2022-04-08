@@ -144,7 +144,7 @@ where
 	let overseer_handle = primary_chain_full_node
 		.overseer_handle
 		.clone()
-		.ok_or_else(|| "Subspace full node did not provide an `OverseerHandle`!")?;
+		.ok_or_else(|| "Kumandra full node did not provide an `OverseerHandle`!")?;
 
 	let executor =
 		neak_client_executor::start_executor(neak_client_executor::StartExecutorParams {
