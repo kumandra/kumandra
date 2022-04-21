@@ -46,7 +46,7 @@ const INITIAL_LAST_ARCHIVED_BLOCK: LastArchivedBlock = LastArchivedBlock {
     archived_progress: ArchivedBlockProgress::Partial(0),
 };
 
-/// Segment represents a collection of items stored in archival history of the Subspace blockchain
+/// Segment represents a collection of items stored in archival history of the Kumandra blockchain
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Encode, Decode)]
 pub enum Segment {
     // V0 of the segment data structure
@@ -172,7 +172,7 @@ pub enum ArchiverInstantiationError {
     },
 }
 
-/// Block archiver for Subspace blockchain.
+/// Block archiver for Kumandra blockchain.
 ///
 /// It takes new confirmed (at `K` depth) blocks and concatenates them into a buffer, buffer is
 /// sliced into segments of `RECORDED_HISTORY_SEGMENT_SIZE` size, segments are sliced into source

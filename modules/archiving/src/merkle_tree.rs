@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2021 KOOMPI Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! This module includes Merkle Tree implementation used in Subspace
+//! This module includes Merkle Tree implementation used in Kumandra
 extern crate alloc;
 
 use alloc::borrow::Cow;
