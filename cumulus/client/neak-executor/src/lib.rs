@@ -14,80 +14,130 @@
 // You should have received a copy of the GNU General Public License
 // along with Cumulus.  If not, see <http://www.gnu.org/licenses/>.
 
-//! Neawk Executor implementation for Kumandra.
-#![allow(clippy::all)]
+//! # Kumandra Executor
+//!
+//! Executors, a separate class of nodes in addition to the consensus nodes (farmers) in Kumandra,
+//! are designed to reduce the burden of maintaining the chain state for farmers by decoupling the
+//! consensus and computation. As an execution layer, executor chain itself does no rely on any
+//! typical blockchain consensus like PoW for producing blocks, the block production of executor
+//! chain is totally driven by the consensus layer which are collectively maintained by Kumandra
+//! farmers. Please refer to the white paper [Computation section] for more in-depth description
+//! and analysis.
+//!
+//! Specifically, executors are responsible for producing a [`Bundle`] on each slot from
+//! the primary chain and producing an [`ExecutionReceipt`] on each primary block.
+//!
+//! On each new primary chain slot, executors will collect a set of extrinsics from the transaction
+//! pool which are verified to be able to cover the transaction fee, and then use these extrinsics
+//! to create a [`Bundle`], submitting it to the primary chain. The submitted bundles are mere blob
+//! from the point of primary chain.
+//!
+//! On each imported primary block, executors will extract all the bundles from the primary block and
+//! convert the bundles to a list of extrinsics, construct a custom [`BlockBuilder`] to build a secondary
+//! block. The execution trace of all the extrinsics and hooks like
+//! `initialize_block`/`finalize_block` will be recorded during the block execution. Once the
+//! secondary block has been imported successfully, an executor that wins the election for producing
+//! an execution receipt will publish the receipt over the executors network.
+//!
+//! The execution receipt of each block contains all the intermediate state roots during the block
+//! execution, which will be gossiped in the executor network. All executors whether running as an
+//! authority or a full node will compute each block and generate an execution receipt independently,
+//! once the execution receipt received from the network does not match the one produced locally,
+//! a [`FraudProof`] will be generated and reported to the primary chain accordingly.
+//!
+//! ## Notes
+//!
+//! Currently, the following terms are interexchangeable in the executor context:
+//!
+//! - Farmer, consensus node.
+//! - Executor, execution/compute node.
+//! - Primary chain, consensus layer.
+//! - Secondary chain, execution layer.
 
 mod aux_schema;
 mod bundler;
 mod merkle_tree;
+mod overseer;
 mod processor;
 #[cfg(test)]
 mod tests;
 
+pub use crate::overseer::ExecutorSlotInfo;
+use crate::overseer::{BlockInfo, CollationGenerationConfig, Overseer, OverseerHandle};
 use neak_block_builder::{BlockBuilder, RecordProof};
+use neak_client_executor_gossip::{Action, GossipMessageHandler};
+use neak_primitives::{AccountId, SecondaryApi};
 use codec::{Decode, Encode};
+use futures::{pin_mut, select, FutureExt, Stream, StreamExt};
 use sc_client_api::{AuxStore, BlockBackend};
 use sc_utils::mpsc::TracingUnboundedSender;
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_consensus::BlockStatus;
+use sp_consensus::{BlockStatus, SelectChain};
 use sp_core::{
-	traits::{CodeExecutor, SpawnNamed},
+	traits::{CodeExecutor, SpawnEssentialNamed, SpawnNamed},
 	H256,
 };
-use sp_inherents::CreateInherentDataProviders;
+use kp_executor::{
+	Bundle, BundleEquivocationProof, ExecutionPhase, ExecutionReceipt, ExecutorApi, FraudProof,
+	InvalidTransactionProof, OpaqueBundle, OpaqueExecutionReceipt,
+};
 use sp_runtime::{
 	generic::BlockId,
-	traits::{Block as BlockT, HashFor, Header as HeaderT, Zero},
+	traits::{Block as BlockT, HashFor, Header as HeaderT, NumberFor, One, Saturating, Zero},
 };
 use sp_trie::StorageProof;
-
-use cumulus_client_consensus_common::ParachainConsensus;
-
-use selendra_node_subsystem::messages::CollationGenerationMessage;
-use selendra_overseer::Handle as OverseerHandle;
-
-use neak_client_executor_gossip::{Action, GossipMessageHandler};
-use neak_node_primitives::{
-	BundleResult, CollationGenerationConfig, ExecutorSlotInfo, ProcessorResult,
-};
-use neak_primitives::{AccountId, Hash, SecondaryApi};
-use kp_executor::{
-	Bundle, BundleEquivocationProof, ExecutionPhase, ExecutionReceipt, FraudProof,
-	InvalidTransactionProof, OpaqueBundle,
-};
-use kumandra_core_primitives::Randomness;
+use std::{borrow::Cow, sync::Arc};
+use kumandra_core_primitives::{BlockNumber, Randomness};
 use kumandra_runtime_primitives::Hash as PHash;
-
-use futures::FutureExt;
-use std::sync::Arc;
 use tracing::Instrument;
 
 /// The logging target.
 const LOG_TARGET: &str = "neak::executor";
 
+/// Type alias for APIs required from primary chain client
+trait PrimaryChainClient<Block>:
+	HeaderBackend<Block> + BlockBackend<Block> + Send + Sync + 'static
+where
+	Block: BlockT,
+{
+}
+
+impl<Block, T> PrimaryChainClient<Block> for T
+where
+	Block: BlockT,
+	T: HeaderBackend<Block> + BlockBackend<Block> + Send + Sync + 'static,
+{
+}
+
 /// The implementation of the neak `Executor`.
-pub struct Executor<Block: BlockT, Client, TransactionPool, Backend, CIDP, E> {
+pub struct Executor<Block, PBlock, Client, TransactionPool, Backend, E>
+where
+	Block: BlockT,
+	PBlock: BlockT,
+{
 	// TODO: no longer used in executor, revisit this with ParachainBlockImport together.
-	parachain_consensus: Box<dyn ParachainConsensus<Block>>,
+	primary_chain_client: Arc<dyn PrimaryChainClient<PBlock>>,
 	client: Arc<Client>,
 	spawner: Box<dyn SpawnNamed + Send + Sync>,
-	overseer_handle: OverseerHandle,
+	overseer_handle: OverseerHandle<PBlock>,
 	transaction_pool: Arc<TransactionPool>,
 	bundle_sender: Arc<TracingUnboundedSender<Bundle<Block::Extrinsic>>>,
 	execution_receipt_sender: Arc<TracingUnboundedSender<ExecutionReceipt<Block::Hash>>>,
 	backend: Arc<Backend>,
-	create_inherent_data_providers: Arc<CIDP>,
 	code_executor: Arc<E>,
 	is_authority: bool,
 }
 
-impl<Block: BlockT, Client, TransactionPool, Backend, CIDP, E> Clone
-	for Executor<Block, Client, TransactionPool, Backend, CIDP, E>
+impl<Block, PBlock, Client, TransactionPool, Backend, E> Clone
+	for Executor<Block, PBlock, Client, TransactionPool, Backend, E>
+where
+	Block: BlockT,
+	PBlock: BlockT,
 {
 	fn clone(&self) -> Self {
 		Self {
-			parachain_consensus: self.parachain_consensus.clone(),
+			primary_chain_client: self.primary_chain_client.clone(),
 			client: self.client.clone(),
 			spawner: self.spawner.clone(),
 			overseer_handle: self.overseer_handle.clone(),
@@ -95,7 +145,6 @@ impl<Block: BlockT, Client, TransactionPool, Backend, CIDP, E> Clone
 			bundle_sender: self.bundle_sender.clone(),
 			execution_receipt_sender: self.execution_receipt_sender.clone(),
 			backend: self.backend.clone(),
-			create_inherent_data_providers: self.create_inherent_data_providers.clone(),
 			code_executor: self.code_executor.clone(),
 			is_authority: self.is_authority,
 		}
@@ -107,11 +156,13 @@ type TransactionFor<Backend, Block> =
 		HashFor<Block>,
 	>>::Transaction;
 
-impl<Block, Client, TransactionPool, Backend, CIDP, E>
-	Executor<Block, Client, TransactionPool, Backend, CIDP, E>
+impl<Block, PBlock, Client, TransactionPool, Backend, E>
+	Executor<Block, PBlock, Client, TransactionPool, Backend, E>
 where
 	Block: BlockT,
-	Client: HeaderBackend<Block> + BlockBackend<Block> + AuxStore + ProvideRuntimeApi<Block>,
+	PBlock: BlockT,
+	Client:
+		HeaderBackend<Block> + BlockBackend<Block> + AuxStore + ProvideRuntimeApi<Block> + 'static,
 	Client::Api: SecondaryApi<Block, AccountId>
 		+ sp_block_builder::BlockBuilder<Block>
 		+ sp_api::ApiExt<
@@ -126,25 +177,84 @@ where
 	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	TransactionFor<Backend, Block>: sp_trie::HashDBT<HashFor<Block>, sp_trie::DBValue>,
 	TransactionPool: sc_transaction_pool_api::TransactionPool<Block = Block> + 'static,
-	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
 	E: CodeExecutor,
 {
 	/// Create a new instance.
-	fn new(
-		parachain_consensus: Box<dyn ParachainConsensus<Block>>,
+	#[allow(clippy::too_many_arguments)]
+	pub async fn new<PClient, SE, SC, IBNS, NSNS>(
+		primary_chain_client: Arc<PClient>,
+		spawn_essential: &SE,
+		select_chain: &SC,
+		imported_block_notification_stream: IBNS,
+		new_slot_notification_stream: NSNS,
 		client: Arc<Client>,
 		spawner: Box<dyn SpawnNamed + Send + Sync>,
-		overseer_handle: OverseerHandle,
 		transaction_pool: Arc<TransactionPool>,
 		bundle_sender: Arc<TracingUnboundedSender<Bundle<Block::Extrinsic>>>,
 		execution_receipt_sender: Arc<TracingUnboundedSender<ExecutionReceipt<Block::Hash>>>,
 		backend: Arc<Backend>,
-		create_inherent_data_providers: Arc<CIDP>,
 		code_executor: Arc<E>,
 		is_authority: bool,
-	) -> Self {
-		Self {
-			parachain_consensus,
+	) -> Result<Self, sp_consensus::Error>
+	where
+		PClient: HeaderBackend<PBlock>
+			+ BlockBackend<PBlock>
+			+ ProvideRuntimeApi<PBlock>
+			+ Send
+			+ 'static
+			+ Sync,
+		PClient::Api: ExecutorApi<PBlock>,
+		SE: SpawnEssentialNamed,
+		SC: SelectChain<PBlock>,
+		IBNS: Stream<Item = NumberFor<PBlock>> + Send + 'static,
+		NSNS: Stream<Item = ExecutorSlotInfo> + Send + 'static,
+	{
+		let active_leaves = active_leaves(&*primary_chain_client, select_chain).await?;
+
+		let overseer_handle = {
+			let (overseer, overseer_handle) = Overseer::new(
+				primary_chain_client.clone(),
+				active_leaves
+					.into_iter()
+					.map(|BlockInfo { hash, parent_hash: _, number }| (hash, number))
+					.collect(),
+				Default::default(),
+			);
+
+			{
+				let primary_chain_client = primary_chain_client.clone();
+				let overseer_handle = overseer_handle.clone();
+				spawn_essential.spawn_essential_blocking(
+					"collation-generation-subsystem",
+					Some("collation-generation-subsystem"),
+					Box::pin(async move {
+						let forward = overseer::forward_events(
+							primary_chain_client,
+							Box::pin(imported_block_notification_stream.fuse()),
+							Box::pin(new_slot_notification_stream.fuse()),
+							overseer_handle,
+						);
+
+						let forward = forward.fuse();
+						let overseer_fut = overseer.run().fuse();
+
+						pin_mut!(overseer_fut);
+						pin_mut!(forward);
+
+						select! {
+							_ = forward => (),
+							_ = overseer_fut => (),
+							complete => (),
+						}
+					}),
+				);
+			}
+
+			overseer_handle
+		};
+
+		let mut executor = Self {
+			primary_chain_client,
 			client,
 			spawner,
 			overseer_handle,
@@ -152,10 +262,45 @@ where
 			bundle_sender,
 			execution_receipt_sender,
 			backend,
-			create_inherent_data_providers,
 			code_executor,
 			is_authority,
-		}
+		};
+
+		let span = tracing::Span::current();
+		let config = CollationGenerationConfig {
+			bundler: {
+				let executor = executor.clone();
+				let span = span.clone();
+
+				Box::new(move |primary_hash, slot_info| {
+					let executor = executor.clone();
+					Box::pin(
+						executor.produce_bundle(primary_hash, slot_info).instrument(span.clone()),
+					)
+				})
+			},
+			processor: {
+				let executor = executor.clone();
+
+				Box::new(move |primary_hash, bundles, shuffling_seed, maybe_new_runtime| {
+					let executor = executor.clone();
+					Box::pin(
+						executor
+							.process_bundles(
+								primary_hash,
+								bundles,
+								shuffling_seed,
+								maybe_new_runtime,
+							)
+							.instrument(span.clone()),
+					)
+				})
+			},
+		};
+
+		executor.overseer_handle.initialize(config).await;
+
+		Ok(executor)
 	}
 
 	/// Checks the status of the given block hash in the Parachain.
@@ -232,12 +377,7 @@ where
 					"Submitting bundle equivocation proof in a background task..."
 				);
 				overseer_handle
-					.send_msg(
-						CollationGenerationMessage::BundleEquivocationProof(
-							bundle_equivocation_proof,
-						),
-						"SubmitBundleEquivocationProof",
-					)
+					.submit_bundle_equivocation_proof(bundle_equivocation_proof)
 					.await;
 				tracing::debug!(
 					target: LOG_TARGET,
@@ -258,12 +398,7 @@ where
 					target: LOG_TARGET,
 					"Submitting fraud proof in a background task..."
 				);
-				overseer_handle
-					.send_msg(
-						CollationGenerationMessage::FraudProof(fraud_proof),
-						"SubmitFraudProof",
-					)
-					.await;
+				overseer_handle.submit_fraud_proof(fraud_proof).await;
 				tracing::debug!(target: LOG_TARGET, "Fraud proof submission finished");
 			}
 			.boxed(),
@@ -281,12 +416,7 @@ where
 					"Submitting invalid transaction proof in a background task..."
 				);
 				overseer_handle
-					.send_msg(
-						CollationGenerationMessage::InvalidTransactionProof(
-							invalid_transaction_proof,
-						),
-						"SubmitInvalidTransactionProof",
-					)
+					.submit_invalid_transaction_proof(invalid_transaction_proof)
 					.await;
 				tracing::debug!(
 					target: LOG_TARGET,
@@ -300,13 +430,13 @@ where
 	fn header(&self, at: Block::Hash) -> Result<Block::Header, sp_blockchain::Error> {
 		self.client
 			.header(BlockId::Hash(at))?
-			.ok_or(sp_blockchain::Error::Backend(format!("Header not found for {:?}", at)))
+			.ok_or_else(|| sp_blockchain::Error::Backend(format!("Header not found for {:?}", at)))
 	}
 
 	fn block_body(&self, at: Block::Hash) -> Result<Vec<Block::Extrinsic>, sp_blockchain::Error> {
-		self.client
-			.block_body(&BlockId::Hash(at))?
-			.ok_or(sp_blockchain::Error::Backend(format!("Block body not found for {:?}", at)))
+		self.client.block_body(&BlockId::Hash(at))?.ok_or_else(|| {
+			sp_blockchain::Error::Backend(format!("Block body not found for {:?}", at))
+		})
 	}
 
 	fn create_extrinsic_execution_proof(
@@ -328,7 +458,7 @@ where
 
 		let execution_phase = ExecutionPhase::ApplyExtrinsic { call_data: encoded_extrinsic };
 
-		let block_builder = BlockBuilder::with_extrinsics(
+		let block_builder = BlockBuilder::new(
 			&*self.client,
 			parent_header.hash(),
 			*parent_header.number(),
@@ -352,12 +482,15 @@ where
 
 	async fn wait_for_local_receipt(
 		&self,
-		block_hash: Block::Hash,
-		block_number: <Block::Header as HeaderT>::Number,
+		secondary_block_hash: Block::Hash,
+		secondary_block_number: <Block::Header as HeaderT>::Number,
 		tx: crossbeam::channel::Sender<sp_blockchain::Result<ExecutionReceipt<Block::Hash>>>,
 	) -> Result<(), GossipMessageError> {
 		loop {
-			match crate::aux_schema::load_execution_receipt::<_, Block>(&*self.client, block_hash) {
+			match crate::aux_schema::load_execution_receipt::<Block, _>(
+				&*self.client,
+				secondary_block_hash,
+			) {
 				Ok(Some(local_receipt)) =>
 					return tx.send(Ok(local_receipt)).map_err(|_| GossipMessageError::SendError),
 				Ok(None) => {
@@ -367,18 +500,20 @@ where
 					// The local client has moved to the next block, that means the receipt
 					// of `block_hash` received from the network does not match the local one,
 					// we should just send back the local receipt at the same height.
-					if self.client.info().best_number >= block_number {
+					if self.client.info().best_number >= secondary_block_number {
 						let local_block_hash = self
 							.client
-							.expect_block_hash_from_id(&BlockId::Number(block_number))?;
-						let local_receipt_result = aux_schema::load_execution_receipt::<_, Block>(
+							.expect_block_hash_from_id(&BlockId::Number(secondary_block_number))?;
+						let local_receipt_result = aux_schema::load_execution_receipt::<Block, _>(
 							&*self.client,
 							local_block_hash,
 						)?
-						.ok_or(sp_blockchain::Error::Backend(format!(
-							"Execution receipt not found for {:?}",
-							local_block_hash
-						)));
+						.ok_or_else(|| {
+							sp_blockchain::Error::Backend(format!(
+								"Execution receipt not found for {:?}",
+								local_block_hash
+							))
+						});
 						return tx
 							.send(local_receipt_result)
 							.map_err(|_| GossipMessageError::SendError)
@@ -391,21 +526,26 @@ where
 		}
 	}
 
-	async fn produce_bundle(
+	pub async fn produce_bundle(
 		self,
 		primary_hash: PHash,
 		slot_info: ExecutorSlotInfo,
-	) -> Option<BundleResult> {
+	) -> Option<OpaqueBundle> {
 		self.produce_bundle_impl(primary_hash, slot_info).await
 	}
 
-	async fn process_bundles(
+	/// Processes the bundles extracted from the primary block.
+	pub async fn process_bundles(
 		self,
 		primary_hash: PHash,
 		bundles: Vec<OpaqueBundle>,
 		shuffling_seed: Randomness,
-	) -> Option<ProcessorResult> {
-		match self.process_bundles_impl(primary_hash, bundles, shuffling_seed).await {
+		maybe_new_runtime: Option<Cow<'static, [u8]>>,
+	) -> Option<OpaqueExecutionReceipt> {
+		match self
+			.process_bundles_impl(primary_hash, bundles, shuffling_seed, maybe_new_runtime)
+			.await
+		{
 			Ok(res) => res,
 			Err(err) => {
 				tracing::error!(
@@ -430,17 +570,24 @@ pub enum GossipMessageError {
 	#[error("Invalid extrinsic index for creating the execution proof, got: {index}, max: {max}")]
 	InvalidExtrinsicIndex { index: usize, max: usize },
 	#[error(transparent)]
-	Client(#[from] sp_blockchain::Error),
+	Client(Box<sp_blockchain::Error>),
 	#[error(transparent)]
 	RecvError(#[from] crossbeam::channel::RecvError),
 	#[error("Failed to send local receipt result because the channel is disconnected")]
 	SendError,
 }
 
-impl<Block, Client, TransactionPool, Backend, CIDP, E> GossipMessageHandler<Block>
-	for Executor<Block, Client, TransactionPool, Backend, CIDP, E>
+impl From<sp_blockchain::Error> for GossipMessageError {
+	fn from(error: sp_blockchain::Error) -> Self {
+		Self::Client(Box::new(error))
+	}
+}
+
+impl<Block, PBlock, Client, TransactionPool, Backend, E> GossipMessageHandler<Block>
+	for Executor<Block, PBlock, Client, TransactionPool, Backend, E>
 where
 	Block: BlockT,
+	PBlock: BlockT,
 	Client: HeaderBackend<Block>
 		+ BlockBackend<Block>
 		+ ProvideRuntimeApi<Block>
@@ -462,7 +609,6 @@ where
 	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	TransactionFor<Backend, Block>: sp_trie::HashDBT<HashFor<Block>, sp_trie::DBValue>,
 	TransactionPool: sc_transaction_pool_api::TransactionPool<Block = Block> + 'static,
-	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
 	E: CodeExecutor,
 {
 	type Error = GossipMessageError;
@@ -515,19 +661,31 @@ where
 	/// Checks the execution receipt from the executor peers.
 	fn on_execution_receipt(
 		&self,
-		execution_receipt: &ExecutionReceipt<<Block as BlockT>::Hash>,
+		execution_receipt: &ExecutionReceipt<Block::Hash>,
 	) -> Result<Action, Self::Error> {
 		// TODO: validate the Proof-of-Election
 
 		let block_hash = execution_receipt.secondary_hash;
-		let block_number = self
-			.parachain_consensus
-			.block_number_from_id(&BlockId::Hash(execution_receipt.primary_hash))?
-			.ok_or(sp_blockchain::Error::Backend(format!(
-				"Primary block number not found for {:?}",
-				execution_receipt.primary_hash
-			)))?
-			.into();
+		let primary_hash =
+			PBlock::Hash::decode(&mut execution_receipt.primary_hash.encode().as_slice())
+				.expect("Hash type must be correct");
+
+		let block_number = TryInto::<BlockNumber>::try_into(
+			self.primary_chain_client
+				.block_number_from_id(&BlockId::Hash(primary_hash))?
+				.ok_or_else(|| {
+					sp_blockchain::Error::Backend(format!(
+						"Primary block number not found for {:?}",
+						execution_receipt.primary_hash
+					))
+				})?,
+		)
+		.unwrap_or_else(|_error| {
+			panic!(
+				"Block number must be exactly the same size for both primary and secondary chains; qed"
+			)
+		})
+		.into();
 
 		let best_number = self.client.info().best_number;
 
@@ -538,7 +696,7 @@ where
 
 		// TODO: more efficient execution receipt checking strategy?
 		let local_receipt = if let Some(local_receipt) =
-			crate::aux_schema::load_execution_receipt::<_, Block>(&*self.client, block_hash)?
+			crate::aux_schema::load_execution_receipt::<Block, _>(&*self.client, block_hash)?
 		{
 			local_receipt
 		} else {
@@ -631,7 +789,7 @@ where
 				let post_state_root = as_h256(local_root)?;
 				let execution_phase = ExecutionPhase::FinalizeBlock;
 
-				let block_builder = BlockBuilder::with_extrinsics(
+				let block_builder = BlockBuilder::new(
 					&*self.client,
 					parent_header.hash(),
 					*parent_header.number(),
@@ -690,111 +848,49 @@ where
 	}
 }
 
-/// Parameters for [`start_executor`].
-pub struct StartExecutorParams<Block: BlockT, Spawner, Client, TransactionPool, Backend, CIDP, E> {
-	pub client: Arc<Client>,
-	pub announce_block: Arc<dyn Fn(Block::Hash, Option<Vec<u8>>) + Send + Sync>,
-	pub overseer_handle: OverseerHandle,
-	pub spawner: Box<Spawner>,
-	pub parachain_consensus: Box<dyn ParachainConsensus<Block>>,
-	pub transaction_pool: Arc<TransactionPool>,
-	pub bundle_sender: TracingUnboundedSender<Bundle<Block::Extrinsic>>,
-	pub execution_receipt_sender: TracingUnboundedSender<ExecutionReceipt<Block::Hash>>,
-	pub backend: Arc<Backend>,
-	pub create_inherent_data_providers: Arc<CIDP>,
-	pub code_executor: Arc<E>,
-	pub is_authority: bool,
-}
-
-/// Start the executor.
-pub async fn start_executor<Block, Spawner, Client, TransactionPool, Backend, CIDP, E>(
-	StartExecutorParams {
-		client,
-		announce_block: _,
-		mut overseer_handle,
-		spawner,
-		parachain_consensus,
-		transaction_pool,
-		bundle_sender,
-		execution_receipt_sender,
-		backend,
-		create_inherent_data_providers,
-		code_executor,
-		is_authority,
-	}: StartExecutorParams<Block, Spawner, Client, TransactionPool, Backend, CIDP, E>,
-) -> Executor<Block, Client, TransactionPool, Backend, CIDP, E>
+/// Returns the active leaves the overseer should start with.
+async fn active_leaves<PBlock, PClient, SC>(
+	client: &PClient,
+	select_chain: &SC,
+) -> Result<Vec<BlockInfo<PBlock>>, sp_consensus::Error>
 where
-	Block: BlockT,
-	Backend: sc_client_api::Backend<Block> + Send + Sync + 'static,
-	TransactionFor<Backend, Block>: sp_trie::HashDBT<HashFor<Block>, sp_trie::DBValue>,
-	Spawner: SpawnNamed + Clone + Send + Sync + 'static,
-	Client: HeaderBackend<Block>
-		+ BlockBackend<Block>
-		+ AuxStore
-		+ ProvideRuntimeApi<Block>
-		+ Send
-		+ Sync
-		+ 'static,
-	Client::Api: SecondaryApi<Block, AccountId>
-		+ sp_block_builder::BlockBuilder<Block>
-		+ sp_api::ApiExt<
-			Block,
-			StateBackend = sc_client_api::backend::StateBackendFor<Backend, Block>,
-		>,
-	for<'b> &'b Client: sc_consensus::BlockImport<
-		Block,
-		Transaction = sp_api::TransactionFor<Client, Block>,
-		Error = sp_consensus::Error,
-	>,
-	TransactionPool:
-		sc_transaction_pool_api::TransactionPool<Block = Block> + Send + Sync + 'static,
-	CIDP: CreateInherentDataProviders<Block, Hash> + 'static,
-	E: CodeExecutor,
+	PBlock: BlockT,
+	PClient: HeaderBackend<PBlock> + ProvideRuntimeApi<PBlock> + 'static,
+	SC: SelectChain<PBlock>,
 {
-	let executor = Executor::new(
-		parachain_consensus,
-		client,
-		spawner,
-		overseer_handle.clone(),
-		transaction_pool,
-		Arc::new(bundle_sender),
-		Arc::new(execution_receipt_sender),
-		backend,
-		create_inherent_data_providers,
-		code_executor,
-		is_authority,
-	);
+	let best_block = select_chain.best_chain().await?;
 
-	let span = tracing::Span::current();
-	let config = CollationGenerationConfig {
-		bundler: {
-			let executor = executor.clone();
-			let span = span.clone();
+	let mut leaves = select_chain
+		.leaves()
+		.await
+		.unwrap_or_default()
+		.into_iter()
+		.filter_map(|hash| {
+			let number = client.number(hash).ok()??;
 
-			Box::new(move |primary_hash, slot_info| {
-				let executor = executor.clone();
-				executor
-					.produce_bundle(primary_hash, slot_info)
-					.instrument(span.clone())
-					.boxed()
-			})
-		},
-		processor: {
-			let executor = executor.clone();
+			// Only consider leaves that are in maximum an uncle of the best block.
+			if number < best_block.number().saturating_sub(One::one()) || hash == best_block.hash()
+			{
+				return None
+			};
 
-			Box::new(move |primary_hash, bundles, shuffling_seed| {
-				let executor = executor.clone();
-				executor
-					.process_bundles(primary_hash, bundles, shuffling_seed)
-					.instrument(span.clone())
-					.boxed()
-			})
-		},
-	};
+			let parent_hash = *client.header(BlockId::Hash(hash)).ok()??.parent_hash();
 
-	overseer_handle
-		.send_msg(CollationGenerationMessage::Initialize(config), "StartCollator")
-		.await;
+			Some(BlockInfo { hash, parent_hash, number })
+		})
+		.collect::<Vec<_>>();
 
-	executor
+	// Sort by block number and get the maximum number of leaves
+	leaves.sort_by_key(|b| b.number);
+
+	leaves.push(BlockInfo {
+		hash: best_block.hash(),
+		parent_hash: *best_block.parent_hash(),
+		number: *best_block.number(),
+	});
+
+	/// The maximum number of active leaves we forward to the [`Overseer`] on startup.
+	const MAX_ACTIVE_LEAVES: usize = 4;
+
+	Ok(leaves.into_iter().rev().take(MAX_ACTIVE_LEAVES).collect())
 }

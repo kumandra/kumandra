@@ -55,7 +55,7 @@ fn view<P: AsRef<Path>>(
         println!(
             "{}",
             public.to_ss58check_with_version(
-                Ss58AddressFormatRegistry::SubspaceTestnetAccount.into()
+                Ss58AddressFormatRegistry::KumandraTestnetAccount.into()
             )
         );
     }

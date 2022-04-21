@@ -24,7 +24,10 @@ async fn test_executor_full_node_catching_up() {
 	let tokio_handle = tokio::runtime::Handle::current();
 
 	// start alice
-	let alice = run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![], true);
+	let (alice, alice_network_starter) =
+		run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![]);
+
+	alice_network_starter.start_network();
 
 	// run neak charlie (a secondary chain authority node)
 	let charlie = neak_test_service::TestNodeBuilder::new(tokio_handle.clone(), Charlie)
@@ -61,7 +64,10 @@ async fn execution_proof_creation_and_verification_should_work() {
 	let tokio_handle = tokio::runtime::Handle::current();
 
 	// start alice
-	let alice = run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![], true);
+	let (alice, alice_network_starter) =
+		run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![]);
+
+	alice_network_starter.start_network();
 
 	// run neak charlie (a secondary chain authority node)
 	let charlie = neak_test_service::TestNodeBuilder::new(tokio_handle.clone(), Charlie)
@@ -85,7 +91,7 @@ async fn execution_proof_creation_and_verification_should_work() {
 			dest: neak_test_service::runtime::Address::Id(Charlie.public().into()),
 			value: 8,
 		},
-		Alice.into(),
+		Alice,
 		false,
 		0,
 	);
@@ -95,7 +101,7 @@ async fn execution_proof_creation_and_verification_should_work() {
 			dest: neak_test_service::runtime::Address::Id(Dave.public().into()),
 			value: 8,
 		},
-		Alice.into(),
+		Alice,
 		false,
 		1,
 	);
@@ -105,7 +111,7 @@ async fn execution_proof_creation_and_verification_should_work() {
 			dest: neak_test_service::runtime::Address::Id(Charlie.public().into()),
 			value: 88,
 		},
-		Alice.into(),
+		Alice,
 		false,
 		2,
 	);
@@ -151,6 +157,10 @@ async fn execution_proof_creation_and_verification_should_work() {
 		intermediate_roots.clone().into_iter().map(Hash::from).collect::<Vec<_>>()
 	);
 
+	// TODO: Fix the failed test https://github.com/subspace/subspace/runs/5663241460?check_suite_focus=true
+	// Somehow the runtime api `intermediate_roots()` occasionally returns an unexpected number of roots.
+	// Haven't figured it out hence we simply ignore the rest of test so that it won't randomly interrupt
+	// the process of other PRs.
 	if intermediate_roots.len() != test_txs.len() + 1 {
 		println!("🐛 ERROR: runtime API `intermediate_roots()` returned a wrong result");
 		return
@@ -295,7 +305,7 @@ async fn execution_proof_creation_and_verification_should_work() {
 	let fraud_proof = FraudProof {
 		parent_hash: parent_hash_alice,
 		pre_state_root: intermediate_roots.last().unwrap().into(),
-		post_state_root: post_execution_root.into(),
+		post_state_root: post_execution_root,
 		proof: storage_proof,
 		execution_phase,
 	};
@@ -311,7 +321,10 @@ async fn invalid_execution_proof_should_not_work() {
 	let tokio_handle = tokio::runtime::Handle::current();
 
 	// start alice
-	let alice = run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![], true);
+	let (alice, alice_network_starter) =
+		run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![]);
+
+	alice_network_starter.start_network();
 
 	// run neak charlie (a secondary chain authority node)
 	let charlie = neak_test_service::TestNodeBuilder::new(tokio_handle.clone(), Charlie)
@@ -335,7 +348,7 @@ async fn invalid_execution_proof_should_not_work() {
 			dest: neak_test_service::runtime::Address::Id(Charlie.public().into()),
 			value: 8,
 		},
-		Alice.into(),
+		Alice,
 		false,
 		0,
 	);
@@ -346,7 +359,7 @@ async fn invalid_execution_proof_should_not_work() {
 			dest: neak_test_service::runtime::Address::Id(Charlie.public().into()),
 			value: 8,
 		},
-		Alice.into(),
+		Alice,
 		false,
 		1,
 	);
@@ -399,7 +412,7 @@ async fn invalid_execution_proof_should_not_work() {
 			.prove_execution(
 				BlockId::Hash(parent_header.hash()),
 				&execution_phase,
-				Some((delta.clone(), post_delta_root.clone())),
+				Some((delta, post_delta_root)),
 			)
 			.expect("Create extrinsic execution proof");
 
@@ -472,7 +485,10 @@ async fn set_new_code_should_work() {
 	let tokio_handle = tokio::runtime::Handle::current();
 
 	// start alice
-	let alice = run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![], true);
+	let (alice, alice_network_starter) =
+		run_primary_chain_validator_node(tokio_handle.clone(), Alice, vec![]);
+
+	alice_network_starter.start_network();
 
 	// run neak charlie (a secondary chain authority node)
 	let charlie = neak_test_service::TestNodeBuilder::new(tokio_handle.clone(), Charlie)
