@@ -1,4 +1,4 @@
-// Copyright (C) 2021 KOOMPI, Inc.
+// Copyright (C) 2021 Subspace Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! This module includes Merkle Tree implementation used in Kumandra
+//! This module includes Merkle Tree implementation used in Subspace
 extern crate alloc;
 
 use alloc::borrow::Cow;
@@ -94,17 +94,8 @@ impl<'a> Witness<'a> {
         }
 
         // Hash one more time as Merkle Tree implementation does
-        let leaf_hash = {
-            let mut hasher = Sha256::new();
-            // Merkle Tree leaf hash prefix
-            hasher.update(&[0x00]);
-            hasher.update(leaf_hash);
-            hasher
-                .finalize()
-                .as_slice()
-                .try_into()
-                .expect("Sha256 output is always 32 bytes; qed")
-        };
+        // Merkle Tree leaf hash prefix is `0x00`
+        let leaf_hash = crypto::sha256_hash_pair(&[0x00], leaf_hash);
 
         // Reconstruct lemma for verification
         let lemma = iter::once(leaf_hash)

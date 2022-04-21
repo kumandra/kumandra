@@ -14,22 +14,22 @@ include = [
 [dependencies]
 merkletree = "0.21.0"
 parity-scale-codec = { version = "3.1.2", features = ["derive"], default-features = false }
-reed-solomon-erasure = { version = "5.0.1", default-features = true }
+reed-solomon-erasure = { version = "5.0.2", default-features = true }
 serde = { version = "1.0.136", optional = true, features = ["derive"] }
-kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core", default-features = false }
+kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core/", default-features = false }
 thiserror = { version = "1.0.30", optional = true }
 typenum = "1.14.0"
 
 # Ugly workaround for https://github.com/rust-lang/cargo/issues/1197
 [target.'cfg(any(target_os = "linux", target_os = "macos", all(target_os = "windows", target_env = "gnu")))'.dependencies.sha2]
 features = ["asm"]
-version = "0.10.0"
+version = "0.10.2"
 
 # Ugly workaround for https://github.com/rust-lang/cargo/issues/1197
 # `asm` feature is not supported on Windows except with GNU toolchain
 [target.'cfg(not(any(target_os = "linux", target_os = "macos", all(target_os = "windows", target_env = "gnu"))))'.dependencies.sha2]
 default-features = false
-version = "0.10.0"
+version = "0.10.2"
 
 [dev-dependencies]
 criterion = "0.3.5"
