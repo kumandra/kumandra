@@ -50,8 +50,8 @@ struct FarmingArgs {
     /// Custom path for data storage instead of platform-specific default
     #[clap(long, value_hint = ValueHint::FilePath)]
     custom_path: Option<PathBuf>,
-    /// Multiaddr to listen on for Kumandra networking, for instance `/ip4/0.0.0.0/tcp/0`,
-    /// multiple are supported, Kumandra networking is disabled when none specified
+    /// Multiaddr to listen on for kumandra networking, for instance `/ip4/0.0.0.0/tcp/0`,
+    /// multiple are supported, kumandra networking is disabled when none specified
     #[clap(long)]
     listen_on: Vec<Multiaddr>,
     /// WebSocket RPC URL of the Kumandra node to connect to
@@ -116,7 +116,7 @@ async fn main() -> Result<()> {
         }
         Command::ErasePlot { custom_path } => {
             let path = utils::get_path(custom_path);
-            commands::erase_plot(&path)?;
+            commands::erase(&path)?;
             info!("Done");
         }
         Command::Wipe { custom_path } => {

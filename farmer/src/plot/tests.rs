@@ -1,9 +1,7 @@
 use crate::plot::Plot;
 use rand::prelude::*;
 use std::sync::Arc;
-use kumandra_core_primitives::{
-    ArchivedBlockProgress, FlatPieces, LastArchivedBlock, Piece, RootBlock, PIECE_SIZE,
-};
+use kumandra_core_primitives::{FlatPieces, Piece, PIECE_SIZE};
 use kumandra_solving::PieceDistance;
 use tempfile::TempDir;
 
@@ -48,30 +46,6 @@ async fn read_write() {
     // Make sure it is still not empty on reopen
     let plot = Plot::open_or_create(&base_directory, [0; 32].into(), u64::MAX).unwrap();
     assert!(!plot.is_empty());
-}
-
-#[tokio::test(flavor = "multi_thread")]
-async fn last_root_block() {
-    init();
-    let base_directory = TempDir::new().unwrap();
-
-    let plot = Plot::open_or_create(&base_directory, [0; 32].into(), u64::MAX).unwrap();
-
-    assert!(plot.get_last_root_block().unwrap().is_none());
-
-    let root_block = RootBlock::V0 {
-        segment_index: rand::random(),
-        records_root: rand::random(),
-        prev_root_block_hash: rand::random(),
-        last_archived_block: LastArchivedBlock {
-            number: rand::random(),
-            archived_progress: ArchivedBlockProgress::Partial(rand::random()),
-        },
-    };
-
-    plot.set_last_root_block(&root_block).unwrap();
-
-    assert_eq!(plot.get_last_root_block().unwrap(), Some(root_block));
 }
 
 #[tokio::test(flavor = "multi_thread")]
@@ -122,7 +96,7 @@ async fn partial_plot() {
     assert!(!plot.is_empty());
 
     let mut piece_indexes = (0..pieces_to_plot).collect::<Vec<_>>();
-    piece_indexes.sort_by_key(|i| PieceDistance::xor_distance(&(*i).into(), &address));
+    piece_indexes.sort_by_key(|i| PieceDistance::distance(&(*i).into(), &address));
 
     // First pieces should be present and equal
     for &i in &piece_indexes[..max_plot_pieces as usize] {

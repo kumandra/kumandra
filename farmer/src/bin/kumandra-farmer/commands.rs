@@ -7,35 +7,28 @@ use log::info;
 use std::path::Path;
 use std::{fs, io};
 
-/// Helper function for ignoring the error that given file/directory does not exist.
-fn try_remove<P: AsRef<Path>>(
-    path: P,
-    remove: impl FnOnce(P) -> std::io::Result<()>,
-) -> io::Result<()> {
-    if path.as_ref().exists() {
-        remove(path)?;
-    }
-    Ok(())
-}
+pub(crate) fn erase(path: impl AsRef<Path>) -> io::Result<()> {
+    // TODO: Remove this line in one of future releases
+    kumandra_farmer::Plot::erase(path.as_ref())?;
 
-pub(crate) fn erase_plot<P: AsRef<Path>>(path: P) -> io::Result<()> {
-    info!("Erasing the plot");
-    try_remove(path.as_ref().join("plot.bin"), fs::remove_file)?;
-    info!("Erasing plot metadata");
-    try_remove(path.as_ref().join("plot-metadata"), fs::remove_dir_all)?;
-    info!("Erasing plot commitments");
-    try_remove(path.as_ref().join("commitments"), fs::remove_dir_all)?;
-    info!("Erasing object mappings");
-    try_remove(path.as_ref().join("object-mappings"), fs::remove_dir_all)?;
-
-    Ok(())
+    let _ = std::fs::remove_dir_all(path.as_ref().join("object-mappings"));
+    (0..)
+        .map(|i| path.as_ref().join(format!("plot{i}")))
+        .take_while(|path| path.is_dir())
+        .try_for_each(|replica_path| {
+            info!("Erasing plot replica at path `{replica_path:?}'");
+            std::fs::remove_dir_all(replica_path)
+        })
 }
 
 pub(crate) fn wipe<P: AsRef<Path>>(path: P) -> io::Result<()> {
-    erase_plot(path.as_ref())?;
+    erase(path.as_ref())?;
 
     info!("Erasing identity");
-    try_remove(path.as_ref().join("identity.bin"), fs::remove_file)?;
+    let identity = path.as_ref().join("identity.bin");
+    if identity.exists() {
+        fs::remove_file(identity)?;
+    }
 
     Ok(())
 }

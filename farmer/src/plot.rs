@@ -2,10 +2,11 @@
 mod tests;
 
 use event_listener_primitives::{Bag, HandlerId};
-use log::error;
+use log::{error, info};
+use num_traits::{WrappingAdd, WrappingSub};
 use rocksdb::DB;
 use std::collections::VecDeque;
-use std::fs::{File, OpenOptions};
+use std::fs::{self, File, OpenOptions};
 use std::io;
 use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::Path;
@@ -13,12 +14,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::{Arc, Weak};
 use kumandra_core_primitives::{
-    FlatPieces, Piece, PieceIndex, PieceIndexHash, PublicKey, RootBlock, PIECE_SIZE,
+    FlatPieces, Piece, PieceIndex, PieceIndexHash, PublicKey, PIECE_SIZE,
 };
-use kumandra_solving::PieceDistance;
+use kumandra_solving::{PieceDistance, KumandraCodec};
 use thiserror::Error;
-
-const LAST_ROOT_BLOCK_KEY: &[u8] = b"last_root_block";
 
 /// Index of piece on disk
 pub(crate) type PieceOffset = u64;
@@ -111,8 +110,8 @@ struct RequestWithPriority {
 struct Inner {
     handlers: Handlers,
     requests_sender: mpsc::SyncSender<RequestWithPriority>,
-    plot_metadata_db: Arc<DB>,
     piece_count: Arc<AtomicU64>,
+    address: PublicKey,
 }
 
 impl Drop for Inner {
@@ -133,13 +132,44 @@ impl Drop for Inner {
     }
 }
 
-/// `Plot` struct is an abstraction on top of both plot and tags database.
+/// Retrieves and decodes a single piece from multiple plots
+pub fn retrieve_piece_from_plots(
+    plots: &[Plot],
+    piece_index: PieceIndex,
+) -> io::Result<Option<Piece>> {
+    let piece_index_hash = PieceIndexHash::from(piece_index);
+    let mut plots = plots.iter().collect::<Vec<_>>();
+    plots.sort_by_key(|plot| PieceDistance::distance(&piece_index_hash, plot.public_key()));
+
+    plots
+        .iter()
+        .take(2)
+        .find_map(|plot| {
+            plot.read(piece_index_hash)
+                .map(|piece| (piece, plot.public_key()))
+                .ok()
+        })
+        .map(|(mut piece, public_key)| {
+            // TODO: Do not recreate codec each time
+            KumandraCodec::new(&public_key)
+                .decode(&mut piece, piece_index)
+                .map_err(|_| io::Error::other("Failed to decode piece"))
+                .map(move |()| piece)
+        })
+        .transpose()
+}
+
+/// `Plot` is an abstraction for plotted pieces and some mappings.
 ///
-/// It converts requests to internal reads/writes to the plot and tags database. It
-/// prioritizes reads over writes by having separate queues for reads and writes requests, read
-/// requests are executed until exhausted after which at most 1 write request is handled and the
-/// cycle repeats. This allows finding solution with as little delay as possible while introducing
-/// changes to the plot at the same time (re-plotting on salt changes or extending plot size).
+/// Pieces plotted for single identity, that's why it is required to supply both address of single
+/// replica farmer and maximum amount of pieces to be stored. It offloads disk writing to separate
+/// worker, which runs in the background.
+///
+/// The worker converts requests to internal reads/writes to the plot database to direct disk
+/// reads/writes. It prioritizes reads over writes by having separate queues for high and low
+/// priority requests, read requests are executed until exhausted after which at most 1 write
+/// request is handled and the cycle repeats. This allows finding solution with as little delay as
+/// possible while introducing changes to the plot at the same time.
 #[derive(Clone)]
 pub struct Plot {
     inner: Arc<Inner>,
@@ -155,11 +185,6 @@ impl Plot {
         let plot_worker =
             PlotWorker::from_base_directory(base_directory.as_ref(), address, max_piece_count)?;
 
-        let plot_metadata_db = Arc::new(
-            DB::open_default(base_directory.as_ref().join("plot-metadata"))
-                .map_err(PlotError::MetadataDbOpen)?,
-        );
-
         let (requests_sender, requests_receiver) = mpsc::sync_channel(100);
 
         let piece_count = Arc::clone(&plot_worker.piece_count);
@@ -168,8 +193,8 @@ impl Plot {
         let inner = Inner {
             handlers: Handlers::default(),
             requests_sender,
-            plot_metadata_db,
             piece_count,
+            address,
         };
 
         Ok(Plot {
@@ -178,12 +203,17 @@ impl Plot {
     }
 
     /// How many pieces are there in the plot
-    pub(crate) fn piece_count(&self) -> PieceOffset {
+    pub fn piece_count(&self) -> PieceOffset {
         self.inner.piece_count.load(Ordering::Acquire)
     }
 
+    /// Public key for which pieces were plotted
+    pub fn public_key(&self) -> PublicKey {
+        self.inner.address
+    }
+
     /// Whether plot doesn't have anything in it
-    pub(crate) fn is_empty(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         self.piece_count() == 0
     }
 
@@ -254,30 +284,6 @@ impl Plot {
         result_receiver.recv().map_err(|error| {
             io::Error::other(format!("Write many result sender was dropped: {error}"))
         })?
-    }
-
-    /// Get last root block
-    pub(crate) fn get_last_root_block(&self) -> Result<Option<RootBlock>, rocksdb::Error> {
-        self.inner
-            .plot_metadata_db
-            .get(LAST_ROOT_BLOCK_KEY)
-            .map(|maybe_last_root_block| {
-                maybe_last_root_block.as_ref().map(|last_root_block| {
-                    serde_json::from_slice(last_root_block)
-                        .expect("Database contains incorrect last root block")
-                })
-            })
-    }
-
-    /// Store last root block
-    pub(crate) fn set_last_root_block(
-        &self,
-        last_root_block: &RootBlock,
-    ) -> Result<(), rocksdb::Error> {
-        let last_root_block = serde_json::to_vec(&last_root_block).unwrap();
-        self.inner
-            .plot_metadata_db
-            .put(LAST_ROOT_BLOCK_KEY, last_root_block)
     }
 
     pub(crate) fn downgrade(&self) -> WeakPlot {
@@ -356,6 +362,42 @@ impl Plot {
     ) -> HandlerId {
         self.inner.handlers.progress_change.add(callback)
     }
+
+    /// Helper function for ignoring the error that given file/directory does not exist.
+    fn try_remove<P: AsRef<Path>>(
+        path: P,
+        remove: impl FnOnce(P) -> io::Result<()>,
+    ) -> io::Result<()> {
+        if path.as_ref().exists() {
+            remove(path)?;
+        }
+        Ok(())
+    }
+
+    // TODO: Remove with the next snapshot (as it is unused by now)
+    /// Erases plot in specific directory
+    pub fn erase(path: impl AsRef<Path>) -> io::Result<()> {
+        info!("Erasing the plot");
+        Self::try_remove(path.as_ref().join("plot.bin"), fs::remove_file)?;
+        info!("Erasing the plot offset to index db");
+        Self::try_remove(
+            path.as_ref().join("plot-offset-to-index.bin"),
+            fs::remove_file,
+        )?;
+        info!("Erasing the plot index to offset db");
+        Self::try_remove(
+            path.as_ref().join("plot-index-to-offset"),
+            fs::remove_dir_all,
+        )?;
+        info!("Erasing plot metadata");
+        Self::try_remove(path.as_ref().join("plot-metadata"), fs::remove_dir_all)?;
+        info!("Erasing plot commitments");
+        Self::try_remove(path.as_ref().join("commitments"), fs::remove_dir_all)?;
+        info!("Erasing object mappings");
+        Self::try_remove(path.as_ref().join("object-mappings"), fs::remove_dir_all)?;
+
+        Ok(())
+    }
 }
 
 #[derive(Clone)]
@@ -369,32 +411,64 @@ impl WeakPlot {
     }
 }
 
+/// Mapping from piece index hash to piece offset.
+///
+/// Piece index hashes are transformed in the following manner:
+/// - Assume that farmer address is the middle (`2 ^ 255`) of the `PieceDistance` field
+/// - Move every piece according to that
 #[derive(Debug)]
 struct IndexHashToOffsetDB {
     inner: DB,
     address: PublicKey,
-    max_distance: Option<PieceDistance>,
+    max_distance_key: Option<PieceDistance>,
 }
 
 impl IndexHashToOffsetDB {
     fn open_default(path: impl AsRef<Path>, address: PublicKey) -> Result<Self, PlotError> {
         let inner = DB::open_default(path.as_ref()).map_err(PlotError::IndexDbOpen)?;
-        let max_distance = {
-            let mut iter = inner.raw_iterator();
-            iter.seek_to_last();
-            iter.key().map(PieceDistance::from_big_endian)
-        };
-        Ok(Self {
+        let mut me = Self {
             inner,
             address,
-            max_distance,
-        })
+            max_distance_key: None,
+        };
+        me.update_max_distance();
+        Ok(me)
+    }
+
+    fn update_max_distance(&mut self) {
+        self.max_distance_key = try {
+            let mut iter = self.inner.raw_iterator();
+            iter.seek_to_first();
+            let lower_bound = iter.key().map(PieceDistance::from_big_endian)?;
+            iter.seek_to_last();
+            let upper_bound = iter.key().map(PieceDistance::from_big_endian)?;
+
+            // Pick key which has maximum distance to our key
+            if kumandra_core_primitives::bidirectional_distance(
+                &lower_bound,
+                &PieceDistance::MIDDLE,
+            ) < kumandra_core_primitives::bidirectional_distance(
+                &upper_bound,
+                &PieceDistance::MIDDLE,
+            ) {
+                upper_bound
+            } else {
+                lower_bound
+            }
+        };
+    }
+
+    fn get_key(&self, index_hash: &PieceIndexHash) -> PieceDistance {
+        // We permute distance such that if piece index hash is equal to the `self.address` then it
+        // lands to the `PieceDistance::MIDDLE`
+        PieceDistance::from_big_endian(&index_hash.0)
+            .wrapping_sub(&PieceDistance::from_big_endian(self.address.as_ref()))
+            .wrapping_add(&PieceDistance::MIDDLE)
     }
 
     fn get(&self, index_hash: &PieceIndexHash) -> io::Result<Option<PieceOffset>> {
-        let distance = PieceDistance::xor_distance(index_hash, &self.address);
         self.inner
-            .get(&distance.to_bytes())
+            .get(&self.get_key(index_hash).to_bytes())
             .map_err(io::Error::other)
             .and_then(|opt_val| {
                 opt_val
@@ -406,21 +480,23 @@ impl IndexHashToOffsetDB {
 
     /// Returns `true` if piece plot will not result in exceeding plot size and doesn't exist
     /// already
-    fn should_store(&self, index_hash: &PieceIndexHash) -> io::Result<bool> {
-        Ok(match self.max_distance {
-            Some(max_distance) => {
-                PieceDistance::xor_distance(index_hash, &self.address) < max_distance
-                    && self.get(index_hash)?.is_none()
-            }
-            None => false,
-        })
+    fn should_store(&self, index_hash: &PieceIndexHash) -> bool {
+        self.max_distance_key
+            .map(|max_distance_key| {
+                kumandra_core_primitives::bidirectional_distance(
+                    &max_distance_key,
+                    &PieceDistance::MIDDLE,
+                ) >= PieceDistance::distance(index_hash, self.address)
+            })
+            .unwrap_or(true)
     }
 
     fn remove_furthest(&mut self) -> io::Result<Option<PieceOffset>> {
-        let max_distance = match self.max_distance {
+        let max_distance = match self.max_distance_key {
             Some(max_distance) => max_distance,
             None => return Ok(None),
         };
+
         let result = self
             .inner
             .get(&max_distance.to_bytes())
@@ -431,28 +507,31 @@ impl IndexHashToOffsetDB {
             .delete(&max_distance.to_bytes())
             .map_err(io::Error::other)?;
 
-        let mut iter = self.inner.raw_iterator();
-        iter.seek_to_last();
-        self.max_distance = iter.key().map(PieceDistance::from_big_endian);
+        self.update_max_distance();
 
         Ok(result)
     }
 
     fn put(&mut self, index_hash: &PieceIndexHash, offset: PieceOffset) -> io::Result<()> {
-        let distance = PieceDistance::xor_distance(index_hash, &self.address);
+        let key = self.get_key(index_hash);
         self.inner
-            .put(&distance.to_bytes(), offset.to_le_bytes())
+            .put(&key.to_bytes(), offset.to_le_bytes())
             .map_err(io::Error::other)?;
 
-        match self.max_distance {
-            Some(old_distance) => {
-                if old_distance < distance {
-                    self.max_distance.replace(distance);
+        self.max_distance_key = match self.max_distance_key {
+            Some(max_distance_key) => {
+                if PieceDistance::distance(index_hash, self.address)
+                    > kumandra_core_primitives::bidirectional_distance(
+                        &max_distance_key,
+                        &PieceDistance::MIDDLE,
+                    )
+                {
+                    Some(key)
+                } else {
+                    Some(max_distance_key)
                 }
             }
-            None => {
-                self.max_distance.replace(distance);
-            }
+            None => Some(key),
         };
 
         Ok(())
@@ -602,7 +681,7 @@ impl PlotWorker {
             // Check if piece is out of plot range or if it is in the plot
             if !self
                 .piece_index_hash_to_offset_db
-                .should_store(&piece_index.into())?
+                .should_store(&piece_index.into())
             {
                 continue;
             }
