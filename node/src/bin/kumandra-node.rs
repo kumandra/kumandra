@@ -90,7 +90,7 @@ fn main() -> std::result::Result<(), Error> {
                     import_queue,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -105,7 +105,7 @@ fn main() -> std::result::Result<(), Error> {
                     client,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, config.database)
                         .map_err(Error::SubstrateCli),
@@ -121,7 +121,7 @@ fn main() -> std::result::Result<(), Error> {
                     client,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, config.chain_spec)
                         .map_err(Error::SubstrateCli),
@@ -138,7 +138,7 @@ fn main() -> std::result::Result<(), Error> {
                     import_queue,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -154,7 +154,7 @@ fn main() -> std::result::Result<(), Error> {
                     import_queue,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -174,7 +174,7 @@ fn main() -> std::result::Result<(), Error> {
                     backend,
                     task_manager,
                     ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, backend, None).map_err(Error::SubstrateCli),
                     task_manager,
@@ -187,7 +187,7 @@ fn main() -> std::result::Result<(), Error> {
             runner.sync_run(|config| {
                 let PartialComponents {
                     client, backend, ..
-                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
 
                 // This switch needs to be in the client, since the client decides
                 // which sub-commands it wants to support.

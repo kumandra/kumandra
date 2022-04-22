@@ -23,7 +23,9 @@
 
 use sc_client_api::BlockBackend;
 use kc_consensus::notification::KumandraNotificationStream;
-use kc_consensus::{ArchivedSegment, BlockSigningNotification, NewSlotNotification};
+use kc_consensus::{
+    ArchivedSegmentNotification, BlockSigningNotification, NewSlotNotification,
+};
 use sc_rpc::SubscriptionTaskExecutor;
 use sc_rpc_api::DenyUnsafe;
 use sc_transaction_pool_api::TransactionPool;
@@ -50,7 +52,8 @@ pub struct FullDeps<C, P> {
     /// signature back.
     pub block_signing_notification_stream: KumandraNotificationStream<BlockSigningNotification>,
     /// A stream with notifications about archived segment creation.
-    pub archived_segment_notification_stream: KumandraNotificationStream<ArchivedSegment>,
+    pub archived_segment_notification_stream:
+        KumandraNotificationStream<ArchivedSegmentNotification>,
 }
 
 /// Instantiate all full RPC extensions.

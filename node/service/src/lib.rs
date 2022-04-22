@@ -18,42 +18,36 @@
 
 pub mod rpc;
 
-use lru::LruCache;
-use selendra_node_collation_generation::CollationGenerationSubsystem;
-use selendra_node_core_chain_api::ChainApiSubsystem;
-use selendra_node_core_runtime_api::RuntimeApiSubsystem;
-use selendra_node_subsystem_util::metrics::Metrics;
-use selendra_overseer::{
-    metrics::Metrics as OverseerMetrics, BlockInfo, Handle, MetricsTrait, Overseer,
-    OverseerConnector, KNOWN_LEAVES_CACHE_SIZE,
-};
+use derive_more::{Deref, DerefMut, Into};
+use futures::channel::mpsc;
+use sc_basic_authorship::ProposerFactory;
 use sc_client_api::ExecutorProvider;
 use sc_consensus::BlockImport;
 use sc_consensus_slots::SlotProportion;
 use kc_consensus::{
-    notification::KumandraNotificationStream, BlockSigningNotification, NewSlotNotification,
-    KumandraLink,
+    notification::KumandraNotificationStream, ArchivedSegmentNotification,
+    BlockSigningNotification, NewSlotNotification, KumandraLink, KumandraParams,
 };
 use sc_executor::{NativeElseWasmExecutor, NativeExecutionDispatch};
 use sc_service::{error::Error as ServiceError, Configuration, TaskManager};
+use sc_service::{NetworkStarter, SpawnTasksParams};
 use sc_telemetry::{Telemetry, TelemetryWorker};
-use sp_api::{ConstructRuntimeApi, TransactionFor};
-use sp_blockchain::HeaderBackend;
-use sp_consensus::{CanAuthorWithNativeVersion, Error as ConsensusError, SelectChain};
+use sp_api::{ConstructRuntimeApi, NumberFor, TransactionFor};
+use sp_consensus::{CanAuthorWithNativeVersion, Error as ConsensusError};
 use sp_consensus_slots::Slot;
-use sp_runtime::traits::{BlakeTwo256, Block as BlockT, Header as HeaderT};
+use sp_runtime::generic::BlockId;
+use sp_runtime::traits::{BlakeTwo256, Block as BlockT};
 use std::sync::Arc;
-use kumandra_runtime_primitives::{
-    opaque::{Block, BlockId},
-    AccountId, Balance, Index as Nonce,
-};
+use kumandra_core_primitives::RootBlock;
+use kumandra_runtime_primitives::{opaque::Block, AccountId, Balance, Index as Nonce};
 
+// TODO: Check if this is still necessary and remove if not
 /// A set of APIs that kumandra-like runtimes must implement.
 pub trait RuntimeApiCollection:
     sp_api::ApiExt<Block>
     + sp_api::Metadata<Block>
     + sp_block_builder::BlockBuilder<Block>
-    + kp_executor::ExecutorApi<Block>
+    + sp_executor::ExecutorApi<Block>
     + sp_offchain::OffchainWorkerApi<Block>
     + sp_session::SessionKeys<Block>
     + kp_consensus::KumandraApi<Block>
@@ -70,7 +64,7 @@ where
     Api: sp_api::ApiExt<Block>
         + sp_api::Metadata<Block>
         + sp_block_builder::BlockBuilder<Block>
-        + kp_executor::ExecutorApi<Block>
+        + sp_executor::ExecutorApi<Block>
         + sp_offchain::OffchainWorkerApi<Block>
         + sp_session::SessionKeys<Block>
         + kp_consensus::KumandraApi<Block>
@@ -96,10 +90,6 @@ pub enum Error {
     #[error(transparent)]
     Sub(#[from] sc_service::Error),
 
-    /// Substrate client error.
-    #[error(transparent)]
-    Blockchain(#[from] sp_blockchain::Error),
-
     /// Substrate consensus error.
     #[error(transparent)]
     Consensus(#[from] sp_consensus::Error),
@@ -108,21 +98,39 @@ pub enum Error {
     #[error(transparent)]
     Telemetry(#[from] sc_telemetry::Error),
 
-    /// Selendra overseer error.
-    #[error("Failed to create an overseer")]
-    Overseer(#[from] selendra_overseer::SubsystemError),
-
     /// Prometheus error.
     #[error(transparent)]
     Prometheus(#[from] substrate_prometheus_endpoint::PrometheusError),
 }
 
-/// kumandra-like full client.
+/// Kumandra-like full client.
 pub type FullClient<RuntimeApi, ExecutorDispatch> =
     sc_service::TFullClient<Block, RuntimeApi, NativeElseWasmExecutor<ExecutorDispatch>>;
 
-type FullBackend = sc_service::TFullBackend<Block>;
-type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
+pub type FullBackend = sc_service::TFullBackend<Block>;
+pub type FullSelectChain = sc_consensus::LongestChain<FullBackend, Block>;
+
+/// Kumandra-specific service configuration.
+#[derive(Debug, Deref, DerefMut, Into)]
+pub struct KumandraConfiguration {
+    /// Base configuration.
+    #[deref]
+    #[deref_mut]
+    #[into]
+    pub base: Configuration,
+    /// Whether slot notifications need to be present even if node is not responsible for block
+    /// authoring.
+    pub force_new_slot_notifications: bool,
+}
+
+impl From<Configuration> for KumandraConfiguration {
+    fn from(base: Configuration) -> Self {
+        Self {
+            base,
+            force_new_slot_notifications: false,
+        }
+    }
+}
 
 /// Creates `PartialComponents` for Kumandra client.
 #[allow(clippy::type_complexity)]
@@ -210,8 +218,8 @@ where
         client.clone(),
     );
 
-    let (block_import, kumandra_link) = kc_consensus::block_import(
-        kc_consensus::Config::get(&*client)?,
+    let (block_import, kumandra_link) = sc_consensus_kumandra::block_import(
+        sc_consensus_kumandra::Config::get(&*client)?,
         client.clone(),
         client.clone(),
         CanAuthorWithNativeVersion::new(client.executor().clone()),
@@ -249,14 +257,15 @@ where
         },
     )?;
 
-    kc_consensus::start_kumandra_archiver(
+    kc_consensus_::start_kumandra_archiver(
         &kumandra_link,
         client.clone(),
         &task_manager.spawn_essential_handle(),
+        config.role.is_authority(),
     );
 
     let slot_duration = kumandra_link.config().slot_duration();
-    let import_queue = kc_consensus::import_queue(
+    let import_queue = kc_consensus_::import_queue(
         block_import.clone(),
         None,
         client.clone(),
@@ -283,68 +292,14 @@ where
     })
 }
 
-/// Returns the active leaves the overseer should start with.
-async fn active_leaves<RuntimeApi, ExecutorDispatch>(
-    select_chain: &impl SelectChain<Block>,
-    client: &FullClient<RuntimeApi, ExecutorDispatch>,
-) -> Result<Vec<BlockInfo>, Error>
-where
-    RuntimeApi: ConstructRuntimeApi<Block, FullClient<RuntimeApi, ExecutorDispatch>>
-        + Send
-        + Sync
-        + 'static,
-    RuntimeApi::RuntimeApi:
-        RuntimeApiCollection<StateBackend = sc_client_api::StateBackendFor<FullBackend, Block>>,
-    ExecutorDispatch: NativeExecutionDispatch + 'static,
-{
-    let best_block = select_chain.best_chain().await?;
-
-    let mut leaves = select_chain
-        .leaves()
-        .await
-        .unwrap_or_default()
-        .into_iter()
-        .filter_map(|hash| {
-            let number = client.number(hash).ok()??;
-
-            // Only consider leaves that are in maximum an uncle of the best block.
-            if number < best_block.number().saturating_sub(1) || hash == best_block.hash() {
-                return None;
-            };
-
-            let parent_hash = client.header(&BlockId::Hash(hash)).ok()??.parent_hash;
-
-            Some(BlockInfo {
-                hash,
-                parent_hash,
-                number,
-            })
-        })
-        .collect::<Vec<_>>();
-
-    // Sort by block number and get the maximum number of leaves
-    leaves.sort_by_key(|b| b.number);
-
-    leaves.push(BlockInfo {
-        hash: best_block.hash(),
-        parent_hash: *best_block.parent_hash(),
-        number: *best_block.number(),
-    });
-
-    /// The maximum number of active leaves we forward to the [`Overseer`] on startup.
-    const MAX_ACTIVE_LEAVES: usize = 4;
-
-    Ok(leaves.into_iter().rev().take(MAX_ACTIVE_LEAVES).collect())
-}
-
-/// Full client along with some other components.
+/// Full node along with some other components.
 pub struct NewFull<C> {
     /// Task manager.
     pub task_manager: TaskManager,
     /// Full client.
     pub client: C,
-    /// Handle to communicate with the overseer.
-    pub overseer_handle: Option<Handle>,
+    /// Chain selection rule.
+    pub select_chain: FullSelectChain,
     /// Network.
     pub network: Arc<sc_network::NetworkService<Block, <Block as BlockT>::Hash>>,
     /// RPC handlers.
@@ -355,11 +310,19 @@ pub struct NewFull<C> {
     pub new_slot_notification_stream: KumandraNotificationStream<NewSlotNotification>,
     /// Block signing stream.
     pub block_signing_notification_stream: KumandraNotificationStream<BlockSigningNotification>,
+    /// Imported block stream.
+    pub imported_block_notification_stream:
+        KumandraNotificationStream<(NumberFor<Block>, mpsc::Sender<RootBlock>)>,
+    /// Archived segment stream.
+    pub archived_segment_notification_stream:
+        KumandraNotificationStream<ArchivedSegmentNotification>,
+    /// Network starter.
+    pub network_starter: NetworkStarter,
 }
 
 /// Builds a new service for a full client.
-pub async fn new_full<RuntimeApi, ExecutorDispatch>(
-    config: Configuration,
+pub fn new_full<RuntimeApi, ExecutorDispatch>(
+    config: KumandraConfiguration,
     enable_rpc_extensions: bool,
 ) -> Result<NewFull<Arc<FullClient<RuntimeApi, ExecutorDispatch>>>, Error>
 where
@@ -407,97 +370,11 @@ where
 
     let new_slot_notification_stream = kumandra_link.new_slot_notification_stream();
     let block_signing_notification_stream = kumandra_link.block_signing_notification_stream();
+    let imported_block_notification_stream = kumandra_link.imported_block_notification_stream();
     let archived_segment_notification_stream = kumandra_link.archived_segment_notification_stream();
 
-    // TODO: In the future we want `--executor` CLI flag instead
-    let overseer_handle = if config.role.is_authority() {
-        let active_leaves = active_leaves(&select_chain, &*client).await?;
-
-        let spawner = task_manager.spawn_handle();
-
-        let (overseer, overseer_handle) = Overseer::builder()
-            .chain_api(ChainApiSubsystem::new(
-                client.clone(),
-                Metrics::register(prometheus_registry.as_ref())?,
-            ))
-            .collation_generation(CollationGenerationSubsystem::new(Metrics::register(
-                prometheus_registry.as_ref(),
-            )?))
-            .runtime_api(RuntimeApiSubsystem::new(
-                client.clone(),
-                Metrics::register(prometheus_registry.as_ref())?,
-                spawner.clone(),
-            ))
-            .leaves(
-                active_leaves
-                    .into_iter()
-                    .map(
-                        |BlockInfo {
-                             hash,
-                             parent_hash: _,
-                             number,    
-                         }| (hash, number),
-                    )
-                    .collect(),
-            )
-            .activation_external_listeners(Default::default())
-            .span_per_active_leaf(Default::default())
-            .active_leaves(Default::default())
-            .known_leaves(LruCache::new(KNOWN_LEAVES_CACHE_SIZE))
-            .metrics(<OverseerMetrics as MetricsTrait>::register(
-                prometheus_registry.as_ref(),
-            )?)
-            .spawner(spawner)
-            .build_with_connector(OverseerConnector::default())?;
-
-        let handle = Handle::new(overseer_handle);
-
-        {
-            let handle = handle.clone();
-            let overseer_client = client.clone();
-            let new_slot_notification_stream_clone = new_slot_notification_stream.clone();
-            task_manager.spawn_essential_handle().spawn_blocking(
-                "overseer",
-                Some("overseer"),
-                Box::pin(async move {
-                    use neak_node_primitives::ExecutorSlotInfo;
-                    use futures::{pin_mut, select, FutureExt, StreamExt};
-
-                    let forward = selendra_overseer::forward_events(
-                        overseer_client,
-                        Box::pin(new_slot_notification_stream_clone.subscribe().then(
-                            |slot_notification| async move {
-                                let slot_info = slot_notification.new_slot_info;
-                                ExecutorSlotInfo {
-                                    slot: slot_info.slot,
-                                    global_challenge: slot_info.global_challenge,
-                                }
-                            },
-                        )),
-                        handle,
-                    );
-
-                    let forward = forward.fuse();
-                    let overseer_fut = overseer.run().fuse();
-
-                    pin_mut!(overseer_fut);
-                    pin_mut!(forward);
-
-                    select! {
-                        _ = forward => (),
-                        _ = overseer_fut => (),
-                        complete => (),
-                    }
-                }),
-            );
-        }
-        Some(handle)
-    } else {
-        None
-    };
-
-    if config.role.is_authority() {
-        let proposer_factory = sc_basic_authorship::ProposerFactory::new(
+    if config.role.is_authority() || config.force_new_slot_notifications {
+        let proposer_factory = ProposerFactory::new(
             task_manager.spawn_handle(),
             client.clone(),
             transaction_pool.clone(),
@@ -505,9 +382,9 @@ where
             telemetry.as_ref().map(|x| x.handle()),
         );
 
-        let kumandra_config = kc_consensus::KumandraParams {
+        let kumandra_config = KumandraParams {
             client: client.clone(),
-            select_chain,
+            select_chain: select_chain.clone(),
             env: proposer_factory,
             block_import,
             sync_oracle: network.clone(),
@@ -555,7 +432,7 @@ where
             telemetry: None,
         };
 
-        let kumandra = kc_consensus::start_kumandra(kumandra_config)?;
+        let kumandra = kc_consensus_::start_kumandra(kumandra_config)?;
 
         // Kumandra authoring task is considered essential, i.e. if it fails we take down the
         // service with it.
@@ -566,7 +443,7 @@ where
         );
     }
 
-    let rpc_handlers = sc_service::spawn_tasks(sc_service::SpawnTasksParams {
+    let rpc_handlers = sc_service::spawn_tasks(SpawnTasksParams {
         network: network.clone(),
         client: client.clone(),
         keystore: keystore_container.sync_keystore(),
@@ -576,6 +453,7 @@ where
             let client = client.clone();
             let new_slot_notification_stream = new_slot_notification_stream.clone();
             let block_signing_notification_stream = block_signing_notification_stream.clone();
+            let archived_segment_notification_stream = archived_segment_notification_stream.clone();
 
             Box::new(move |deny_unsafe, subscription_executor| {
                 let deps = crate::rpc::FullDeps {
@@ -596,20 +474,21 @@ where
         },
         backend: backend.clone(),
         system_rpc_tx,
-        config,
+        config: config.into(),
         telemetry: telemetry.as_mut(),
     })?;
-
-    network_starter.start_network();
 
     Ok(NewFull {
         task_manager,
         client,
-        overseer_handle,
+        select_chain,
         network,
         rpc_handlers,
         backend,
         new_slot_notification_stream,
         block_signing_notification_stream,
+        imported_block_notification_stream,
+        archived_segment_notification_stream,
+        network_starter,
     })
 }
