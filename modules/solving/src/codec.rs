@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Kumandra Labs, Inc.
+// Copyright (C) 2021 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 
 use log::error;
 use rayon::prelude::*;
@@ -112,10 +113,10 @@ impl KumandraCodec {
     /// Encode given batch of pieces using the best method available, which might be GPU, CPU or
     /// combination of both.
     ///
-    /// [`KumandraCodec::recommended_batch_size()`] can be used to determine the recommended batch
-    /// size, input should ideally contain at least that many worth of pieces to achieve highest
-    /// efficiency, it is recommended that the input is a multiple of that, but, strictly speaking,
-    /// doesn't have to be.
+    /// [`KumandraCodec::batch_size()`] can be used to determine the recommended batch size, input
+    /// should ideally contain at least that many worth of pieces to achieve highest efficiency, it
+    /// is recommended that the input is a multiple of that, but, strictly speaking, doesn't have to
+    /// be.
     ///
     /// NOTE: When error is returned, some pieces might have been modified and should be considered
     /// in inconsistent state!
@@ -191,7 +192,7 @@ impl KumandraCodec {
         pieces: &mut [u8],
         piece_indexes: &[u64],
     ) -> Result<(), cuda::EncodeError> {
-        use kumandra_core_primitives::SHA256_HASH_SIZE;
+        use kumanmdra_core_primitives::SHA256_HASH_SIZE;
         let mut expanded_ivs = vec![0u8; pieces.len() / PIECE_SIZE * SHA256_HASH_SIZE];
         expanded_ivs
             .par_chunks_exact_mut(SHA256_HASH_SIZE)
