@@ -18,26 +18,28 @@
 
 mod chain_spec;
 mod import_blocks_from_dsn;
+mod secondary_chain_cli;
 
 pub use crate::import_blocks_from_dsn::ImportBlocksFromDsnCmd;
+pub use crate::secondary_chain_cli::SecondaryChainCli;
 use clap::Parser;
 use sc_cli::SubstrateCli;
 use sc_executor::{NativeExecutionDispatch, RuntimeVersion};
 use sc_service::ChainSpec;
 
-/// Executor dispatch for Kumandra runtime
+/// Executor dispatch for kumandra runtime
 pub struct ExecutorDispatch;
 
 impl NativeExecutionDispatch for ExecutorDispatch {
     /// Only enable the benchmarking host functions when we actually want to benchmark.
     #[cfg(feature = "runtime-benchmarks")]
     type ExtendHostFunctions = (
-        kp_executor::fraud_proof_ext::fraud_proof::HostFunctions,
+        sp_executor::fraud_proof_ext::fraud_proof::HostFunctions,
         frame_benchmarking::benchmarking::HostFunctions,
     );
     /// Otherwise we only use the default Substrate host functions.
     #[cfg(not(feature = "runtime-benchmarks"))]
-    type ExtendHostFunctions = kp_executor::fraud_proof_ext::fraud_proof::HostFunctions;
+    type ExtendHostFunctions = sp_executor::fraud_proof_ext::fraud_proof::HostFunctions;
 
     fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
         kumandra_runtime::api::dispatch(method, data)
@@ -79,8 +81,12 @@ pub enum Subcommand {
     /// Revert the chain to a previous state.
     Revert(sc_cli::RevertCmd),
 
-    /// The custom benchmark subcommand benchmarking runtime pallets.
-    #[clap(name = "benchmark", about = "Benchmark runtime pallets.")]
+    /// Run executor sub-commands.
+    #[clap(subcommand)]
+    Executor(cirrus_node::cli::Subcommand),
+
+    /// Sub-commands concerned with benchmarking.
+    #[clap(subcommand)]
     Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 }
 
@@ -94,6 +100,11 @@ pub struct RunCmd {
 
 /// Kumandra Cli.
 #[derive(Debug, Parser)]
+#[clap(
+    propagate_version = true,
+    args_conflicts_with_subcommands = true,
+    subcommand_negates_reqs = true
+)]
 pub struct Cli {
     /// Various utility commands.
     #[clap(subcommand)]
@@ -102,6 +113,15 @@ pub struct Cli {
     /// Run a node.
     #[clap(flatten)]
     pub run: RunCmd,
+
+    /// Secondary chain arguments
+    ///
+    /// The command-line arguments provided first will be passed to the embedded primary node,
+    /// while the arguments provided after -- will be passed to the executor node.
+    ///
+    /// kumandra-node [primarychain-args] -- [secondarychain-args]
+    #[clap(raw = true)]
+    pub secondary_chain_args: Vec<String>,
 }
 
 impl SubstrateCli for Cli {
@@ -122,7 +142,7 @@ impl SubstrateCli for Cli {
     }
 
     fn support_url() -> String {
-        "https://kumandra.network/support".into()
+        "https://discord.gg/vhKF9w3x".into()
     }
 
     fn copyright_start_year() -> i32 {
@@ -131,9 +151,10 @@ impl SubstrateCli for Cli {
 
     fn load_spec(&self, id: &str) -> Result<Box<dyn ChainSpec>, String> {
         Ok(match id {
-            "testnet" => Box::new(chain_spec::kumandra_testnet_config()?),
-            "dev" => Box::new(chain_spec::kumandra_development_config()?),
-            "" | "local" => Box::new(chain_spec::kumandra_local_testnet_config()?),
+            "testnet" => Box::new(chain_spec::testnet_config_json()?),
+            "testnet-compiled" => Box::new(chain_spec::testnet_config_compiled()?),
+            "dev" => Box::new(chain_spec::dev_config()?),
+            "" | "local" => Box::new(chain_spec::local_config()?),
             path => Box::new(chain_spec::KumandraChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),

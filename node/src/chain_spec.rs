@@ -22,10 +22,16 @@ use sc_telemetry::TelemetryEndpoints;
 use sp_core::crypto::Ss58Codec;
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
+use kumandra_runtime::{
+    BalancesConfig, GenesisConfig, SS58Prefix, SudoConfig, SystemConfig, VestingConfig,
+    DECIMAL_PLACES, MILLISECS_PER_BLOCK, KMD, WASM_BINARY,
+};
 use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
 
-// The URL for the telemetry server.
-const SELENDRA_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+const SELENDRA_TELEMETRY_URL: &str = "wss://telemetry.selendra.io/submit/";
+const KUMANDRA_TELEMETRY_URL: &str = "wss://telemetry.kumandra.network/submit/";
+//const TESTNET_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-snapshot-(year-month-data).json");
+//const TESTNET_BOOTSTRAP_NODE: &str = "/dns/farm-rpc.kumandra.network/tcp/30333/p2p/{address}";
 
 /// List of accounts which should receive token grants, amounts are specified in KMD.
 const TOKEN_GRANTS: &[(&str, u128)] = &[
@@ -54,8 +60,8 @@ const TOKEN_GRANTS: &[(&str, u128)] = &[
     ("5FZwEgsvZz1vpeH7UsskmNmTpbfXvAcojjgVfShgbRqgC1nx", 27_800),
 ];
 
-/// The `ChainSpec` parameterized for the Kumandra runtime.
-pub type KumandraChainSpec = sc_service::GenericChainSpec<kumandra_runtime::GenesisConfig>;
+/// The `ChainSpec` parameterized for the kumandra runtime.
+pub type KumandraChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
 
 /// Generate a crypto pair from seed.
 pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
@@ -71,20 +77,13 @@ pub fn get_account_id_from_seed(seed: &str) -> AccountId {
     AccountPublic::from(get_from_seed::<sr25519::Public>(seed)).into_account()
 }
 
-#[cfg(feature = "json-chain-spec")]
-pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
-    KumandraChainSpec::from_json_bytes(&include_bytes!("../../../chain-spec.json")[..])
+pub fn testnet_config_json() -> Result<KumandraChainSpec, String> {
+    KumandraChainSpec::from_json_bytes(TESTNET_CHAIN_SPEC)
 }
-#[cfg(not(feature = "json-chain-spec"))]
-pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::{SS58Prefix, KMD};
-
+pub fn testnet_config_compiled() -> Result<KumandraChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
-    properties.insert(
-        "tokenDecimals".into(),
-        kumandra_runtime::DECIMAL_PLACES.into(),
-    );
+    properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
     properties.insert("tokenSymbol".into(), "tKMD".into());
 
     Ok(KumandraChainSpec::from_genesis(
@@ -98,13 +97,7 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
                 AccountId::from_ss58check("5CXTmJEusve5ixyJufqHThmy4qUrrm6FyLCR7QfE4bbyMTNC")
                     .expect("Wrong root account address");
 
-            // Pre-funded accounts
-            // TODO: Remove these later, this is just for testing
-            let mut balances = vec![
-                (sudo_account.clone(), 1_000 * KMD),
-                (get_account_id_from_seed("Alice"), 1_000 * KMD),
-                (get_account_id_from_seed("Bob"), 1_000 * KMD),
-            ];
+            let mut balances = vec![];
             let vesting_schedules = TOKEN_GRANTS
                 .iter()
                 .flat_map(|&(account_address, amount)| {
@@ -114,10 +107,9 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
 
                     // TODO: Adjust start block to real value before mainnet launch
                     let start_block = 100_000_000;
-                    let one_month_in_blocks = u32::try_from(
-                        3600 * 24 * 30 * kumandra_runtime::MILLISECS_PER_BLOCK / 1000,
-                    )
-                    .expect("One month of blocks always fits in u32; qed");
+                    let one_month_in_blocks =
+                        u32::try_from(3600 * 24 * 30 * MILLISECS_PER_BLOCK / 1000)
+                            .expect("One month of blocks always fits in u32; qed");
 
                     // Add balance so it can be locked
                     balances.push((account_id.clone(), amount));
@@ -143,18 +135,23 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
                 })
                 .collect::<Vec<_>>();
             kumandra_genesis_config(
-                kumandra_runtime::WASM_BINARY.expect("Wasm binary must be built for testnet"),
+                WASM_BINARY.expect("Wasm binary must be built for testnet"),
                 sudo_account,
                 balances,
                 vesting_schedules,
             )
         },
         // Bootnodes
-        vec![],
+        vec![TESTNET_BOOTSTRAP_NODE
+            .parse()
+            .expect("Bootstrap node must be correct")],
         // Telemetry
         Some(
-            TelemetryEndpoints::new(vec![(SELENDRA_TELEMETRY_URL.into(), 0)])
-                .map_err(|error| error.to_string())?,
+            TelemetryEndpoints::new(vec![
+                (SELENDRA_TELEMETRY_URL.into(), 1),
+                (KUMANDRA_TELEMETRY_URL.into(), 1),
+            ])
+            .map_err(|error| error.to_string())?,
         ),
         // Protocol ID
         Some("kumandra-substrate"),
@@ -166,17 +163,14 @@ pub fn kumandra_testnet_config() -> Result<KumandraChainSpec, String> {
     ))
 }
 
-pub fn kumandra_development_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::KMD;
-
-    let wasm_binary = kumandra_runtime::WASM_BINARY
-        .ok_or_else(|| "Development wasm not available".to_string())?;
+pub fn dev_config() -> Result<KumandraChainSpec, String> {
+    let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
     Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Development",
+        "Kumandra development",
         // ID
-        "dev",
+        "kumandra_dev",
         ChainType::Development,
         || {
             kumandra_genesis_config(
@@ -207,17 +201,14 @@ pub fn kumandra_development_config() -> Result<KumandraChainSpec, String> {
     ))
 }
 
-pub fn kumandra_local_testnet_config() -> Result<KumandraChainSpec, String> {
-    use kumandra_runtime::KMD;
-
-    let wasm_binary = kumandra_runtime::WASM_BINARY
-        .ok_or_else(|| "Development wasm not available".to_string())?;
+pub fn local_config() -> Result<KumandraChainSpec, String> {
+    let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
     Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Local Testnet",
+        "Kumandra local",
         // ID
-        "local_testnet",
+        "kumandra_local",
         ChainType::Local,
         || {
             kumandra_genesis_config(
@@ -263,18 +254,18 @@ fn kumandra_genesis_config(
     balances: Vec<(AccountId, Balance)>,
     // who, start, period, period_count, per_period
     vesting: Vec<(AccountId, BlockNumber, BlockNumber, u32, Balance)>,
-) -> kumandra_runtime::GenesisConfig {
-    kumandra_runtime::GenesisConfig {
-        system: kumandra_runtime::SystemConfig {
+) -> GenesisConfig {
+    GenesisConfig {
+        system: SystemConfig {
             // Add Wasm runtime to storage.
             code: wasm_binary.to_vec(),
         },
-        balances: kumandra_runtime::BalancesConfig { balances },
+        balances: BalancesConfig { balances },
         transaction_payment: Default::default(),
-        sudo: kumandra_runtime::SudoConfig {
+        sudo: SudoConfig {
             // Assign network admin rights.
             key: Some(sudo_account),
         },
-        vesting: kumandra_runtime::VestingConfig { vesting },
+        vesting: VestingConfig { vesting },
     }
 }

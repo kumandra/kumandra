@@ -16,11 +16,15 @@
 
 //! Kumandra node implementation.
 
+use frame_benchmarking_cli::BenchmarkCmd;
 use futures::future::TryFutureExt;
-use sc_cli::{ChainSpec, SubstrateCli};
+use futures::StreamExt;
+use sc_cli::{ChainSpec, CliConfiguration, SubstrateCli};
+use sc_service::PartialComponents;
 use sp_core::crypto::Ss58AddressFormat;
-use kumandra_node::{Cli, ExecutorDispatch, Subcommand};
-use kumandra_runtime::RuntimeApi;
+use kumandra_node::{Cli, ExecutorDispatch, SecondaryChainCli, Subcommand};
+use kumandra_runtime::{Block, RuntimeApi};
+use kumandra_service::KumandraConfiguration;
 
 /// Kumandra node error.
 #[derive(thiserror::Error, Debug)]
@@ -81,12 +85,12 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     import_queue,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -97,11 +101,11 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, config.database)
                         .map_err(Error::SubstrateCli),
@@ -113,11 +117,11 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, config.chain_spec)
                         .map_err(Error::SubstrateCli),
@@ -129,12 +133,12 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     import_queue,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -145,12 +149,12 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     import_queue,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
                     cmd.run(client, import_queue).map_err(Error::SubstrateCli),
                     task_manager,
@@ -165,42 +169,145 @@ fn main() -> std::result::Result<(), Error> {
             let runner = cli.create_runner(cmd)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.async_run(|config| {
-                let sc_service::PartialComponents {
+                let PartialComponents {
                     client,
                     backend,
                     task_manager,
                     ..
-                } = kumandra_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
                 Ok((
-                    cmd.run(client, backend).map_err(Error::SubstrateCli),
+                    cmd.run(client, backend, None).map_err(Error::SubstrateCli),
                     task_manager,
                 ))
             })?;
         }
         Some(Subcommand::Benchmark(cmd)) => {
-            if cfg!(feature = "runtime-benchmarks") {
-                let runner = cli.create_runner(cmd)?;
-                set_default_ss58_version(&runner.config().chain_spec);
-                runner.sync_run(|config| {
-                    cmd.run::<kumandra_runtime::Block, ExecutorDispatch>(config)
-                })?;
-            } else {
-                return Err(Error::Other(
-                    "Benchmarking wasn't enabled when building the node. You can enable it with \
-                    `--features runtime-benchmarks`."
-                        .into(),
-                ));
-            }
+            let runner = cli.create_runner(cmd)?;
+
+            runner.sync_run(|config| {
+                let PartialComponents {
+                    client, backend, ..
+                } = subspace_service::new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+
+                // This switch needs to be in the client, since the client decides
+                // which sub-commands it wants to support.
+                match cmd {
+                    BenchmarkCmd::Pallet(cmd) => {
+                        if !cfg!(feature = "runtime-benchmarks") {
+                            return Err(
+                                "Runtime benchmarking wasn't enabled when building the node. \
+                                You can enable it with `--features runtime-benchmarks`."
+                                    .into(),
+                            );
+                        }
+
+                        cmd.run::<Block, ExecutorDispatch>(config)
+                    }
+                    BenchmarkCmd::Block(cmd) => cmd.run(client),
+                    BenchmarkCmd::Storage(cmd) => {
+                        let db = backend.expose_db();
+                        let storage = backend.expose_storage();
+
+                        cmd.run(config, client, db, storage)
+                    }
+                    BenchmarkCmd::Overhead(_cmd) => {
+                        todo!("Not implemented")
+                        // let ext_builder = BenchmarkExtrinsicBuilder::new(client.clone());
+                        //
+                        // cmd.run(
+                        //     config,
+                        //     client,
+                        //     command_helper::inherent_benchmark_data()?,
+                        //     Arc::new(ext_builder),
+                        // )
+                    }
+                }
+            })?;
+        }
+        Some(Subcommand::Executor(_cmd)) => {
+            unimplemented!("Executor subcommand");
         }
         None => {
             let runner = cli.create_runner(&cli.run.base)?;
             set_default_ss58_version(&runner.config().chain_spec);
-            runner.run_node_until_exit(|config| async move {
-                kumandra_service::new_full::<kumandra_runtime::RuntimeApi, ExecutorDispatch>(
-                    config, true,
-                )
-                .await
-                .map(|full| full.task_manager)
+            runner.run_node_until_exit(|primary_chain_node_config| async move {
+                let tokio_handle = primary_chain_node_config.tokio_handle.clone();
+
+                let mut primary_chain_full_node = {
+                    let span = sc_tracing::tracing::info_span!(
+                        sc_tracing::logging::PREFIX_LOG_SPAN,
+                        name = "PrimaryChain"
+                    );
+                    let _enter = span.enter();
+
+                    let primary_chain_node_config = KumandraConfiguration {
+                        base: primary_chain_node_config,
+                        // Secondary node needs slots notifications for bundle production.
+                        force_new_slot_notifications: !cli.secondary_chain_args.is_empty(),
+                    };
+
+                    kumandra_service::new_full::<RuntimeApi, ExecutorDispatch>(
+                        primary_chain_node_config,
+                        true,
+                    )
+                    .map_err(|_| {
+                        sc_service::Error::Other("Failed to build a full kumandra node".into())
+                    })?
+                };
+
+                // Run an executor node, an optional component of Kumandra full node.
+                if !cli.secondary_chain_args.is_empty() {
+                    let span = sc_tracing::tracing::info_span!(
+                        sc_tracing::logging::PREFIX_LOG_SPAN,
+                        name = "SecondaryChain"
+                    );
+                    let _enter = span.enter();
+
+                    let secondary_chain_cli = SecondaryChainCli::new(
+                        cli.run.base.base_path()?,
+                        cli.secondary_chain_args.iter(),
+                    );
+                    let secondary_chain_config = SubstrateCli::create_configuration(
+                        &secondary_chain_cli,
+                        &secondary_chain_cli,
+                        tokio_handle,
+                    )
+                    .map_err(|_| {
+                        sc_service::Error::Other(
+                            "Failed to create secondary chain configuration".into(),
+                        )
+                    })?;
+
+                    let secondary_chain_full_node_fut = cirrus_node::service::new_full(
+                        secondary_chain_config,
+                        primary_chain_full_node.client.clone(),
+                        &primary_chain_full_node.select_chain,
+                        primary_chain_full_node
+                            .imported_block_notification_stream
+                            .subscribe()
+                            .then(|(block_number, _)| async move { block_number }),
+                        primary_chain_full_node
+                            .new_slot_notification_stream
+                            .subscribe()
+                            .then(|slot_notification| async move {
+                                (
+                                    slot_notification.new_slot_info.slot,
+                                    slot_notification.new_slot_info.global_challenge,
+                                )
+                            }),
+                    );
+
+                    let secondary_chain_full_node = secondary_chain_full_node_fut.await?;
+
+                    primary_chain_full_node
+                        .task_manager
+                        .add_child(secondary_chain_full_node.task_manager);
+
+                    secondary_chain_full_node.network_starter.start_network();
+                }
+
+                primary_chain_full_node.network_starter.start_network();
+                Ok::<_, Error>(primary_chain_full_node.task_manager)
             })?;
         }
     }
