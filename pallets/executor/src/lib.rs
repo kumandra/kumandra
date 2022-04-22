@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Kumandra, Inc.
+// Copyright (C) 2021 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,24 +19,20 @@
 
 use frame_system::offchain::SubmitTransaction;
 pub use pallet::*;
-use kp_executor::{
+use sp_executor::{
     BundleEquivocationProof, ExecutionReceipt, FraudProof, InvalidTransactionProof, OpaqueBundle,
 };
 
-// TODO: proper error value
-const INVALID_FRAUD_PROOF: u8 = 100;
 const INVALID_BUNDLE_EQUIVOCATION_PROOF: u8 = 101;
 const INVALID_TRANSACTION_PROOF: u8 = 102;
 
 #[frame_support::pallet]
 mod pallet {
-    use crate::{
-        INVALID_BUNDLE_EQUIVOCATION_PROOF, INVALID_FRAUD_PROOF, INVALID_TRANSACTION_PROOF,
-    };
+    use crate::{INVALID_BUNDLE_EQUIVOCATION_PROOF, INVALID_TRANSACTION_PROOF};
     use frame_support::pallet_prelude::*;
     use frame_system::pallet_prelude::*;
     use sp_core::H256;
-    use kp_executor::{
+    use sp_executor::{
         BundleEquivocationProof, ExecutionReceipt, FraudProof, InvalidTransactionProof,
         OpaqueBundle,
     };
@@ -212,12 +208,13 @@ mod pallet {
                 }
                 Call::submit_fraud_proof { fraud_proof } => {
                     // TODO: prevent the spamming of fraud proof transaction.
-                    if !kp_executor::fraud_proof_ext::fraud_proof::verify(fraud_proof) {
-                        log::error!(target: "runtime::kumandra::executor", "Invalid fraud proof: {:?}", fraud_proof);
-                        return InvalidTransaction::Custom(INVALID_FRAUD_PROOF).into();
-                    }
+                    // TODO: verify the fraud proof on the client side.
+                    // if !sp_executor::fraud_proof_ext::fraud_proof::verify(fraud_proof) {
+                    // log::error!(target: "runtime::kumandra::executor", "Invalid fraud proof: {:?}", fraud_proof);
+                    // return InvalidTransaction::Custom(INVALID_FRAUD_PROOF).into();
+                    // }
                     // TODO: proper tag value.
-                    unsigned_validity("KumandraSubmitFraudProof", fraud_proof.clone())
+                    unsigned_validity("KumandraSubmitFraudProof", fraud_proof)
                 }
                 Call::submit_bundle_equivocation_proof {
                     bundle_equivocation_proof,
