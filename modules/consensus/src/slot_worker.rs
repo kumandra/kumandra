@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2021 KOOMPI, Inc.
+// Copyright (C) 2021 Kumandra Labs, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,6 @@ use sp_runtime::traits::{AppVerify, Block as BlockT, Header, Zero};
 use sp_runtime::DigestItem;
 use std::future::Future;
 use std::{pin::Pin, sync::Arc};
-pub use kumandra_archiving::archiver::ArchivedSegment;
 use kumandra_core_primitives::{Randomness, Salt};
 
 pub(super) struct KumandraSlotWorker<B: BlockT, C, E, I, SO, L, BS> {

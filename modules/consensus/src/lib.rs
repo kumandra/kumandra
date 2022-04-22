@@ -15,35 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-// TODO: Update this description, it is out of date now
-//! # Kumandra Proof-of-Storage Consensus
-//!
-//! Kumandra is a slot-based block production mechanism which uses a Proof-of-Storage to randomly
-//! perform the slot allocation. On every slot, all the farmers evaluate their disk-based plot. If
-//! they have a tag (reflecting a commitment to a valid encoding) that it is lower than a given
-//! threshold (which is proportional to the total space pledged by the network) they may produce a
-//! new block. The proof of the Kumandra function execution will be used by other peers to validate
-//! the legitimacy of the slot claim.
-//!
-//! The engine is also responsible for collecting entropy on-chain which will be used to seed the
-//! given PoR (Proof-of-Replication) challenge. An epoch is a contiguous number of slots under which
-//! we will be using the same base PoR challenge. During an epoch all PoR outputs produced as a
-//! result of block production will be collected into an on-chain randomness pool. Epoch changes are
-//! announced one epoch in advance, i.e. when ending epoch N, we announce the parameters (i.e, new
-//! randomness) for epoch N+2.
-//!
-//! Since the slot assignment is randomized, it is possible that a slot is claimed by multiple
-//! farmers, in which case we will have a temporary fork, or that a slot is not claimed by any
-//! farmer, in which case no block is produced. This means that block times are probabilistic.
-//!
-//! The protocol has a parameter `c` [0, 1] for which `1 - c` is the probability of a slot being
-//! empty. The choice of this parameter affects the security of the protocol relating to maximum
-//! tolerable network delays.
-//!
-//! The fork choice rule is weight-based, where weight equals the number of primary blocks in the
-//! chain. We will pick the heaviest chain (more blocks) and will go with the longest one in case of
-//! a tie.
-
+#![doc = include_str!("../README.md")]
 #![feature(try_blocks)]
 #![feature(int_log)]
 #![forbid(unsafe_code)]
@@ -59,7 +31,7 @@ mod verification;
 
 use crate::notification::{KumandraNotificationSender, KumandraNotificationStream};
 use crate::slot_worker::KumandraSlotWorker;
-use crate::verification::VerifySolutionParams;
+use crate::verification::{VerificationParams, VerifySolutionParams};
 pub use archiver::start_kumandra_archiver;
 use futures::channel::mpsc;
 use futures::StreamExt;
@@ -104,7 +76,7 @@ use std::cmp::Ordering;
 use std::future::Future;
 use std::marker::PhantomData;
 use std::{collections::HashMap, pin::Pin, sync::Arc};
-pub use kumandra_archiving::archiver::ArchivedSegment;
+use kumandra_archiving::archiver::ArchivedSegment;
 use kumandra_core_primitives::{BlockNumber, RootBlock, Salt, Solution, Tag};
 use kumandra_solving::SOLUTION_SIGNING_CONTEXT;
 
@@ -139,6 +111,17 @@ pub struct BlockSigningNotification {
     pub header_hash: H256,
     /// Sender that can be used to send signature for the header.
     pub signature_sender: TracingUnboundedSender<FarmerSignature>,
+}
+
+/// Notification with block header hash that needs to be signed and sender for signature.
+#[derive(Debug, Clone)]
+pub struct ArchivedSegmentNotification {
+    /// Archived segment.
+    pub archived_segment: Arc<ArchivedSegment>,
+    /// Sender that signified the fact of receiving archived segment by farmer.
+    ///
+    /// This must be used to send a message or else block import pipeline will get stuck.
+    pub acknowledgement_sender: TracingUnboundedSender<()>,
 }
 
 /// Errors encountered by the Kumandra authorship task.
@@ -531,8 +514,8 @@ pub struct KumandraLink<Block: BlockT> {
     new_slot_notification_stream: KumandraNotificationStream<NewSlotNotification>,
     block_signing_notification_sender: KumandraNotificationSender<BlockSigningNotification>,
     block_signing_notification_stream: KumandraNotificationStream<BlockSigningNotification>,
-    archived_segment_notification_sender: KumandraNotificationSender<ArchivedSegment>,
-    archived_segment_notification_stream: KumandraNotificationStream<ArchivedSegment>,
+    archived_segment_notification_sender: KumandraNotificationSender<ArchivedSegmentNotification>,
+    archived_segment_notification_stream: KumandraNotificationStream<ArchivedSegmentNotification>,
     imported_block_notification_stream:
         KumandraNotificationStream<(NumberFor<Block>, mpsc::Sender<RootBlock>)>,
     /// Root blocks that are expected to appear in the corresponding blocks, used for block
@@ -562,8 +545,15 @@ impl<Block: BlockT> KumandraLink<Block> {
     /// Get stream with notifications about archived segment creation
     pub fn archived_segment_notification_stream(
         &self,
-    ) -> KumandraNotificationStream<ArchivedSegment> {
+    ) -> KumandraNotificationStream<ArchivedSegmentNotification> {
         self.archived_segment_notification_stream.clone()
+    }
+
+    /// Get stream with notifications about each imported block.
+    pub fn imported_block_notification_stream(
+        &self,
+    ) -> KumandraNotificationStream<(NumberFor<Block>, mpsc::Sender<RootBlock>)> {
+        self.imported_block_notification_stream.clone()
     }
 
     /// Get blocks that are expected to be included at specified block number.
@@ -686,7 +676,13 @@ where
 
         let slot_now = (self.slot_now)();
 
-        // Only stateless checks that rely on the contents already contained in the block header.
+        // Stateless header verification only. This means only check that header contains required
+        // contents, correct signature and valid Proof-of-Space, but because previous block is not
+        // guaranteed to be imported at this point, it is not possible to verify
+        // Proof-of-Archival-Storage. In order to verify PoAS randomness, solution range and salt
+        // from the header are checked against expected correct values during block import as well
+        // as whether piece in the header corresponds to the actual archival history of the
+        // blockchain.
         let checked_header = {
             let pre_digest = find_pre_digest::<Block>(&block.header).map_err(kumandra_err)?;
 
@@ -705,11 +701,12 @@ where
                 .ok_or(Error::<Block>::MissingSalt(hash))?
                 .salt;
 
+            let slot = pre_digest.slot;
+
             // We add one to the current slot to allow for some small drift.
             // FIXME https://github.com/paritytech/substrate/issues/1019 in the future, alter this
             //  queue to allow deferring of headers
-            let slot = pre_digest.slot;
-            verification::check_header::<Block>(verification::VerificationParams {
+            verification::check_header::<Block>(VerificationParams {
                 header: block.header.clone(),
                 pre_digest,
                 slot_now: slot_now + 1,

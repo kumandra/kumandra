@@ -48,8 +48,8 @@ pub(super) struct VerificationParams<'a, B: 'a + BlockT> {
 /// the future, an error will be returned. If successful, returns the pre-header
 /// and the digest item containing the seal.
 ///
-/// The seal must be the last digest.  Otherwise, the whole header is considered
-/// unsigned.  This is required for security and must not be changed.
+/// The seal must be the last digest. Otherwise, the whole header is considered unsigned. This is
+/// required for security and must not be changed.
 ///
 /// This digest item will always return `Some` when used with `as_kumandra_pre_digest`.
 pub(super) fn check_header<B: BlockT + Sized>(
@@ -184,8 +184,8 @@ fn is_within_max_plot(
     if total_pieces < max_plot_size {
         return true;
     }
-    let max_distance = PieceDistance::MAX / total_pieces * max_plot_size;
-    PieceDistance::xor_distance(&piece_index.into(), key) <= max_distance
+    let max_distance_one_direction = PieceDistance::MAX / total_pieces * max_plot_size / 2;
+    PieceDistance::distance(&piece_index.into(), key) <= max_distance_one_direction
 }
 
 pub(crate) struct PieceCheckParams {

@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2022 Kumandra, Inc.
+// Copyright (C) 2021 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 
 // This program is free software: you can redistribute it and/or modify
@@ -524,6 +524,7 @@ fn run_one_test(mutator: impl Fn(&mut TestHeader, Stage) + Send + Sync + 'static
             &data.link,
             client.clone(),
             &task_manager.spawn_essential_handle(),
+            false,
         );
 
         let (archived_pieces_sender, archived_pieces_receiver) = oneshot::channel();
@@ -566,7 +567,7 @@ fn run_one_test(mutator: impl Fn(&mut TestHeader, Stage) + Send + Sync + 'static
             max_block_proposal_slot_portion: None,
             telemetry: None,
         })
-        .expect("Starts kumandra");
+        .expect("Starts Kumandra");
 
         let mut new_slot_notification_stream = data.link.new_slot_notification_stream().subscribe();
         let kumandra_farmer = async move {
