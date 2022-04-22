@@ -9,6 +9,7 @@ include = [
     "/benches",
     "/src",
     "/Cargo.toml",
+    "/README.md",
 ]
 
 [dependencies]
@@ -16,7 +17,7 @@ merkletree = "0.21.0"
 parity-scale-codec = { version = "3.1.2", features = ["derive"], default-features = false }
 reed-solomon-erasure = { version = "5.0.2", default-features = true }
 serde = { version = "1.0.136", optional = true, features = ["derive"] }
-kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core/", default-features = false }
+subspace-core-primitives = { version = "0.1.0", path = "../subspace-core-primitives", default-features = false }
 thiserror = { version = "1.0.30", optional = true }
 typenum = "1.14.0"
 
@@ -42,7 +43,7 @@ std = [
     "reed-solomon-erasure/simd-accel",
     "serde",
     "sha2/std",
-    "kumandra-core-primitives/std",
+    "subspace-core-primitives/std",
     "thiserror",
 ]
 
