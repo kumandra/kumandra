@@ -257,7 +257,7 @@ where
         },
     )?;
 
-    kc_consensus_::start_kumandra_archiver(
+    kc_consensus::start_kumandra_archiver(
         &kumandra_link,
         client.clone(),
         &task_manager.spawn_essential_handle(),
@@ -265,7 +265,7 @@ where
     );
 
     let slot_duration = kumandra_link.config().slot_duration();
-    let import_queue = kc_consensus_::import_queue(
+    let import_queue = kc_consensus::import_queue(
         block_import.clone(),
         None,
         client.clone(),
@@ -432,7 +432,7 @@ where
             telemetry: None,
         };
 
-        let kumandra = kc_consensus_::start_kumandra(kumandra_config)?;
+        let kumandra = kc_consensus::start_kumandra(kumandra_config)?;
 
         // Kumandra authoring task is considered essential, i.e. if it fails we take down the
         // service with it.
