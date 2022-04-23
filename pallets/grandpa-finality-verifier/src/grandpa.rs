@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI Labs, Inc.
+// Copyright (C) 2022 Subspace Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,11 @@ use sp_finality_grandpa::{
     AuthorityId, AuthorityList, AuthoritySignature, ConsensusLog, SetId, GRANDPA_ENGINE_ID,
 };
 use sp_runtime::traits::Header as HeaderT;
-use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
-use sp_std::prelude::*;
-use sp_std::vec::Vec;
+use sp_std::{
+    collections::{btree_map::BTreeMap, btree_set::BTreeSet},
+    prelude::*,
+    vec::Vec,
+};
 
 /// A GRANDPA Justification is a proof that a given header was finalized
 /// at a certain height and with a certain set of authorities.
@@ -136,12 +138,9 @@ pub(crate) fn verify_justification<Header: HeaderT>(
 where
     Header::Number: finality_grandpa::BlockNumberOps,
 {
-    // ensure that it is justification for the expected header
-    if (
-        justification.commit.target_hash,
-        justification.commit.target_number,
-    ) != finalized_target
-    {
+    // always ensure the justification belongs to either current target or its descendent
+    let (_finalized_hash, finalized_number) = finalized_target;
+    if justification.commit.target_number < finalized_number {
         return Err(Error::InvalidJustificationTarget);
     }
 

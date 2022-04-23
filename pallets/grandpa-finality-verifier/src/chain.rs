@@ -1,47 +1,21 @@
-use crate::grandpa::{verify_justification, AuthoritySet, GrandpaJustification};
-use crate::{Config, Error};
-use codec::{Decode, Encode};
-use finality_grandpa::voter_set::VoterSet;
+use crate::{grandpa::GrandpaJustification, Config, Error};
+use codec::Decode;
 use frame_support::Parameter;
 use num_traits::AsPrimitive;
-use scale_info::TypeInfo;
-#[cfg(feature = "std")]
-use serde::{Deserialize, Serialize};
-use sp_core::Hasher as HasherT;
-use sp_runtime::traits::BlakeTwo256;
-use sp_runtime::traits::{
-    AtLeast32BitUnsigned, Header as HeaderT, MaybeDisplay, MaybeMallocSizeOf,
-    MaybeSerializeDeserialize, Member, Saturating, SimpleBitOps,
+use sp_runtime::{
+    generic,
+    traits::{
+        AtLeast32BitUnsigned, Hash as HashT, Header as HeaderT, MaybeDisplay, MaybeMallocSizeOf,
+        MaybeSerializeDeserialize, Member, Saturating, SimpleBitOps,
+    },
 };
-use sp_runtime::{generic, OpaqueExtrinsic};
-use sp_std::{hash::Hash, str::FromStr};
+use sp_std::{hash::Hash, str::FromStr, vec::Vec};
 
-// ChainType represents the kind of the Chain type we are verifying the GRANDPA finality for
-#[derive(Encode, Debug, Decode, Clone, PartialEq, TypeInfo)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-pub enum ChainType {
-    SelendraLike,
-}
-
-impl Default for ChainType {
-    fn default() -> Self {
-        Self::SelendraLike
-    }
-}
-
-/// Kumandra-like chain.
-pub(crate) struct SelendraLike;
-
-impl Chain for SelendraLike {
-    type BlockNumber = u32;
-    type Hash = <BlakeTwo256 as HasherT>::Out;
-    type Header = generic::Header<u32, BlakeTwo256>;
-}
-
-type SignedBlock<Header> = generic::SignedBlock<generic::Block<Header, OpaqueExtrinsic>>;
+pub(crate) type OpaqueExtrinsic = Vec<u8>;
+pub type SignedBlock<Header> = generic::SignedBlock<generic::Block<Header, OpaqueExtrinsic>>;
 
 /// Minimal Substrate-based chain representation that may be used from no_std environment.
-pub(crate) trait Chain {
+pub trait Chain {
     /// A type that fulfills the abstract idea of what a Substrate block number is.
     // Constraints come from the associated Number type of `sp_runtime::traits::Header`
     // See here for more info:
@@ -81,7 +55,10 @@ pub(crate) trait Chain {
         + SimpleBitOps
         + AsRef<[u8]>
         + AsMut<[u8]>
-        + MaybeMallocSizeOf;
+        + MaybeMallocSizeOf
+        // since we want to use the hash as a key in DSN,
+        // we need the target chain to use Hash out length to be 32
+        + Into<[u8; 32]>;
 
     /// A type that fulfills the abstract idea of what a Substrate header is.
     // See here for more info:
@@ -90,32 +67,12 @@ pub(crate) trait Chain {
         + HeaderT<Number = Self::BlockNumber, Hash = Self::Hash>
         + MaybeSerializeDeserialize;
 
-    /// Verify a GRANDPA justification (finality proof) for a given header.
-    ///
-    /// Will use the GRANDPA current authorities known to the pallet.
-    ///
-    /// If successful it returns the decoded GRANDPA justification so we can refund any weight which
-    /// was overcharged in the initial call.
-    fn verify_justification<T: Config>(
-        justification: &GrandpaJustification<Self::Header>,
-        hash: Self::Hash,
-        number: Self::BlockNumber,
-        authority_set: AuthoritySet,
-    ) -> Result<(), Error<T>> {
-        let voter_set =
-            VoterSet::new(authority_set.authorities).ok_or(Error::<T>::InvalidAuthoritySet)?;
-        let set_id = authority_set.set_id;
-        verify_justification::<Self::Header>((hash, number), set_id, &voter_set, justification)
-            .map_err(|e| {
-                log::error!(
-                    target: "runtime::grandpa-finality-verifier",
-                    "Received invalid justification for {:?}: {:?}",
-                    hash,
-                    e,
-                );
-                Error::<T>::InvalidJustification
-            })
-    }
+    /// A type that fulfills the abstract idea of what a Substrate hasher (a type
+    /// that produces hashes) is.
+    // Constraints come from the associated Hashing type of `sp_runtime::traits::Header`
+    // See here for more info:
+    // https://crates.parity.io/sp_runtime/traits/trait.Header.html#associatedtype.Hashing
+    type Hasher: HashT<Output = Self::Hash>;
 
     fn decode_block<T: Config>(block: &[u8]) -> Result<SignedBlock<Self::Header>, Error<T>> {
         SignedBlock::<Self::Header>::decode(&mut &*block).map_err(|error| {
