@@ -36,7 +36,7 @@ use kumandra_runtime_primitives::{RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE};
 
 type PieceIndex = u64;
 
-/// The `import-blocks-from-network` command used to import blocks from Subspace Network DSN.
+/// The `import-blocks-from-network` command used to import blocks from Kumandra Network DSN.
 #[derive(Debug, Parser)]
 pub struct ImportBlocksFromDsnCmd {
     /// Multiaddrs of bootstrap nodes to connect to on startup, multiple are supported

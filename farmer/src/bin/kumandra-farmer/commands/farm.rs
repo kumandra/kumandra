@@ -7,9 +7,7 @@ use std::time::Duration;
 use kumandra_core_primitives::PIECE_SIZE;
 use kumandra_farmer::multi_farming::MultiFarming;
 use kumandra_farmer::ws_rpc_server::{RpcServer, RpcServerImpl};
-use kumandra_farmer::{
-    retrieve_piece_from_plots, Identity, NodeRpcClient, ObjectMappings, Plot, RpcClient,
-};
+use kumandra_farmer::{retrieve_piece_from_plots, NodeRpcClient, ObjectMappings, Plot, RpcClient};
 use kumandra_networking::libp2p::multiaddr::Protocol;
 use kumandra_networking::libp2p::multihash::Multihash;
 use kumandra_networking::multimess::MultihashCode;
@@ -33,13 +31,6 @@ pub(crate) async fn farm(
     best_block_number_check_interval: Duration,
 ) -> Result<(), anyhow::Error> {
     let base_directory = crate::utils::get_path(custom_path);
-
-    let reward_address = if let Some(reward_address) = reward_address {
-        reward_address
-    } else {
-        let identity = Identity::open_or_create(&base_directory)?;
-        identity.public_key().to_bytes().into()
-    };
 
     info!("Connecting to node at {}", node_rpc_url);
     let client = NodeRpcClient::new(&node_rpc_url).await?;
