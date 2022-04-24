@@ -1,6 +1,6 @@
 #![feature(assert_matches)]
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2022 Kumandra, Inc.
+// Copyright (C) 2021 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-//! Kumandra consensus pallet.
-
+#![doc = include_str!("../README.md")]
 #![cfg_attr(not(feature = "std"), no_std)]
 #![warn(unused_must_use, unsafe_code, unused_variables, unused_must_use)]
 
@@ -100,19 +98,19 @@ pub struct NormalEraChange;
 impl EraChangeTrigger for NormalEraChange {
     fn trigger<T: Config>(block_number: T::BlockNumber) {
         if <Pallet<T>>::should_era_change(block_number) {
-            <Pallet<T>>::enact_era_change(block_number);
+            <Pallet<T>>::enact_era_change();
         }
     }
 }
 
-/// Trigger an era change, if any should take place.
+/// Trigger an eon change, if any should take place.
 pub trait EonChangeTrigger {
-    /// Trigger an era change, if any should take place. This should be called
+    /// Trigger an eon change, if any should take place. This should be called
     /// during every block, after initialization is done.
     fn trigger<T: Config>(block_number: T::BlockNumber);
 }
 
-/// A type signifying to Kumandra that it should perform era changes with an internal trigger.
+/// A type signifying to Kumandra that it should perform eon changes with an internal trigger.
 pub struct NormalEonChange;
 
 impl EonChangeTrigger for NormalEonChange {
@@ -220,23 +218,29 @@ mod pallet {
         #[pallet::constant]
         type RecordedHistorySegmentSize: Get<u32>;
 
+        type ShouldAdjustSolutionRange: Get<bool>;
+
         /// Kumandra requires periodic global randomness update.
         type GlobalRandomnessIntervalTrigger: GlobalRandomnessIntervalTrigger;
 
         /// Kumandra requires some logic to be triggered on every block to query for whether an era
         /// has ended and to perform the transition to the next era.
+        ///
+        /// Era is normally used to update solution range used for challenges.
         type EraChangeTrigger: EraChangeTrigger;
 
         /// Kumandra requires some logic to be triggered on every block to query for whether an eon
         /// has ended and to perform the transition to the next eon.
+        ///
+        /// Era is normally used to update salt used for plot commitments.
         type EonChangeTrigger: EonChangeTrigger;
 
-        /// The equivocation handling subsystem, defines methods to report an
-        /// offence (after the equivocation has been validated) and for submitting a
-        /// transaction to report an equivocation (from an offchain context).
-        /// NOTE: when enabling equivocation handling (i.e. this type isn't set to
-        /// `()`) you must use this pallet's `ValidateUnsigned` in the runtime
-        /// definition.
+        /// The equivocation handling subsystem, defines methods to report an offence (after the
+        /// equivocation has been validated) and for submitting a transaction to report an
+        /// equivocation (from an offchain context).
+        ///
+        /// NOTE: when enabling equivocation handling (i.e. this type isn't set to `()`) you must
+        /// use this pallet's `ValidateUnsigned` in the runtime definition.
         type HandleEquivocation: HandleEquivocation<Self>;
 
         /// Weight information for extrinsics in this pallet.
@@ -290,12 +294,17 @@ mod pallet {
         InitialSolutionRanges<T>,
     >;
 
+    /// Storage to check if the solution range is to be adjusted for next era
+    #[pallet::storage]
+    pub type ShouldAdjustSolutionRange<T: Config> =
+        StorageValue<_, bool, ValueQuery, T::ShouldAdjustSolutionRange>;
+
     /// Salts used for challenges.
     #[pallet::storage]
     #[pallet::getter(fn salts)]
     pub type Salts<T> = StorageValue<_, kp_consensus::Salts, ValueQuery>;
 
-    /// The solution range for *current* era.
+    /// Slot at which current era started.
     #[pallet::storage]
     pub type EraStartSlot<T> = StorageValue<_, Slot>;
 
@@ -355,6 +364,15 @@ mod pallet {
             ensure_none(origin)?;
             Self::do_store_root_blocks(root_blocks)
         }
+
+        /// Enables solution range adjustment after every era.
+        /// Note: No effect on the solution range for the current era
+        #[pallet::weight(T::DbWeight::get().writes(1))]
+        pub fn enable_solution_range_adjustment(origin: OriginFor<T>) -> DispatchResult {
+            ensure_root(origin)?;
+            ShouldAdjustSolutionRange::<T>::put(true);
+            Ok(())
+        }
     }
 
     #[pallet::inherent]
@@ -375,6 +393,19 @@ mod pallet {
             } else {
                 Some(Call::store_root_blocks { root_blocks })
             }
+        }
+
+        fn is_inherent_required(data: &InherentData) -> Result<Option<Self::Error>, Self::Error> {
+            let inherent_data = data
+                .get_data::<InherentType>(&INHERENT_IDENTIFIER)
+                .expect("Kumandra inherent data not correctly encoded")
+                .expect("Kumandra inherent data must be provided");
+
+            Ok(if inherent_data.root_blocks.is_empty() {
+                None
+            } else {
+                Some(InherentError::MissingRootBlocksList)
+            })
         }
 
         fn check_inherent(call: &Self::Call, data: &InherentData) -> Result<(), Self::Error> {
@@ -467,40 +498,39 @@ impl<T: Config> Pallet<T> {
 
     /// DANGEROUS: Enact era change. Should be done on every block where `should_era_change` has
     /// returned `true`, and the caller is the only caller of this function.
-    pub fn enact_era_change(block_number: T::BlockNumber) {
+    ///
+    /// This will update solution range used in consensus.
+    pub fn enact_era_change() {
         let slot_probability = T::SlotProbability::get();
 
         let current_slot = Self::current_slot();
 
         SolutionRanges::<T>::mutate(|solution_ranges| {
-            // If Era start slot is not found it means we have just finished the first era
-            let era_start_slot = EraStartSlot::<T>::get().unwrap_or_else(GenesisSlot::<T>::get);
-            let era_slot_count = u64::from(current_slot) - u64::from(era_start_slot);
-
-            // Now we need to re-calculate solution range. The idea here is to keep block production at
-            // the same pace while space pledged on the network changes. For this we adjust previous
-            // solution range according to actual and expected number of blocks per era.
-            let era_duration: u64 = T::EraDuration::get()
-                .try_into()
-                .unwrap_or_else(|_| panic!("Era duration is always within u64; qed"));
-            let actual_slots_per_block = era_slot_count as f64 / era_duration as f64;
-            let expected_slots_per_block = slot_probability.1 as f64 / slot_probability.0 as f64;
-            let adjustment_factor =
-                (actual_slots_per_block / expected_slots_per_block).clamp(0.25, 4.0);
-
             solution_ranges.next.replace(
-                // TODO: Temporary testnet hack, we don't update solution range for the first 15_000 blocks
-                //  in order to seed the blockchain with data quickly
-                if cfg!(all(feature = "no-early-solution-range-updates", not(test))) {
-                    if block_number < 15_000_u32.into() {
-                        solution_ranges.current
-                    } else {
-                        (solution_ranges.current as f64 * adjustment_factor).round() as u64
-                    }
-                } else {
+                // Check if the solution range should be adjusted for next era.
+                if ShouldAdjustSolutionRange::<T>::get() {
+                    // If Era start slot is not found it means we have just finished the first era
+                    let era_start_slot =
+                        EraStartSlot::<T>::get().unwrap_or_else(GenesisSlot::<T>::get);
+                    let era_slot_count = u64::from(current_slot) - u64::from(era_start_slot);
+
+                    // Now we need to re-calculate solution range. The idea here is to keep block production at
+                    // the same pace while space pledged on the network changes. For this we adjust previous
+                    // solution range according to actual and expected number of blocks per era.
+                    let era_duration: u64 = T::EraDuration::get()
+                        .try_into()
+                        .unwrap_or_else(|_| panic!("Era duration is always within u64; qed"));
+                    let actual_slots_per_block = era_slot_count as f64 / era_duration as f64;
+                    let expected_slots_per_block =
+                        slot_probability.1 as f64 / slot_probability.0 as f64;
+                    let adjustment_factor =
+                        (actual_slots_per_block / expected_slots_per_block).clamp(0.25, 4.0);
+
                     (solution_ranges.current as f64 * adjustment_factor).round() as u64
+                } else {
+                    solution_ranges.current
                 },
-            );
+            )
         });
 
         EraStartSlot::<T>::put(current_slot);

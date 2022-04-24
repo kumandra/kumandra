@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2022 Kumandra, Inc.
+// Copyright (C) 2021 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -141,6 +141,8 @@ parameter_types! {
     pub const RecordedHistorySegmentSize: u32 = 3840 * 256 / 2;
     pub const ReplicationFactor: u16 = 1;
     pub const ReportLongevity: u64 = 34;
+    pub const MaxPlotSize: u64 = 10 * 2u64.pow(18);
+    pub const ShouldAdjustSolutionRange: bool = false;
 }
 
 impl Config for Test {
@@ -152,6 +154,7 @@ impl Config for Test {
     type InitialSolutionRange = InitialSolutionRange;
     type SlotProbability = SlotProbability;
     type ExpectedBlockTime = ConstU64<1>;
+    type MaxPlotSize = MaxPlotSize;
     type ConfirmationDepthK = ConfirmationDepthK;
     type RecordSize = RecordSize;
     type RecordedHistorySegmentSize = RecordedHistorySegmentSize;
@@ -162,6 +165,7 @@ impl Config for Test {
     type HandleEquivocation = EquivocationHandler<OffencesKumandra, ReportLongevity>;
 
     type WeightInfo = ();
+    type ShouldAdjustSolutionRange = ShouldAdjustSolutionRange;
 }
 
 pub fn go_to_block(keypair: &Keypair, block: u64, slot: u64) {
