@@ -1,0 +1,54 @@
+[package]
+name = "pallet-kumandra"
+version = "0.1.0"
+authors = ["KOOMPI"]
+edition = "2021"
+license = "Apache-2.0"
+description = "Kumandra consensus pallet"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
+frame-support = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+frame-system = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+log = { version = "0.4.16", default-features = false }
+num-traits = { version = "0.2.14", default-features = false }
+pallet-timestamp = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+kp-consensus = { version = "0.1.0", default-features = false, path = "../../kumandra-primitives/consensus" }
+sp-consensus-slots = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-io = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-std = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../../kumandra-primitives/core" }
+kumandra-runtime-primitives = { version = "0.1.0", default-features = false, path = "../../kumandra-primitives/runtime" }
+
+[dev-dependencies]
+pallet-balances = { version = "4.0.0-dev", git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+pallet-offences-kumandra = { version = "0.1.0", path = "../../pallets/offences-kumandra" }
+schnorrkel = "0.9.1"
+sp-core = { version = "6.0.0", git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kumandra-solving = { version = "0.1.0", path = "../../modules/solving" }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"frame-support/std",
+	"frame-system/std",
+	"log/std",
+	"num-traits/std",
+	"pallet-timestamp/std",
+	"scale-info/std",
+	"kp-consensusstd",
+	"sp-consensus-slots/std",
+	"sp-io/std",
+	"sp-runtime/std",
+	"sp-std/std",
+	"kumandra-core-primitives/std",
+	"kumandra-runtime-primitives/std"
+]
+try-runtime = ["frame-support/try-runtime"]
