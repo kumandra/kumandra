@@ -1,0 +1,56 @@
+[package]
+name = "kc-consensus"
+version = "0.1.0"
+authors = ["KOOMPI"]
+description = "Kumandra consensus algorithm for substrate"
+edition = "2021"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+async-trait = "0.1.53"
+codec = { package = "parity-scale-codec", version = "3.1.2", features = ["derive"] }
+fork-tree = { version = "3.0.0", git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+futures = "0.3.21"
+futures-timer = "3.0.2"
+log = "0.4.16"
+lru = "0.7.5"
+parking_lot = "0.12.0"
+prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+rand = "0.8.5"
+schnorrkel = "0.9.1"
+sc-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-consensus-slots = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-telemetry = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-utils = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+serde = { version = "1.0.136", features = ["derive"] }
+sp-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-blockchain = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-block-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kp-consensus = { version = "0.1.0", path = "../../kumandra-primitives/consensus" }
+sp-consensus-slots = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-core = {  git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-inherents = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-io = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-version = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving" }
+kumandra-solving = { version = "0.1.0", path = "../../modules/solving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
+thiserror = "1.0.30"
+
+[dev-dependencies]
+sc-block-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-cli = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-service = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-network = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-timestamp = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-tracing = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-network-test = { version = "0.8.0", path = "../../substrate/sc-network-test" }
+substrate-test-runtime = { version = "2.0.0", path = "../../substrate/substrate-test-runtime" }
+substrate-test-runtime-client = { version = "2.0.0", path = "../../substrate/substrate-test-runtime-client" }
