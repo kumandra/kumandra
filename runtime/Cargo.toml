@@ -99,7 +99,7 @@ std = [
 	"kp-consensus/std",
 	"sp-consensus-slots/std",
 	"sp-core/std",
-	"sp-executor/std",
+	"kp-executor/std",
 	"sp-inherents/std",
 	"sp-offchain/std",
 	"sp-runtime/std",
