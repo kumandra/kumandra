@@ -1,0 +1,42 @@
+[package]
+name = "kumandra-solving"
+description = "Module|Encoder for the Kumandra Network Blockchain based on the SLOTH permutation"
+license = "Apache-2.0"
+version = "0.1.0"
+authors = ["KOOMPI"]
+edition = "2021"
+include = [
+    "/src",
+    "/Cargo.toml",
+]
+
+[dependencies]
+log = "0.4.16"
+num_cpus = "1.13.0"
+num-traits = "0.2"
+rayon = "1.5.2"
+schnorrkel = "0.9.1"
+sloth256-189 = "0.2.2"
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
+thiserror = "1.0.30"
+uint = "0.9"
+
+# Ugly workaround for https://github.com/rust-lang/cargo/issues/1197
+[target.'cfg(any(target_os = "linux", target_os = "macos", all(target_os = "windows", target_env = "gnu")))'.dependencies.sha2]
+features = ["asm"]
+version = "0.10.2"
+
+# Ugly workaround for https://github.com/rust-lang/cargo/issues/1197
+# `asm` feature is not supported on Windows except with GNU toolchain
+[target.'cfg(not(any(target_os = "linux", target_os = "macos", all(target_os = "windows", target_env = "gnu"))))'.dependencies.sha2]
+version = "0.10.2"
+
+[dev-dependencies]
+rand = { version = "0.8.5", features = ["min_const_gen"] }
+
+[features]
+default = []
+# Compile with CUDA support and use it if compatible GPU is available
+cuda = [
+    "sloth256-189/cuda",
+]
