@@ -1,0 +1,126 @@
+[package]
+name = "kumandra-runtime"
+version = "0.1.0"
+authors = ["KOOMPI"]
+edition = "2021"
+license = "GPL-3.0-or-later"
+include = [
+	"/src",
+	"/build.rs",
+	"/Cargo.toml",
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+cirrus-primitives = { version = "0.1.0", default-features = false, path = "../../cumulus/primitives" }
+cirrus-runtime = { version = "0.1.0", default-features = false, path = "../../cumulus/runtime" }
+codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
+frame-executive = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+frame-support = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+frame-system = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+hex-literal = { version = "0.3.3", optional = true }
+orml-vesting = { git = "https://github.com/subspace/open-runtime-module-library", rev = "8731f78311d59a97858c0885a0db276caf4171c1", default-features = false }
+pallet-balances = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false,  }
+pallet-executor = { version = "0.1.0", default-features = false, path = "../pallets/executor" }
+pallet-feeds = { version = "0.1.0", default-features = false, path = "../pallets/feeds" }
+pallet-grandpa-finality-verifier = { version = "1.0.0", default-features = false, path = "../pallets/grandpa-finality-verifier" }
+pallet-object-store = { version = "0.1.0", default-features = false, path = "../pallets/object-store" }
+pallet-offences-kumandra = { version = "0.1.0", default-features = false, path = "../pallets/offences-kumandra" }
+pallet-rewards = { version = "0.1.0", default-features = false, path = "../pallets/rewards" }
+pallet-kumandra = { version = "0.1.0", default-features = false, path = "../pallets/kumandra" }
+pallet-sudo = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+pallet-timestamp = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+pallet-transaction-fees = { version = "0.1.0", default-features = false, path = "../pallets/transaction-fees" }
+pallet-transaction-payment = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+pallet-utility = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+sp-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-block-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+kp-consensus = { version = "0.1.0", default-features = false, path = "../kumandra-primitives/consensus" }
+sp-consensus-slots = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+kp-executor = { version = "0.1.0", default-features = false, path = "../kumandra-primitives/executor" }
+sp-inherents = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-offchain = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-session = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-std = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-transaction-pool = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-version = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false  }
+kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../kumandra-primitives/core" }
+kumandra-runtime-primitives = { version = "0.1.0", default-features = false, path = "../kumandra-primitives/runtime" }
+
+# Used for the node template's RPCs
+frame-system-rpc-runtime-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+
+# Used for runtime benchmarking
+frame-benchmarking = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false,  optional = true }
+frame-system-benchmarking = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false,  optional = true }
+
+[build-dependencies]
+cirrus-runtime = { version = "0.1.0", path = "../cumulus/runtime" }
+kumandra-wasm-tools = { version = "0.1.0", default-features = false, path = "../utils/kumandra-wasm-tools" }
+substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+
+[dev-dependencies]
+hex-literal = { version = "0.3.3" }
+
+[features]
+default = ["std"]
+std = [
+	"cirrus-primitives/std",
+	"cirrus-runtime/std",
+	"codec/std",
+	"frame-executive/std",
+	"frame-support/std",
+	"frame-system/std",
+	"frame-system-rpc-runtime-api/std",
+	"orml-vesting/std",
+	"pallet-balances/std",
+	"pallet-executor/std",
+	"pallet-feeds/std",
+	"pallet-grandpa-finality-verifier/std",
+	"pallet-object-store/std",
+	"pallet-offences-kumandra/std",
+	"pallet-rewards/std",
+	"pallet-kumandra/std",
+	"pallet-sudo/std",
+	"pallet-timestamp/std",
+	"pallet-transaction-fees/std",
+	"pallet-transaction-payment-rpc-runtime-api/std",
+	"pallet-transaction-payment/std",
+	"pallet-utility/std",
+	"scale-info/std",
+	"sp-api/std",
+	"sp-block-builder/std",
+	"kp-consensus/std",
+	"sp-consensus-slots/std",
+	"sp-core/std",
+	"sp-executor/std",
+	"sp-inherents/std",
+	"sp-offchain/std",
+	"sp-runtime/std",
+	"sp-session/std",
+	"sp-std/std",
+	"sp-transaction-pool/std",
+	"sp-version/std",
+	"kumandra-core-primitives/std",
+	"kumandra-runtime-primitives/std",
+]
+runtime-benchmarks = [
+	"cirrus-runtime/runtime-benchmarks",
+	"frame-benchmarking/runtime-benchmarks",
+	"frame-support/runtime-benchmarks",
+	"frame-system-benchmarking",
+	"frame-system/runtime-benchmarks",
+	"hex-literal",
+	"orml-vesting/runtime-benchmarks",
+	"pallet-balances/runtime-benchmarks",
+	"pallet-timestamp/runtime-benchmarks",
+	"pallet-utility/runtime-benchmarks",
+	"sp-runtime/runtime-benchmarks",
+]
+do-not-enforce-cost-of-storage = []
