@@ -1,0 +1,35 @@
+[package]
+name = "kumandra-runtime-primitives"
+description = "Runtime primitives for Kumandra Network"
+license = "GPL-3.0-or-later"
+version = "0.1.0"
+authors = ["KOOMPI"]
+edition = "2021"
+include = [
+	"/src",
+	"/Cargo.toml",
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+parity-scale-codec = { version = "3.1.2", default-features = false, features = ["derive"] }
+parity-util-mem = { version = "0.11.0", optional = true, default-features = false, features = ["primitive-types"] }
+serde = { version = "1.0.136", optional = true, features = ["derive"] }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false  }
+sp-std = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false,  }
+kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../core" }
+
+[features]
+default = ["std"]
+std = [
+	"parity-scale-codec/std",
+	"parity-util-mem/std",
+	"serde/std",
+	"sp-core/std",
+	"sp-runtime/std",
+	"sp-std/std",
+	"kumandra-core-primitives/std",
+]
