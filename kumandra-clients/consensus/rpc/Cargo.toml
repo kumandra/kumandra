@@ -1,5 +1,5 @@
 [package]
-name = "kc-consensus-kumandra-rpc"
+name = "kc-consensus-rpc"
 version = "0.1.0"
 authors = ["KOOMPI"]
 description = "RPC extensions for the Kumandra consensus algorithm"
