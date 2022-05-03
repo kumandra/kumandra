@@ -14,15 +14,15 @@ include = [
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-cirrus-primitives = { version = "0.1.0", default-features = false, path = "../../cumulus/primitives" }
-cirrus-runtime = { version = "0.1.0", default-features = false, path = "../../cumulus/runtime" }
+cirrus-primitives = { version = "0.1.0", default-features = false, path = "../cumulus/primitives" }
+cirrus-runtime = { version = "0.1.0", default-features = false, path = "../cumulus/runtime" }
 codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
 frame-executive = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
 frame-support = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
 frame-system = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
 hex-literal = { version = "0.3.3", optional = true }
 orml-vesting = { git = "https://github.com/subspace/open-runtime-module-library", rev = "8731f78311d59a97858c0885a0db276caf4171c1", default-features = false }
-pallet-balances = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false,  }
+pallet-balances = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", default-features = false }
 pallet-executor = { version = "0.1.0", default-features = false, path = "../pallets/executor" }
 pallet-feeds = { version = "0.1.0", default-features = false, path = "../pallets/feeds" }
 pallet-grandpa-finality-verifier = { version = "1.0.0", default-features = false, path = "../pallets/grandpa-finality-verifier" }
@@ -62,7 +62,7 @@ frame-system-benchmarking = { git = "https://github.com/paritytech/substrate", r
 
 [build-dependencies]
 cirrus-runtime = { version = "0.1.0", path = "../cumulus/runtime" }
-kumandra-wasm-tools = { version = "0.1.0", default-features = false, path = "../utils/kumandra-wasm-tools" }
+kumandra-wasm-tools = { version = "0.1.0", default-features = false, path = "../utils/wasm-tools" }
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 
 [dev-dependencies]

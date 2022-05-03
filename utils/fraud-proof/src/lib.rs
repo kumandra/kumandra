@@ -1,7 +1,7 @@
-//! Subspace fraud proof
+//! Kumandra fraud proof
 //!
 //! This crates provides the feature of generating and verifying the execution proof used in
-//! the Subspace fraud proof mechanism. The execution is more fine-grained than the entire
+//! the Kumandra fraud proof mechanism. The execution is more fine-grained than the entire
 //! block execution, block execution hooks (`initialize_block` and `finalize_block`) and any
 //! specific extrinsic execution are supported.
 
@@ -16,7 +16,7 @@ use sp_core::{
     traits::{CodeExecutor, FetchRuntimeCode, RuntimeCode, SpawnNamed},
     H256,
 };
-use sp_executor::{
+use kp_executor::{
     fraud_proof_ext::FraudProofExt, ExecutionPhase, ExecutorApi, FraudProof, VerificationError,
 };
 use sp_externalities::Extensions;
@@ -298,7 +298,7 @@ where
     }
 }
 
-impl<PBlock, C, B, Exec, Spawn, Hash> sp_executor::fraud_proof_ext::Externalities
+impl<PBlock, C, B, Exec, Spawn, Hash> kp_executor::fraud_proof_ext::Externalities
     for ProofVerifier<PBlock, C, B, Exec, Spawn, Hash>
 where
     PBlock: BlockT,
@@ -309,7 +309,7 @@ where
     Spawn: SpawnNamed + Clone + Send + 'static,
     Hash: Encode + Decode + Send + Sync,
 {
-    fn verify_fraud_proof(&self, proof: &sp_executor::FraudProof) -> bool {
+    fn verify_fraud_proof(&self, proof: &kp_executor::FraudProof) -> bool {
         match self.verify(proof) {
             Ok(()) => true,
             Err(e) => {

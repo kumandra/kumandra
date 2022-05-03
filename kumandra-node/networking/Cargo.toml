@@ -1,12 +1,10 @@
 [package]
-name = "subspace-networking"
+name = "kumandra-networking"
 version = "0.1.0"
-authors = ["Nazar Mokrynskyi <nazar@mokrynskyi.com>"]
-description = "Networking functionality of Subspace Network, primarily used for DSN (Distributed Storage Network)"
+authors = ["KOOMPI"]
+description = "Networking functionality of Kumandra Network, primarily used for DSN (Distributed Storage Network)"
 edition = "2021"
 license = "Apache-2.0"
-homepage = "https://subspace.network"
-repository = "https://github.com/subspace/subspace"
 include = [
     "/src",
     "/Cargo.toml",
@@ -20,7 +18,7 @@ hex = "0.4.3"
 log = "0.4.16"
 nohash-hasher = "0.2.0"
 parking_lot = "0.12.0"
-subspace-core-primitives = { version = "0.1.0", path = "../subspace-core-primitives" }
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
 thiserror = "1.0.30"
 tokio = { version = "1.17.0", features = ["macros", "parking_lot", "rt-multi-thread", "time"] }
 

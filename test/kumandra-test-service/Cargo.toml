@@ -1,11 +1,9 @@
 [package]
-name = "subspace-test-service"
+name = "kumandra-test-service"
 version = "0.1.0"
-authors = ["Subspace Labs <https://subspace.network>"]
+authors = ["KOOMPI"]
 edition = "2021"
 license = "GPL-3.0-or-later"
-homepage = "https://subspace.network"
-repository = "https://github.com/subspace/subspace"
 include = [
 	"/src",
 	"/Cargo.toml",
@@ -29,10 +27,10 @@ sp-arithmetic = { git = "https://github.com/paritytech/substrate", rev = "c4f3d0
 sp-blockchain = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 sp-keyring = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
-subspace-runtime-primitives = { path = "../../crates/subspace-runtime-primitives" }
-subspace-service = { path = "../../crates/subspace-service" }
-subspace-test-client = { path = "../subspace-test-client" }
-subspace-test-runtime = { version = "0.1.0", features = ["do-not-enforce-cost-of-storage"], path = "../subspace-test-runtime" }
+kumandra-runtime-primitives = { path = "../../kumandra-primitives/runtime" }
+kumandra-service = { path = "../../kumandra-node/service" }
+kumandra-test-client = { path = "../kumandra-test-client" }
+kumandra-test-runtime = { version = "0.1.0", features = ["do-not-enforce-cost-of-storage"], path = "../kumandra-test-runtime" }
 substrate-test-client = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 tokio = "1.17.0"
 

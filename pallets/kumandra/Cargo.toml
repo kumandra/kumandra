@@ -43,7 +43,7 @@ std = [
 	"num-traits/std",
 	"pallet-timestamp/std",
 	"scale-info/std",
-	"kp-consensusstd",
+	"kp-consensus/std",
 	"sp-consensus-slots/std",
 	"sp-io/std",
 	"sp-runtime/std",

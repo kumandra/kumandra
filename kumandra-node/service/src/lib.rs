@@ -41,7 +41,7 @@ use sp_block_builder::BlockBuilder;
 use sp_consensus::{CanAuthorWithNativeVersion, Error as ConsensusError};
 use sp_consensus_slots::Slot;
 use kp_consensus::KumandraApi;
-use sp_executor::ExecutorApi;
+use kp_executor::ExecutorApi;
 use sp_offchain::OffchainWorkerApi;
 use sp_runtime::generic::BlockId;
 use sp_runtime::traits::Block as BlockT;

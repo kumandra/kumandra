@@ -47,7 +47,7 @@ cirrus-test-runtime = { path = "../runtime" }
 cumulus-client-consensus-relay-chain = { path = "../../client/consensus/relay-chain" }
 
 kumandra-runtime-primitives = { path = "../../../kumandra-primitives/runtime" }
-kumandra-service = { path = "../../../node/service" }
+kumandra-service = { path = "../../../kumandra-node/service" }
 kumandra-test-client = { path = "../../../test/kumandra-test-client" }
 kumandra-test-runtime = { path = "../../../test/kumandra-test-runtime" }
 kumandra-test-service = { path = "../../../test/kumandra-test-service" }

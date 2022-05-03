@@ -47,7 +47,7 @@ pallet-transaction-payment-rpc-runtime-api = { default-features = false, git = "
 
 cirrus-pallet-executive = { path = "../pallets/executive", default-features = false }
 cirrus-primitives = { path = "../primitives", default-features = false }
-kp-executor = { path = "../../kumandra-clients/executor", default-features = false }
+kp-executor = { path = "../../kumandra-primitives/executor", default-features = false }
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
