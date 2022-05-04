@@ -34,12 +34,12 @@ impl NativeExecutionDispatch for ExecutorDispatch {
     /// Only enable the benchmarking host functions when we actually want to benchmark.
     #[cfg(feature = "runtime-benchmarks")]
     type ExtendHostFunctions = (
-        sp_executor::fraud_proof_ext::fraud_proof::HostFunctions,
+        kp_executor::fraud_proof_ext::fraud_proof::HostFunctions,
         frame_benchmarking::benchmarking::HostFunctions,
     );
     /// Otherwise we only use the default Substrate host functions.
     #[cfg(not(feature = "runtime-benchmarks"))]
-    type ExtendHostFunctions = sp_executor::fraud_proof_ext::fraud_proof::HostFunctions;
+    type ExtendHostFunctions = kp_executor::fraud_proof_ext::fraud_proof::HostFunctions;
 
     fn dispatch(method: &str, data: &[u8]) -> Option<Vec<u8>> {
         kumandra_runtime::api::dispatch(method, data)
@@ -157,8 +157,8 @@ impl SubstrateCli for Cli {
 
     fn load_spec(&self, id: &str) -> Result<Box<dyn ChainSpec>, String> {
         Ok(match id {
-            "testnet" => Box::new(chain_spec::testnet_config_json()?),
-            "testnet-compiled" => Box::new(chain_spec::testnet_config_compiled()?),
+            // "testnet" => Box::new(chain_spec::testnet_config_json()?),
+            // "testnet-compiled" => Box::new(chain_spec::testnet_config_compiled()?),
             "dev" => Box::new(chain_spec::dev_config()?),
             "" | "local" => Box::new(chain_spec::local_config()?),
             path => Box::new(chain_spec::KumandraChainSpec::from_json_file(

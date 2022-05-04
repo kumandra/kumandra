@@ -422,7 +422,7 @@ where
             telemetry: None,
         };
 
-        let kumandra = kc_consensus::start_kumandra(kumandra_config)?;
+        let kumandra = kc_consensus::start_Kumandra(kumandra_config)?;
 
         // Kumandra authoring task is considered essential, i.e. if it fails we take down the
         // service with it.

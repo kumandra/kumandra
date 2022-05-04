@@ -96,8 +96,8 @@ where
         client.clone(),
     )));
 
-    io.extend_with(sc_consensus_kumandra_rpc::KumandraRpcApi::to_delegate(
-        sc_consensus_kumandra_rpc::KumandraRpcHandler::new(
+    io.extend_with(kc_consensus_rpc::KumandraRpcApi::to_delegate(
+        kc_consensus_rpc::KumandraRpcHandler::new(
             client,
             subscription_executor,
             new_slot_notification_stream,

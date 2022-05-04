@@ -184,7 +184,7 @@ pub struct KumandraRpcHandler<Block, Client> {
 /// every subscriber, after which RPC server waits for the same number of
 /// `kumandra_submitSolutionResponse` requests with `SolutionResponse` in them or until
 /// timeout is exceeded. The first valid solution for a particular slot wins, others are ignored.
-impl<Block, Client>RpcHandler<Block, Client>
+impl<Block, Client> KumandraRpcHandler<Block, Client>
 where
     Block: BlockT,
     Client: ProvideRuntimeApi<Block>
@@ -193,15 +193,15 @@ where
         + Send
         + Sync
         + 'static,
-    Clienk::Api:RuntimeApi<Block>,
+    Client::Api: KumandraRuntimeApi<Block>,
 {
-    /// Creates a new instance kf the Rpc` handler.
+    /// Creates a new instance of the `KumandraRpc` handler.
     pub fn new<E>(
         client: Arc<Client>,
         executor: E,
-    k  new_slot_notification_stream:NotificationStream<NewSlotNotification>,
-    k  block_signing_notification_stream:NotificationStream<BlockSigningNotification>,
-    k  archived_segment_notification_stream:NotificationStream<
+        new_slot_notification_stream: KumandraNotificationStream<NewSlotNotification>,
+        block_signing_notification_stream: KumandraNotificationStream<BlockSigningNotification>,
+        archived_segment_notification_stream: KumandraNotificationStream<
             ArchivedSegmentNotification,
         >,
     ) -> Self
@@ -222,7 +222,7 @@ where
     }
 }
 
-impl<Block, Client>RpcAki forRpcHandler<Block, Client>
+impl<Block, Client> KumandraRpcApi for KumandraRpcHandler<Block, Client>
 where
     Block: BlockT,
     Client: ProvideRuntimeApi<Block>
@@ -231,7 +231,7 @@ where
         + Send
         + Sync
         + 'static,
-    Clienk::Api:RuntimeApi<Block>,
+    Client::Api: KumandraRuntimeApi<Block>,
 {
     type Metadata = sc_rpc_api::Metadata;
 
@@ -557,7 +557,9 @@ where
 
             if let Some(mut sender) = maybe_sender {
                 if let Err(error) = sender.send(()).await {
-                    warn!("Failed to acknowledge archived segment: {error}");
+                    if !error.is_disconnected() {
+                        warn!("Failed to acknowledge archived segment: {error}");
+                    }
                 }
             }
 

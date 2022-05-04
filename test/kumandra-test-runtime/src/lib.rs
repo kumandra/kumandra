@@ -48,7 +48,7 @@ use kp_consensus::{
     EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SolutionRanges,
 };
 use sp_core::{crypto::KeyTypeId, Hasher, OpaqueMetadata};
-use sp_executor::{FraudProof, OpaqueBundle};
+use kp_executor::{FraudProof, OpaqueBundle};
 use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, DispatchInfoOf, PostDispatchInfoOf, Zero};
 use sp_runtime::transaction_validity::{
     InvalidTransaction, TransactionSource, TransactionValidity, TransactionValidityError,
@@ -107,7 +107,7 @@ pub const SHANNON: Balance = 1;
 /// Kumandra Credits have 18 decimal places.
 pub const DECIMAL_PLACES: u8 = 18;
 /// One Kumandra Credit.
-pub const SSC: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
+pub const KMD: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
 
 // TODO: Many of below constants should probably be updatable but currently they are not
 
@@ -468,7 +468,7 @@ impl pallet_executor::Config for Runtime {
 }
 
 parameter_types! {
-    pub const BlockReward: Balance = SSC;
+    pub const BlockReward: Balance = KMD;
 }
 
 impl pallet_rewards::Config for Runtime {
@@ -928,9 +928,9 @@ impl_runtime_apis! {
         }
     }
 
-    impl sp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
+    impl kp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
         fn submit_execution_receipt_unsigned(
-            execution_receipt: sp_executor::SignedExecutionReceipt<cirrus_primitives::Hash>,
+            execution_receipt: kp_executor::SignedExecutionReceipt<cirrus_primitives::Hash>,
         ) -> Option<()> {
             Executor::submit_execution_receipt_unsigned(execution_receipt).ok()
         }
@@ -944,13 +944,13 @@ impl_runtime_apis! {
         }
 
         fn submit_bundle_equivocation_proof_unsigned(
-            bundle_equivocation_proof: sp_executor::BundleEquivocationProof,
+            bundle_equivocation_proof: kp_executor::BundleEquivocationProof,
         ) -> Option<()> {
             Executor::submit_bundle_equivocation_proof_unsigned(bundle_equivocation_proof).ok()
         }
 
         fn submit_invalid_transaction_proof_unsigned(
-            invalid_transaction_proof: sp_executor::InvalidTransactionProof,
+            invalid_transaction_proof: kp_executor::InvalidTransactionProof,
         ) -> Option<()> {
             Executor::submit_invalid_transaction_proof_unsigned(invalid_transaction_proof).ok()
         }
@@ -967,7 +967,7 @@ impl_runtime_apis! {
             EXECUTION_WASM_BUNDLE.into()
         }
 
-        fn executor_id() -> sp_executor::ExecutorId {
+        fn executor_id() -> kp_executor::ExecutorId {
             Executor::executor()
                 .map(|(_account_id, executor_id)| executor_id)
                 .expect("Executor must be provided; qed")
