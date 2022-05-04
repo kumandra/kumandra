@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-//! Codec for the Kumandra based on the [SLOTH permutation](https://eprint.iacr.org/2015/366).
 
 use log::error;
 use rayon::prelude::*;
@@ -114,10 +112,10 @@ impl KumandraCodec {
     /// Encode given batch of pieces using the best method available, which might be GPU, CPU or
     /// combination of both.
     ///
-    /// [`KumandraCodec::recommended_batch_size()`] can be used to determine the recommended batch
-    /// size, input should ideally contain at least that many worth of pieces to achieve highest
-    /// efficiency, it is recommended that the input is a multiple of that, but, strictly speaking,
-    /// doesn't have to be.
+    /// [`KumandraCodec::batch_size()`] can be used to determine the recommended batch size, input
+    /// should ideally contain at least that many worth of pieces to achieve highest efficiency, it
+    /// is recommended that the input is a multiple of that, but, strictly speaking, doesn't have to
+    /// be.
     ///
     /// NOTE: When error is returned, some pieces might have been modified and should be considered
     /// in inconsistent state!

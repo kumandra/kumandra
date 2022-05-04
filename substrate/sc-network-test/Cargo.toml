@@ -1,0 +1,36 @@
+[package]
+description = "Integration tests for Substrate network protocol"
+name = "sc-network-test"
+version = "0.8.0"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+authors = ["Parity Technologies <admin@parity.io>"]
+edition = "2021"
+publish = false
+homepage = "https://substrate.io"
+repository = "https://github.com/paritytech/substrate/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+async-std = "1.6.5"
+sc-network = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+log = "0.4.8"
+parking_lot = "0.12.0"
+futures = "0.3.21"
+futures-timer = "3.0.1"
+rand = "0.8.5"
+libp2p = { version = "0.40.0", default-features = false }
+sp-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-blockchain = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-block-builder = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-consensus-babe = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+substrate-test-runtime-client = { version = "2.0.0", path = "../substrate-test-runtime-client" }
+substrate-test-runtime = { version = "2.0.0", path = "../substrate-test-runtime" }
+sp-tracing = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-service = { default-features = false, features = ["test-helpers"],  git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+async-trait = "0.1.53"

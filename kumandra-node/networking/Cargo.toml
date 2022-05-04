@@ -1,0 +1,43 @@
+[package]
+name = "kumandra-networking"
+version = "0.1.0"
+authors = ["KOOMPI"]
+description = "Networking functionality of Kumandra Network, primarily used for DSN (Distributed Storage Network)"
+edition = "2021"
+license = "Apache-2.0"
+include = [
+    "/src",
+    "/Cargo.toml",
+]
+
+[dependencies]
+event-listener-primitives = "2.0.1"
+bytes = "1.1.0"
+futures = "0.3.21"
+hex = "0.4.3"
+log = "0.4.16"
+nohash-hasher = "0.2.0"
+parking_lot = "0.12.0"
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
+thiserror = "1.0.30"
+tokio = { version = "1.17.0", features = ["macros", "parking_lot", "rt-multi-thread", "time"] }
+
+[dependencies.libp2p]
+version = "0.44.0"
+default-features = false
+features = [
+    "dns-tokio",
+    "gossipsub",
+    "identify",
+    "kad",
+    "noise",
+    "ping",
+    "tcp-tokio",
+    "websocket",
+    "yamux"
+]
+
+[dev-dependencies]
+anyhow = "1.0.56"
+clap = { version = "3.1.8", features = ["color", "derive"] }
+env_logger = "0.9.0"

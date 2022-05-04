@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -19,61 +19,80 @@
 // `construct_runtime!` does a lot of recursion and requires us to increase the limit to 256.
 #![recursion_limit = "256"]
 
+// Make execution WASM runtime available.
+include!(concat!(env!("OUT_DIR"), "/execution_wasm_bundle.rs"));
+
 // Make the WASM binary available.
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 use codec::{Compact, CompactLen, Decode, Encode};
 use core::time::Duration;
-use frame_support::traits::{
-    ConstU128, ConstU16, ConstU32, ConstU64, ConstU8, Currency, ExistenceRequirement, Get,
-    Imbalance, WithdrawReasons,
+use frame_support::traits::Contains;
+use frame_support::{
+    construct_runtime, parameter_types,
+    traits::{
+        ConstU128, ConstU16, ConstU32, ConstU64, ConstU8, Currency, ExistenceRequirement, Get,
+        Imbalance, WithdrawReasons,
+    },
+    weights::{
+        constants::{RocksDbWeight, WEIGHT_PER_SECOND},
+        ConstantMultiplier, IdentityFee,
+    },
 };
-use frame_support::weights::{
-    constants::{RocksDbWeight, WEIGHT_PER_SECOND},
-    IdentityFee,
+use frame_system::{
+    limits::{BlockLength, BlockWeights},
+    EnsureNever,
 };
-use frame_support::{construct_runtime, parameter_types};
-use frame_system::limits::{BlockLength, BlockWeights};
-use frame_system::EnsureNever;
-use pallet_balances::NegativeImbalance;
+use pallet_balances::{Call as BalancesCall, NegativeImbalance};
+use pallet_feeds::feed_processor::{FeedMetadata, FeedObjectMapping, FeedProcessor};
+use pallet_grandpa_finality_verifier::chain::Chain;
+use scale_info::TypeInfo;
 use sp_api::{impl_runtime_apis, BlockT, HashT, HeaderT};
-use kp_consensus::digests::CompatibleDigestItem;
 use kp_consensus::{
-    EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SolutionRanges,
+    digests::CompatibleDigestItem, EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts,
+    SolutionRanges,
 };
-use sp_core::{crypto::KeyTypeId, OpaqueMetadata};
+use sp_core::{crypto::KeyTypeId, Hasher, OpaqueMetadata};
 use kp_executor::{FraudProof, OpaqueBundle};
-use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, DispatchInfoOf, PostDispatchInfoOf, Zero};
-use sp_runtime::transaction_validity::{
-    InvalidTransaction, TransactionSource, TransactionValidity, TransactionValidityError,
+use sp_runtime::{
+    create_runtime_str, generic,
+    traits::{AccountIdLookup, BlakeTwo256, DispatchInfoOf, PostDispatchInfoOf, Zero},
+    transaction_validity::{
+        InvalidTransaction, TransactionSource, TransactionValidity, TransactionValidityError,
+    },
+    ApplyExtrinsicResult, DispatchError, OpaqueExtrinsic, Perbill,
 };
-use sp_runtime::OpaqueExtrinsic;
-use sp_runtime::{create_runtime_str, generic, ApplyExtrinsicResult, Perbill};
-use sp_std::prelude::*;
+use sp_std::{borrow::Cow, prelude::*};
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 use kumandra_core_primitives::objects::{BlockObject, BlockObjectMapping};
 use kumandra_core_primitives::{Randomness, RootBlock, Sha256Hash, PIECE_SIZE};
-use kumandra_primitives::{
+use kumandra_runtime_primitives::{
     opaque, AccountId, Balance, BlockNumber, Hash, Index, Moment, Signature, CONFIRMATION_DEPTH_K,
-    MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
+    MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
     STORAGE_FEES_ESCROW_BLOCK_REWARD, STORAGE_FEES_ESCROW_BLOCK_TAX,
 };
 
 sp_runtime::impl_opaque_keys! {
     pub struct SessionKeys {
-        pub kumandra: Kumandra,
     }
 }
 
+// To learn more about runtime versioning and what each of the following value means:
+//   https://substrate.dev/docs/en/knowledgebase/runtime/upgrades#runtime-versioning
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
     spec_name: create_runtime_str!("kumandra"),
     impl_name: create_runtime_str!("kumandra"),
     authoring_version: 1,
-    spec_version: 001,
+    // The version of the runtime specification. A full node will not attempt to use its native
+    //   runtime in substitute for the on-chain Wasm runtime unless all of `spec_name`,
+    //   `spec_version`, and `authoring_version` are the same between Wasm and native.
+    // This value is set to 100 to notify Polkadot-JS App (https://polkadot.js.org/apps) to use
+    //   the compatible custom types.
+    spec_version: 101,
     impl_version: 1,
     apis: RUNTIME_API_VERSIONS,
     transaction_version: 1,
@@ -89,12 +108,12 @@ pub fn native_version() -> NativeVersion {
     }
 }
 
-/// The smallest unit of the token is called UNIT.
-pub const UNIT: Balance = 1;
+/// The smallest unit of the token is called Shenron.
+pub const SHENRON: Balance = 1;
 /// Kumandra Credits have 18 decimal places.
 pub const DECIMAL_PLACES: u8 = 18;
 /// One Kumandra Credit.
-pub const KMD: Balance = (10 * UNIT).pow(DECIMAL_PLACES as u32);
+pub const KMD: Balance = (10 * SHENRON).pow(DECIMAL_PLACES as u32);
 
 // TODO: Many of below constants should probably be updatable but currently they are not
 
@@ -164,9 +183,25 @@ pub type SS58Prefix = ConstU16<2254>;
 
 // Configure FRAME pallets to include in runtime.
 
+pub struct CallFilter;
+
+impl Contains<Call> for CallFilter {
+    fn contains(c: &Call) -> bool {
+        // Disable all balance transfers
+        !matches!(
+            c,
+            Call::Balances(
+                BalancesCall::transfer { .. }
+                    | BalancesCall::transfer_keep_alive { .. }
+                    | BalancesCall::transfer_all { .. }
+            )
+        )
+    }
+}
+
 impl frame_system::Config for Runtime {
     /// The basic call filter to use in dispatchable.
-    type BaseCallFilter = frame_support::traits::Everything;
+    type BaseCallFilter = CallFilter;
     /// Block & extrinsics weights: base values and limits.
     type BlockWeights = KumandraBlockWeights;
     /// The maximum length of a block (in bytes).
@@ -219,9 +254,12 @@ impl frame_system::Config for Runtime {
 parameter_types! {
     pub const SlotProbability: (u64, u64) = SLOT_PROBABILITY;
     pub const ExpectedBlockTime: Moment = MILLISECS_PER_BLOCK;
+    // Disable solution range adjustment at the start of chain.
+    // Root origin must enable later
+    pub const ShouldAdjustSolutionRange: bool = false;
 }
 
-impl pallet_kumandra_space::Config for Runtime {
+impl pallet_kumandra::Config for Runtime {
     type Event = Event;
     type GlobalRandomnessUpdateInterval = ConstU32<GLOBAL_RANDOMNESS_UPDATE_INTERVAL>;
     type EraDuration = ConstU32<ERA_DURATION_IN_BLOCKS>;
@@ -232,12 +270,14 @@ impl pallet_kumandra_space::Config for Runtime {
     type ExpectedBlockTime = ExpectedBlockTime;
     type ConfirmationDepthK = ConstU32<CONFIRMATION_DEPTH_K>;
     type RecordSize = ConstU32<RECORD_SIZE>;
+    type MaxPlotSize = ConstU64<MAX_PLOT_SIZE>;
     type RecordedHistorySegmentSize = ConstU32<RECORDED_HISTORY_SEGMENT_SIZE>;
-    type GlobalRandomnessIntervalTrigger = pallet_kumandra_space::NormalGlobalRandomnessInterval;
-    type EraChangeTrigger = pallet_kumandra_space::NormalEraChange;
-    type EonChangeTrigger = pallet_kumandra_space::NormalEonChange;
+    type ShouldAdjustSolutionRange = ShouldAdjustSolutionRange;
+    type GlobalRandomnessIntervalTrigger = pallet_kumandra::NormalGlobalRandomnessInterval;
+    type EraChangeTrigger = pallet_kumandra::NormalEraChange;
+    type EonChangeTrigger = pallet_kumandra::NormalEonChange;
 
-    type HandleEquivocation = pallet_kumandra_space::equivocation::EquivocationHandler<
+    type HandleEquivocation = pallet_kumandra::equivocation::EquivocationHandler<
         OffencesKumandra,
         ConstU64<{ EQUIVOCATION_REPORT_LONGEVITY as u64 }>,
     >;
@@ -263,7 +303,7 @@ impl pallet_balances::Config for Runtime {
     type Event = Event;
     type DustRemoval = ();
     // TODO: Correct value
-    type ExistentialDeposit = ConstU128<{ 500 * UNIT }>;
+    type ExistentialDeposit = ConstU128<{ 500 * SHENRON }>;
     type AccountStore = System;
     type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 }
@@ -418,9 +458,9 @@ impl pallet_transaction_payment::OnChargeTransaction<Runtime> for OnChargeTransa
 
 impl pallet_transaction_payment::Config for Runtime {
     type OnChargeTransaction = OnChargeTransaction;
-    type TransactionByteFee = TransactionByteFee;
     type OperationalFeeMultiplier = ConstU8<5>;
     type WeightToFee = IdentityFee<Balance>;
+    type LengthToFee = ConstantMultiplier<Balance, TransactionByteFee>;
     type FeeMultiplierUpdate = ();
 }
 
@@ -451,6 +491,7 @@ impl pallet_offences_kumandra::Config for Runtime {
 
 impl pallet_executor::Config for Runtime {
     type Event = Event;
+    type SecondaryHash = cirrus_primitives::Hash;
 }
 
 parameter_types! {
@@ -465,8 +506,120 @@ impl pallet_rewards::Config for Runtime {
     type WeightInfo = ();
 }
 
+/// Polkadot-like chain.
+pub struct PolkadotLike;
+impl Chain for PolkadotLike {
+    type BlockNumber = u32;
+    type Hash = <BlakeTwo256 as Hasher>::Out;
+    type Header = generic::Header<u32, BlakeTwo256>;
+    type Hasher = BlakeTwo256;
+}
+
+/// Type used to represent a FeedId or ChainId
+pub type FeedId = u64;
+pub struct GrandpaValidator<C>(C);
+
+impl<C: Chain> FeedProcessor<FeedId> for GrandpaValidator<C> {
+    fn init(&self, feed_id: FeedId, data: &[u8]) -> sp_runtime::DispatchResult {
+        pallet_grandpa_finality_verifier::initialize::<Runtime, C>(feed_id, data)
+    }
+
+    fn put(&self, feed_id: FeedId, object: &[u8]) -> Result<Option<FeedMetadata>, DispatchError> {
+        Ok(Some(
+            pallet_grandpa_finality_verifier::validate_finalized_block::<Runtime, C>(
+                feed_id, object,
+            )?
+            .encode(),
+        ))
+    }
+
+    fn object_mappings(&self, _feed_id: FeedId, object: &[u8]) -> Vec<FeedObjectMapping> {
+        extract_substrate_object_mapping::<C>(object)
+    }
+
+    fn delete(&self, feed_id: FeedId) -> sp_runtime::DispatchResult {
+        pallet_grandpa_finality_verifier::purge::<Runtime>(feed_id)
+    }
+}
+
+pub struct ParachainImporter<C>(C);
+
+impl<C: Chain> FeedProcessor<FeedId> for ParachainImporter<C> {
+    fn put(&self, _feed_id: FeedId, object: &[u8]) -> Result<Option<FeedMetadata>, DispatchError> {
+        let block = C::decode_block::<Runtime>(object)?;
+        Ok(Some(
+            (block.block.header.hash(), *block.block.header.number()).encode(),
+        ))
+    }
+    fn object_mappings(&self, _feed_id: FeedId, object: &[u8]) -> Vec<FeedObjectMapping> {
+        extract_substrate_object_mapping::<C>(object)
+    }
+}
+
+fn extract_substrate_object_mapping<C: Chain>(object: &[u8]) -> Vec<FeedObjectMapping> {
+    let block = match C::decode_block::<Runtime>(object) {
+        Ok(block) => block,
+        // we just return empty if we failed to decode as this is not called in runtime
+        Err(_) => return vec![],
+    };
+
+    // we send two mappings pointed to the same object
+    // block height and block hash
+    // this would be easier for sync client to crawl through the descendents by block height
+    // if you already have a block hash, you can fetch the same block with it as well
+    vec![
+        FeedObjectMapping::Custom {
+            key: block.block.header.number().encode(),
+            offset: 0,
+        },
+        FeedObjectMapping::Custom {
+            key: block.block.header.hash().as_ref().to_vec(),
+            offset: 0,
+        },
+    ]
+}
+
+/// FeedProcessorId represents the available FeedProcessor impls
+#[derive(Debug, Clone, Copy, Encode, Decode, TypeInfo, Eq, PartialEq)]
+pub enum FeedProcessorKind {
+    /// Content addressable Feed processor,
+    ContentAddressable,
+    /// Polkadot like relay chain Feed processor that validates grandpa justifications and indexes the entire block
+    PolkadotLike,
+    /// Parachain Feed processor that just indexes the entire block
+    ParachainLike,
+}
+
+impl Default for FeedProcessorKind {
+    fn default() -> Self {
+        FeedProcessorKind::ContentAddressable
+    }
+}
+
+parameter_types! {
+    // Limit maximum number of feeds per account
+    pub const MaxFeeds: u32 = 100;
+}
+
 impl pallet_feeds::Config for Runtime {
     type Event = Event;
+    type FeedId = FeedId;
+    type FeedProcessorKind = FeedProcessorKind;
+    type MaxFeeds = MaxFeeds;
+
+    fn feed_processor(
+        feed_processor_kind: FeedProcessorKind,
+    ) -> Box<dyn FeedProcessor<Self::FeedId>> {
+        match feed_processor_kind {
+            FeedProcessorKind::PolkadotLike => Box::new(GrandpaValidator(PolkadotLike)),
+            FeedProcessorKind::ContentAddressable => Box::new(()),
+            FeedProcessorKind::ParachainLike => Box::new(ParachainImporter(PolkadotLike)),
+        }
+    }
+}
+
+impl pallet_grandpa_finality_verifier::Config for Runtime {
+    type ChainId = FeedId;
 }
 
 impl pallet_object_store::Config for Runtime {
@@ -497,7 +650,7 @@ construct_runtime!(
         System: frame_system = 0,
         Timestamp: pallet_timestamp = 1,
 
-        Kumandra: pallet_kumandra_space = 2,
+        Kumandra: pallet_kumandra = 2,
         OffencesKumandra: pallet_offences_kumandra = 3,
         Rewards: pallet_rewards = 9,
 
@@ -507,6 +660,7 @@ construct_runtime!(
         Utility: pallet_utility = 8,
 
         Feeds: pallet_feeds = 6,
+        GrandpaFinalityVerifier: pallet_grandpa_finality_verifier = 13,
         ObjectStore: pallet_object_store = 10,
         Executor: pallet_executor = 11,
 
@@ -547,7 +701,7 @@ pub type Executive = frame_executive::Executive<
 
 fn extract_root_blocks(ext: &UncheckedExtrinsic) -> Option<Vec<RootBlock>> {
     match &ext.function {
-        Call::Kumandra(pallet_kumandra_space::Call::store_root_blocks { root_blocks }) => {
+        Call::Kumandra(pallet_kumandra::Call::store_root_blocks { root_blocks }) => {
             Some(root_blocks.clone())
         }
         _ => None,
@@ -559,12 +713,14 @@ fn extract_feeds_block_object_mapping(
     objects: &mut Vec<BlockObject>,
     call: &pallet_feeds::Call<Runtime>,
 ) {
-    if let Some(call_object) = call.extract_call_object() {
-        objects.push(BlockObject::V0 {
-            hash: call_object.hash,
-            offset: base_offset + call_object.offset,
-        });
-    }
+    call.extract_call_objects()
+        .into_iter()
+        .for_each(|object_map| {
+            objects.push(BlockObject::V0 {
+                hash: object_map.key,
+                offset: base_offset + object_map.offset,
+            })
+        })
 }
 
 fn extract_object_store_block_object_mapping(
@@ -789,15 +945,23 @@ impl_runtime_apis! {
 
     impl kp_consensus::KumandraApi<Block> for Runtime {
         fn confirmation_depth_k() -> <<Block as BlockT>::Header as HeaderT>::Number {
-            <Self as pallet_kumandra_space::Config>::ConfirmationDepthK::get()
+            <Self as pallet_kumandra::Config>::ConfirmationDepthK::get()
+        }
+
+        fn total_pieces() -> u64 {
+            <pallet_kumandra::Pallet<Runtime>>::total_pieces()
+        }
+
+        fn max_plot_size() -> u64 {
+            <Self as pallet_kumandra::Config>::MaxPlotSize::get()
         }
 
         fn record_size() -> u32 {
-            <Self as pallet_kumandra_space::Config>::RecordSize::get()
+            <Self as pallet_kumandra::Config>::RecordSize::get()
         }
 
         fn recorded_history_segment_size() -> u32 {
-            <Self as pallet_kumandra_space::Config>::RecordedHistorySegmentSize::get()
+            <Self as pallet_kumandra::Config>::RecordedHistorySegmentSize::get()
         }
 
         fn slot_duration() -> Duration {
@@ -841,17 +1005,11 @@ impl_runtime_apis! {
         }
     }
 
-    impl kp_executor::ExecutorApi<Block> for Runtime {
+    impl kp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
         fn submit_execution_receipt_unsigned(
-            opaque_execution_receipt: kp_executor::OpaqueExecutionReceipt,
+            execution_receipt: kp_executor::SignedExecutionReceipt<cirrus_primitives::Hash>,
         ) -> Option<()> {
-            <kp_executor::ExecutionReceipt<<Block as BlockT>::Hash>>::decode(
-                &mut opaque_execution_receipt.encode().as_slice(),
-            )
-            .ok()
-            .and_then(|execution_receipt| {
-                Executor::submit_execution_receipt_unsigned(execution_receipt).ok()
-            })
+            Executor::submit_execution_receipt_unsigned(execution_receipt).ok()
         }
 
         fn submit_transaction_bundle_unsigned(opaque_bundle: OpaqueBundle) -> Option<()> {
@@ -880,6 +1038,16 @@ impl_runtime_apis! {
 
         fn extrinsics_shuffling_seed(header: <Block as BlockT>::Header) -> Randomness {
             extrinsics_shuffling_seed::<Block>(header)
+        }
+
+        fn execution_wasm_bundle() -> Cow<'static, [u8]> {
+            EXECUTION_WASM_BUNDLE.into()
+        }
+
+        fn executor_id() -> kp_executor::ExecutorId {
+            Executor::executor()
+                .map(|(_account_id, executor_id)| executor_id)
+                .expect("Executor must be provided; qed")
         }
     }
 

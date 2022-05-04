@@ -1,0 +1,35 @@
+[package]
+name = "kumandra-test-client"
+version = "0.1.0"
+authors = ["KOOMPI"]
+edition = "2021"
+license = "GPL-3.0-or-later"
+include = [
+	"/src",
+	"/Cargo.toml",
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+futures = "0.3.21"
+rand = "0.8.5"
+schnorrkel = "0.9.1"
+sc-chain-spec = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kc-consensus = { version = "0.1.0", path = "../../kumandra-clients/consensus" }
+sc-executor = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", features = ["wasmtime"] }
+sc-service = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", features = ["wasmtime"] }
+sp-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kp-consensus = { version = "0.1.0", path = "../../kumandra-primitives/consensus" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kp-executor = { version = "0.1.0", path = "../../kumandra-primitives/executor" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kumandra-archiving = { path = "../../modules/archiving" }
+kumandra-core-primitives = { path = "../../kumandra-primitives/core" }
+kumandra-runtime-primitives = { path = "../../kumandra-primitives/runtime" }
+kumandra-service = { path = "../../kumandra-node/service" }
+kumandra-solving = { path = "../../modules/solving" }
+kumandra-test-runtime = { version = "0.1.0", features = ["do-not-enforce-cost-of-storage"], path = "../kumandra-test-runtime" }
+zeroize = "1.5.4"

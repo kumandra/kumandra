@@ -1,0 +1,62 @@
+[package]
+name = "kumandra-node"
+version = "0.1.0"
+authors = ["KOOMPI"]
+description = "A Kumandra Network Blockchain node."
+edition = "2021"
+license = "GPL-3.0-or-later"
+build = "build.rs"
+include = [
+	"/res",
+	"/src",
+	"/build.rs",
+	"/Cargo.toml",
+	"/README.md"
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+cirrus-node = { version = "0.1.0", path = "../cumulus/node" }
+clap = { version = "3.1.8", features = ["derive"] }
+cumulus-client-cli = { version = "0.1.0", path = "../cumulus/client/cli" }
+dirs = "4.0.0"
+frame-benchmarking-cli = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+frame-support = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+futures = "0.3.21"
+log = "0.4.16"
+parity-scale-codec = "3.1.2"
+sc-cli = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", features = ["wasmtime"] }
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-executor = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", features = ["wasmtime"] }
+sc-service = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d", features = ["wasmtime"] }
+sc-telemetry = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-tracing = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+serde = "1.0.136"
+sp-consensus = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kp-executor = { version = "0.1.0", path = "../kumandra-primitives/executor" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kumandra-archiving = { version = "0.1.0", path = "../modules/archiving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../kumandra-primitives/core" }
+kumandra-networking = { version = "0.1.0", path = "./networking" }
+kumandra-runtime = { version = "0.1.0", path = "../runtime" }
+kumandra-runtime-primitives = { version = "0.1.0", path = "../kumandra-primitives/runtime" }
+kumandra-service = { version = "0.1.0", path = "./service" }
+thiserror = "1.0.30"
+tokio = { version = "1.17.0" }
+
+[build-dependencies]
+substrate-build-script-utils = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+
+[features]
+default = ["do-not-enforce-cost-of-storage"]
+do-not-enforce-cost-of-storage = [
+	"kumandra-runtime/do-not-enforce-cost-of-storage"
+]
+runtime-benchmarks = [
+	"cirrus-node/runtime-benchmarks",
+	"kumandra-runtime/runtime-benchmarks",
+]

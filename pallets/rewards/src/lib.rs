@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ mod default_weights;
 use frame_support::traits::{Currency, Get};
 use frame_support::weights::Weight;
 pub use pallet::*;
-use kumandra_primitives::FindBlockRewardAddress;
+use kumandra_runtime_primitives::FindBlockRewardAddress;
 
 pub trait WeightInfo {
     fn on_initialize() -> Weight;
@@ -36,7 +36,7 @@ mod pallet {
     use frame_support::pallet_prelude::*;
     use frame_support::traits::Currency;
     use frame_system::pallet_prelude::*;
-    use kumandra_primitives::FindBlockRewardAddress;
+    use kumandra_runtime_primitives::FindBlockRewardAddress;
 
     type BalanceOf<T> =
         <<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;

@@ -1,0 +1,36 @@
+[package]
+name = "kc-consensus-rpc"
+version = "0.1.0"
+authors = ["KOOMPI"]
+description = "RPC extensions for the Kumandra consensus algorithm"
+edition = "2021"
+license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+async-oneshot = "0.5.0"
+futures = "0.3.21"
+futures-timer = "3.0.2"
+jsonrpc-core = "18.0.0"
+jsonrpc-core-client = "18.0.0"
+jsonrpc-derive = "18.0.0"
+jsonrpc-pubsub = "18.0.0"
+log = "0.4.16"
+parity-scale-codec = { version = "3.1.2", default-features = false }
+parking_lot = "0.12.0"
+sc-client-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kc-consensus = { version = "0.1.0", path = "../" }
+sc-rpc-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sc-utils = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-api = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kp-consensus = { version = "0.1.0", path = "../../../kumandra-primitives/consensus" }
+sp-consensus-slots = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-blockchain = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-runtime = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+kumandra-archiving = { version = "0.1.0", path = "../../../modules/archiving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../../../kumandra-primitives/core" }
+kumandra-rpc-primitives = { version = "0.1.0", path = "../../../kumandra-primitives/rpc" }

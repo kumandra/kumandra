@@ -1,0 +1,72 @@
+[package]
+name = "kumandra-farmer"
+description = "Farmer for the Kumandra Network Blockchain"
+license = "MIT OR Apache-2.0"
+version = "0.3.0"
+authors = ["KOOMPI"]
+edition = "2021"
+include = [
+    "/src",
+    "/Cargo.toml",
+    "/README.md",
+]
+
+[dependencies]
+anyhow = "1.0.56"
+arc-swap = "1.5.0"
+async-oneshot = "0.5.0"
+async-trait = "0.1.53"
+clap = { version = "3.1.8", features = ["color", "derive"] }
+dirs = "4.0.0"
+env_logger = "0.9.0"
+event-listener-primitives = "2.0.1"
+futures = "0.3.21"
+hex = "0.4.3"
+hex-buffer-serde = "0.3.0"
+jsonrpsee = { version = "0.10.1", features = ["client", "macros", "server"] }
+log = "0.4.16"
+lru = "0.7.5"
+num-traits = "0.2"
+parity-scale-codec = "3.1.2"
+parking_lot = "0.12.0"
+rand = "0.8.5"
+rayon = "1.5.2"
+schnorrkel = "0.9.1"
+serde = { version = "1.0.136", features = ["derive"] }
+serde_json = "1.0.79"
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+ss58-registry = "1.17.0"
+kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving" }
+kumandra-solving = { version = "0.1.0", path = "../../modules/solving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
+kumandra-networking = { version = "0.1.0", path = "../../kumandra-node/networking" }
+kumandra-rpc-primitives = { version = "0.1.0", path = "../../kumandra-primitives/rpc" }
+thiserror = "1.0.30"
+tokio = { version = "1.17.0", features = ["macros", "parking_lot", "rt-multi-thread"] }
+zeroize = "1.5.4"
+
+# OpenBSD and MSVC are unteested and shouldn't enable jemalloc:
+# https://github.com/tikv/jemallocator/blob/52de4257fab3e770f73d5174c12a095b49572fba/jemalloc-sys/build.rs#L26-L27
+[target.'cfg(any(target_os = "openbsd", target_env = "msvc"))'.dependencies.rocksdb]
+default-features = false
+features = ["snappy"]
+version = "0.18.0"
+
+[target.'cfg(not(any(target_os = "openbsd", target_env = "msvc")))'.dependencies.rocksdb]
+default-features = false
+features = ["snappy", "jemalloc"]
+version = "0.18.0"
+
+[dev-dependencies]
+tempfile = "3.3.0"
+
+[features]
+default = []
+# Compile with CUDA support and use it if compatible GPU is available
+cuda = [
+    "kumandra-solving/cuda",
+]
+
+[[bench]]
+name = "plot-write"
+harness = false
