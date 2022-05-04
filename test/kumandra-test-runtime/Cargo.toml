@@ -21,7 +21,7 @@ frame-executive = { default-features = false, git = "https://github.com/parityte
 frame-support = { default-features = false, git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 frame-system = { default-features = false, git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 hex-literal = { version = "0.3.3", optional = true }
-orml-vesting = { default-features = false, git = "https://github.com/kumandra/open-runtime-module-library", rev = "8731f78311d59a97858c0885a0db276caf4171c1" }
+orml-vesting = { default-features = false, git = "https://github.com/subspace/open-runtime-module-library", rev = "8731f78311d59a97858c0885a0db276caf4171c1" }
 pallet-balances = { default-features = false, git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 pallet-executor = { default-features = false, path = "../../pallets/executor" }
 pallet-feeds = { version = "0.1.0", default-features = false, path = "../../pallets/feeds" }
