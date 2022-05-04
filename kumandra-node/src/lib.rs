@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Subspace Node library.
+//! Kumandra Node library.
 
 mod chain_spec;
 mod import_blocks_from_dsn;
@@ -27,7 +27,7 @@ use sc_cli::SubstrateCli;
 use sc_executor::{NativeExecutionDispatch, RuntimeVersion};
 use sc_service::ChainSpec;
 
-/// Executor dispatch for subspace runtime
+/// Executor dispatch for kumandra runtime
 pub struct ExecutorDispatch;
 
 impl NativeExecutionDispatch for ExecutorDispatch {
@@ -72,7 +72,7 @@ pub enum Subcommand {
     /// Import blocks.
     ImportBlocks(sc_cli::ImportBlocksCmd),
 
-    /// Import blocks from Subspace Network DSN.
+    /// Import blocks from Kumandra Network DSN.
     ImportBlocksFromDsn(ImportBlocksFromDsnCmd),
 
     /// Remove the whole chain.
@@ -90,7 +90,7 @@ pub enum Subcommand {
     Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 }
 
-/// Command used to run a Subspace node.
+/// Command used to run a Kumandra node.
 #[derive(Debug, Parser)]
 pub struct RunCmd {
     /// Base command to run a node.
@@ -98,7 +98,7 @@ pub struct RunCmd {
     pub base: sc_cli::RunCmd,
 }
 
-/// Subspace Cli.
+/// Kumandra Cli.
 #[derive(Debug, Parser)]
 #[clap(
     propagate_version = true,
@@ -119,14 +119,14 @@ pub struct Cli {
     /// The command-line arguments provided first will be passed to the embedded primary node,
     /// while the arguments provided after -- will be passed to the executor node.
     ///
-    /// subspace-node [primarychain-args] -- [secondarychain-args]
+    /// kumandra-node [primarychain-args] -- [secondarychain-args]
     #[clap(raw = true)]
     pub secondary_chain_args: Vec<String>,
 }
 
 impl SubstrateCli for Cli {
     fn impl_name() -> String {
-        "Subspace".into()
+        "Kumandra".into()
     }
 
     fn impl_version() -> String {
@@ -136,7 +136,7 @@ impl SubstrateCli for Cli {
     fn executable_name() -> String {
         // Customize to make sure directory used for data by default is the same regardless of the
         // name of the executable file.
-        "subspace-node".to_string()
+        "kumandra-node".to_string()
     }
 
     fn description() -> String {
@@ -161,7 +161,7 @@ impl SubstrateCli for Cli {
             "testnet-compiled" => Box::new(chain_spec::testnet_config_compiled()?),
             "dev" => Box::new(chain_spec::dev_config()?),
             "" | "local" => Box::new(chain_spec::local_config()?),
-            path => Box::new(chain_spec::SubspaceChainSpec::from_json_file(
+            path => Box::new(chain_spec::KumandraChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
         })

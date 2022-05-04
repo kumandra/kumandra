@@ -1,8 +1,8 @@
 use crate::plot::Plot;
 use rand::prelude::*;
 use std::sync::Arc;
-use subspace_core_primitives::{FlatPieces, Piece, PIECE_SIZE};
-use subspace_solving::PieceDistance;
+use kumandra_core_primitives::{FlatPieces, Piece, PIECE_SIZE};
+use kumandra_solving::PieceDistance;
 use tempfile::TempDir;
 
 fn init() {

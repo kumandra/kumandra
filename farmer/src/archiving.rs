@@ -3,10 +3,10 @@ use crate::rpc_client::RpcClient;
 use futures::{SinkExt, StreamExt};
 use log::{debug, error, info, warn};
 use std::time::Duration;
-use subspace_archiving::archiver::ArchivedSegment;
-use subspace_core_primitives::objects::{GlobalObject, PieceObject, PieceObjectMapping};
-use subspace_core_primitives::{FlatPieces, Sha256Hash};
-use subspace_rpc_primitives::FarmerMetadata;
+use kumandra_archiving::archiver::ArchivedSegment;
+use kumandra_core_primitives::objects::{GlobalObject, PieceObject, PieceObjectMapping};
+use kumandra_core_primitives::{FlatPieces, Sha256Hash};
+use kumandra_rpc_primitives::FarmerMetadata;
 use thiserror::Error;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
@@ -26,7 +26,7 @@ pub enum ArchivingError {
     #[error("Error joining task: {0}")]
     JoinTask(tokio::task::JoinError),
     #[error("Archiver instantiation error: {0}")]
-    Archiver(subspace_archiving::archiver::ArchiverInstantiationError),
+    Archiver(kumandra_archiving::archiver::ArchiverInstantiationError),
 }
 
 /// Collection of pieces that potentially need to be plotted

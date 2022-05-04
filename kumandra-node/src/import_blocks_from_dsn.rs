@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ use kumandra_runtime_primitives::{RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE};
 
 type PieceIndex = u64;
 
-/// The `import-blocks-from-network` command used to import blocks from Subspace Network DSN.
+/// The `import-blocks-from-network` command used to import blocks from Kumandra Network DSN.
 #[derive(Debug, Parser)]
 pub struct ImportBlocksFromDsnCmd {
     /// Multiaddrs of bootstrap nodes to connect to on startup, multiple are supported

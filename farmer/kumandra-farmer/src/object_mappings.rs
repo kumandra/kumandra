@@ -5,8 +5,8 @@ use parity_scale_codec::{Decode, Encode};
 use rocksdb::DB;
 use std::path::Path;
 use std::sync::Arc;
-use subspace_core_primitives::objects::GlobalObject;
-use subspace_core_primitives::Sha256Hash;
+use kumandra_core_primitives::objects::GlobalObject;
+use kumandra_core_primitives::Sha256Hash;
 use thiserror::Error;
 
 #[derive(Debug, Error)]

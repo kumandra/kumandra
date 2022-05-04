@@ -7,13 +7,13 @@ use futures::stream::{FuturesUnordered, StreamExt};
 use log::info;
 use rayon::prelude::*;
 use std::{path::Path, sync::Arc, time::Duration};
-use subspace_core_primitives::PublicKey;
-use subspace_solving::SubspaceCodec;
+use kumandra_core_primitives::PublicKey;
+use kumandra_solving::KumandraCodec;
 
 /// Abstraction around having multiple `Plot`s, `Farming`s and `Plotting`s.
 ///
 /// It is needed because of the limit of a single plot size from the consensus
-/// (`pallet_subspace::MaxPlotSize`) in order to support any amount of disk space from user.
+/// (`pallet_kumandra::MaxPlotSize`) in order to support any amount of disk space from user.
 pub struct MultiFarming {
     pub plots: Arc<Vec<Plot>>,
     farmings: Vec<Farming>,
@@ -31,7 +31,7 @@ impl MultiFarming {
         best_block_number_check_interval: Duration,
     ) -> anyhow::Result<Self> {
         let mut plots = Vec::with_capacity(plot_sizes.len());
-        let mut subspace_codecs = Vec::with_capacity(plot_sizes.len());
+        let mut kumandra_codecs = Vec::with_capacity(plot_sizes.len());
         let mut commitments = Vec::with_capacity(plot_sizes.len());
         let mut farmings = Vec::with_capacity(plot_sizes.len());
 
@@ -57,7 +57,7 @@ impl MultiFarming {
                     info!("Opening commitments");
                     let plot_commitments = Commitments::new(base_directory.join("commitments"))?;
 
-                    let subspace_codec = SubspaceCodec::new(identity.public_key());
+                    let kumandra_codec = KumandraCodec::new(identity.public_key());
 
                     // Start the farming task
                     let farming = Farming::start(
@@ -68,15 +68,15 @@ impl MultiFarming {
                         reward_address,
                     );
 
-                    Ok::<_, anyhow::Error>((plot, subspace_codec, plot_commitments, farming))
+                    Ok::<_, anyhow::Error>((plot, kumandra_codec, plot_commitments, farming))
                 })
             })
             .collect::<Vec<_>>();
 
         for result_future in results {
-            let (plot, subspace_codec, plot_commitments, farming) = result_future.await.unwrap()?;
+            let (plot, kumandra_codec, plot_commitments, farming) = result_future.await.unwrap()?;
             plots.push(plot);
-            subspace_codecs.push(subspace_codec);
+            kumandra_codecs.push(kumandra_codec);
             commitments.push(plot_commitments);
             farmings.push(farming);
         }
@@ -95,10 +95,10 @@ impl MultiFarming {
             {
                 let mut on_pieces_to_plots = plots
                     .iter()
-                    .zip(subspace_codecs)
+                    .zip(kumandra_codecs)
                     .zip(&commitments)
-                    .map(|((plot, subspace_codec), commitments)| {
-                        plotting::plot_pieces(subspace_codec, plot, commitments.clone())
+                    .map(|((plot, kumandra_codec), commitments)| {
+                        plotting::plot_pieces(kumandra_codec, plot, commitments.clone())
                     })
                     .collect::<Vec<_>>();
 

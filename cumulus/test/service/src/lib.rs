@@ -367,7 +367,7 @@ impl TestNodeBuilder {
 	/// node.
 	pub fn connect_to_relay_chain_node(
 		mut self,
-		node: &kumandra_test_service::SubspaceTestNode,
+		node: &kumandra_test_service::KumandraTestNode,
 	) -> Self {
 		self.relay_chain_nodes.push(node.addr.clone());
 		self
@@ -379,7 +379,7 @@ impl TestNodeBuilder {
 	/// node.
 	pub fn connect_to_relay_chain_nodes<'a>(
 		mut self,
-		nodes: impl IntoIterator<Item = &'a kumandra_test_service::SubspaceTestNode>,
+		nodes: impl IntoIterator<Item = &'a kumandra_test_service::KumandraTestNode>,
 	) -> Self {
 		self.relay_chain_nodes.extend(nodes.into_iter().map(|n| n.addr.clone()));
 		self
@@ -627,6 +627,6 @@ pub fn run_primary_chain_validator_node(
 	tokio_handle: tokio::runtime::Handle,
 	key: Sr25519Keyring,
 	boot_nodes: Vec<MultiaddrWithPeerId>,
-) -> (kumandra_test_service::SubspaceTestNode, NetworkStarter) {
+) -> (kumandra_test_service::KumandraTestNode, NetworkStarter) {
 	kumandra_test_service::run_validator_node(tokio_handle, key, boot_nodes, true)
 }

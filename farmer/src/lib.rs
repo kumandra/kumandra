@@ -1,12 +1,12 @@
 #![feature(try_blocks, hash_drain_filter, int_log, io_error_other)]
 
-//! # `subspace-farmer` library implementation overview
+//! # `kumandra-farmer` library implementation overview
 //!
 //! This library provides droppable/interruptable instances of two processes that can be run in
 //! parallel: `plotting` and `farming`.
 //!
 //! During plotting we create:
-//! * a binary plot file, which contains subspace-encoded pieces one after another
+//! * a binary plot file, which contains kumandra-encoded pieces one after another
 //! * a RocksDB commitments database, where key is a tag (first 8 bytes of `hmac(encoding, salt)`)
 //!   and value is an offset of corresponding encoded piece in the plot (we can do this because all
 //!   pieces have the same size).

@@ -9,7 +9,7 @@ use std::fmt;
 use std::ops::Deref;
 use std::path::PathBuf;
 use std::sync::Arc;
-use subspace_core_primitives::Salt;
+use kumandra_core_primitives::Salt;
 
 // Cache size is just enough for last 2 salts to be stored
 const COMMITMENTS_CACHE_SIZE: usize = 2;

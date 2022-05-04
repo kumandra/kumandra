@@ -1,13 +1,13 @@
-# Subspace Node
+# Kumandra Node
 
-Reference implementation of Subspace Farmer for Subspace Network Blockchain.
+Reference implementation of Kumandra Farmer for Kumandra Network Blockchain.
 
 ## Overview
 **Notes:** The code is un-audited and not production ready, use it at your own risk.
 
-This repo is an implementation of a Farmer for [Subspace Network Blockchain](https://subspace.network).
+This repo is an implementation of a Farmer for [Kumandra Network Blockchain](https://kumandra.network).
 
-Subspace is a proof-of-storage blockchain that resolves the farmer's dilemma, to learn more read our [white paper](https://drive.google.com/file/d/1v847u_XeVf0SBz7Y7LEMXi72QfqirstL/view).
+Kumandra is a proof-of-storage blockchain that resolves the farmer's dilemma, to learn more read our [white paper](https://kumandra.network/whitepaper).
 
 ## Some Notes on Plotting
 
@@ -39,8 +39,8 @@ sudo apt-get install llvm clang
 
 Then build the farmer using Cargo:
 ```
-cargo build --profile production subspace-farmer
-target/production/subspace-farmer --version
+cargo build --profile production kumandra-farmer
+target/production/kumandra-farmer --version
 ```
 
 ## Usage
@@ -48,21 +48,21 @@ Commands here assume you installed native binary, but you can also easily adapt 
 
 Use `--help` to find out all available commands and their options:
 ```
-target/production/subspace-farmer --help
+target/production/kumandra-farmer --help
 ```
 
 ### Start the farmer
 ```
-target/production/subspace-farmer farm --reward-address st... --plot-size 100G
+target/production/kumandra-farmer farm --reward-address st... --plot-size 100G
 ```
 
 `st...` should be replaced with the reward address taken from Polkadot.js wallet (or similar) and `100G` replaced with desired plot size.
 
 This will connect to local node and will try to solve on every slot notification, while also plotting all existing and new history of the blockchain in parallel.
 
-*NOTE: You need to have a `subspace-node` running before starting farmer, otherwise it will not be able to start*
+*NOTE: You need to have a `kumandra-node` running before starting farmer, otherwise it will not be able to start*
 
-By default, farmer data are written to `subspace-farmer` subdirectory of the OS-specific users local data directory.
+By default, farmer data are written to `kumandra-farmer` subdirectory of the OS-specific users local data directory.
 
 ```
 Linux
@@ -78,7 +78,7 @@ Windows
 
 ### Wipe the plot
 ```
-target/production/subspace-farmer wipe
+target/production/kumandra-farmer wipe
 ```
 
 This would wipe plots in the OS-specific users local data directory.

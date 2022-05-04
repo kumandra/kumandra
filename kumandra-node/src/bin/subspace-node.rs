@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Subspace node implementation.
+//! Kumandra node implementation.
 
 use frame_benchmarking_cli::BenchmarkCmd;
 use futures::future::TryFutureExt;
@@ -24,14 +24,14 @@ use sc_service::PartialComponents;
 use sp_core::crypto::Ss58AddressFormat;
 use kumandra_node::{Cli, ExecutorDispatch, SecondaryChainCli, Subcommand};
 use kumandra_runtime::{Block, RuntimeApi};
-use kumandra_service::SubspaceConfiguration;
+use kumandra_service::KumandraConfiguration;
 
-/// Subspace node error.
+/// Kumandra node error.
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    /// Subspace service error.
+    /// Kumandra service error.
     #[error(transparent)]
-    SubspaceService(#[from] kumandra_service::Error),
+    KumandraService(#[from] kumandra_service::Error),
 
     /// CLI error.
     #[error(transparent)]
@@ -166,13 +166,8 @@ fn main() -> std::result::Result<(), Error> {
             //  wipe old data from disks of our users
             if cmd.shared_params.base_path().is_none() {
                 let old_dirs = &[
-                    "subspace-node-x86_64-macos-11-snapshot-2022-jan-05",
-                    "subspace-node-x86_64-ubuntu-20.04-snapshot-2022-jan-05",
-                    "subspace-node-x86_64-windows-2019-snapshot-2022-jan-05.exe",
-                    "subspace-node-x86_64-windows-2022-snapshot-2022-jan-05.exe",
-                    "subspace-node-macos-x86_64-snapshot-2022-mar-09",
-                    "subspace-node-ubuntu-x86_64-snapshot-2022-mar-09",
-                    "subspace-node-windows-x86_64-snapshot-2022-mar-09.exe",
+                    "kumandra-node-x86_64-arch-snapshot-2022-may-04",
+
                 ];
                 if let Some(base_dir) = dirs::data_local_dir() {
                     for old_dir in old_dirs {
@@ -258,7 +253,7 @@ fn main() -> std::result::Result<(), Error> {
                     );
                     let _enter = span.enter();
 
-                    let primary_chain_node_config = SubspaceConfiguration {
+                    let primary_chain_node_config = KumandraConfiguration {
                         base: primary_chain_node_config,
                         // Secondary node needs slots notifications for bundle production.
                         force_new_slot_notifications: !cli.secondary_chain_args.is_empty(),
@@ -269,11 +264,11 @@ fn main() -> std::result::Result<(), Error> {
                         true,
                     )
                     .map_err(|_| {
-                        sc_service::Error::Other("Failed to build a full subspace node".into())
+                        sc_service::Error::Other("Failed to build a full kumandra node".into())
                     })?
                 };
 
-                // Run an executor node, an optional component of Subspace full node.
+                // Run an executor node, an optional component of Kumandra full node.
                 if !cli.secondary_chain_args.is_empty() {
                     let span = sc_tracing::tracing::info_span!(
                         sc_tracing::logging::PREFIX_LOG_SPAN,

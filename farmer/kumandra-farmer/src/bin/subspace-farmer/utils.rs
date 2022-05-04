@@ -6,7 +6,7 @@ pub(crate) fn get_path(custom_path: Option<PathBuf>) -> PathBuf {
     let path = custom_path.unwrap_or_else(|| {
         dirs::data_local_dir()
             .expect("Can't find local data directory, needs to be specified explicitly")
-            .join("subspace-farmer")
+            .join("kumandra-farmer")
     });
 
     if !path.exists() {

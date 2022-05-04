@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ use pallet_balances::NegativeImbalance;
 use pallet_feeds::feed_processor::{FeedMetadata, FeedObjectMapping, FeedProcessor};
 use pallet_grandpa_finality_verifier::chain::Chain;
 use sp_api::{impl_runtime_apis, BlockT, HashT, HeaderT};
-use sp_consensus_subspace::digests::CompatibleDigestItem;
-use sp_consensus_subspace::{
+use kp_consensus::digests::CompatibleDigestItem;
+use kp_consensus::{
     EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SolutionRanges,
 };
 use sp_core::{crypto::KeyTypeId, Hasher, OpaqueMetadata};
@@ -61,9 +61,9 @@ use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
-use subspace_core_primitives::objects::{BlockObject, BlockObjectMapping};
-use subspace_core_primitives::{Randomness, RootBlock, Sha256Hash, PIECE_SIZE};
-use subspace_runtime_primitives::{
+use kumandra_core_primitives::objects::{BlockObject, BlockObjectMapping};
+use kumandra_core_primitives::{Randomness, RootBlock, Sha256Hash, PIECE_SIZE};
+use kumandra_runtime_primitives::{
     opaque, AccountId, Balance, BlockNumber, Hash, Index, Moment, Signature, CONFIRMATION_DEPTH_K,
     MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
     STORAGE_FEES_ESCROW_BLOCK_REWARD, STORAGE_FEES_ESCROW_BLOCK_TAX,
@@ -78,8 +78,8 @@ sp_runtime::impl_opaque_keys! {
 //   https://substrate.dev/docs/en/knowledgebase/runtime/upgrades#runtime-versioning
 #[sp_version::runtime_version]
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-    spec_name: create_runtime_str!("subspace"),
-    impl_name: create_runtime_str!("subspace"),
+    spec_name: create_runtime_str!("kumandra"),
+    impl_name: create_runtime_str!("kumandra"),
     authoring_version: 1,
     // The version of the runtime specification. A full node will not attempt to use its native
     //   runtime in substitute for the on-chain Wasm runtime unless all of `spec_name`,
@@ -104,19 +104,19 @@ pub fn native_version() -> NativeVersion {
 
 /// The smallest unit of the token is called Shannon.
 pub const SHANNON: Balance = 1;
-/// Subspace Credits have 18 decimal places.
+/// Kumandra Credits have 18 decimal places.
 pub const DECIMAL_PLACES: u8 = 18;
-/// One Subspace Credit.
+/// One Kumandra Credit.
 pub const SSC: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
 
 // TODO: Many of below constants should probably be updatable but currently they are not
 
-/// Since Subspace is probabilistic this is the average expected block time that
+/// Since Kumandra is probabilistic this is the average expected block time that
 /// we are targeting. Blocks will be produced at a minimum duration defined
 /// by `SLOT_DURATION`, but some slots will not be allocated to any
 /// farmer and hence no block will be produced. We expect to have this
 /// block time on average following the defined slot duration and the value
-/// of `c` configured for Subspace (where `1 - c` represents the probability of
+/// of `c` configured for Kumandra (where `1 - c` represents the probability of
 /// a slot being empty).
 /// This value is only used indirectly to define the unit constants below
 /// that are expressed in blocks. The rest of the code should use
@@ -165,9 +165,9 @@ parameter_types! {
     pub const Version: RuntimeVersion = VERSION;
     pub const BlockHashCount: BlockNumber = 2400;
     /// We allow for 2 seconds of compute with a 6 second average block time.
-    pub SubspaceBlockWeights: BlockWeights = BlockWeights::with_sensible_defaults(2 * WEIGHT_PER_SECOND, NORMAL_DISPATCH_RATIO);
+    pub KumandraBlockWeights: BlockWeights = BlockWeights::with_sensible_defaults(2 * WEIGHT_PER_SECOND, NORMAL_DISPATCH_RATIO);
     /// We allow for 3.75 MiB for `Normal` extrinsic with 5 MiB maximum block length.
-    pub SubspaceBlockLength: BlockLength = BlockLength::max_with_normal_ratio(MAX_BLOCK_LENGTH, NORMAL_DISPATCH_RATIO);
+    pub KumandraBlockLength: BlockLength = BlockLength::max_with_normal_ratio(MAX_BLOCK_LENGTH, NORMAL_DISPATCH_RATIO);
 }
 
 pub type SS58Prefix = ConstU16<2254>;
@@ -178,9 +178,9 @@ impl frame_system::Config for Runtime {
     /// The basic call filter to use in dispatchable.
     type BaseCallFilter = frame_support::traits::Everything;
     /// Block & extrinsics weights: base values and limits.
-    type BlockWeights = SubspaceBlockWeights;
+    type BlockWeights = KumandraBlockWeights;
     /// The maximum length of a block (in bytes).
-    type BlockLength = SubspaceBlockLength;
+    type BlockLength = KumandraBlockLength;
     /// The identifier used to distinguish between accounts.
     type AccountId = AccountId;
     /// The aggregated dispatch type that is available for extrinsics.
@@ -232,7 +232,7 @@ parameter_types! {
     pub const ShouldAdjustSolutionRange: bool = false;
 }
 
-impl pallet_subspace::Config for Runtime {
+impl pallet_kumandra::Config for Runtime {
     type Event = Event;
     type GlobalRandomnessUpdateInterval = ConstU32<GLOBAL_RANDOMNESS_UPDATE_INTERVAL>;
     type EraDuration = ConstU32<ERA_DURATION_IN_BLOCKS>;
@@ -246,12 +246,12 @@ impl pallet_subspace::Config for Runtime {
     type MaxPlotSize = ConstU64<MAX_PLOT_SIZE>;
     type RecordedHistorySegmentSize = ConstU32<RECORDED_HISTORY_SEGMENT_SIZE>;
     type ShouldAdjustSolutionRange = ShouldAdjustSolutionRange;
-    type GlobalRandomnessIntervalTrigger = pallet_subspace::NormalGlobalRandomnessInterval;
-    type EraChangeTrigger = pallet_subspace::NormalEraChange;
-    type EonChangeTrigger = pallet_subspace::NormalEonChange;
+    type GlobalRandomnessIntervalTrigger = pallet_kumandra::NormalGlobalRandomnessInterval;
+    type EraChangeTrigger = pallet_kumandra::NormalEraChange;
+    type EonChangeTrigger = pallet_kumandra::NormalEonChange;
 
-    type HandleEquivocation = pallet_subspace::equivocation::EquivocationHandler<
-        OffencesSubspace,
+    type HandleEquivocation = pallet_kumandra::equivocation::EquivocationHandler<
+        OffencesKumandra,
         ConstU64<{ EQUIVOCATION_REPORT_LONGEVITY as u64 }>,
     >;
 
@@ -261,7 +261,7 @@ impl pallet_subspace::Config for Runtime {
 impl pallet_timestamp::Config for Runtime {
     /// A timestamp: milliseconds since the unix epoch.
     type Moment = Moment;
-    type OnTimestampSet = Subspace;
+    type OnTimestampSet = Kumandra;
     type MinimumPeriod = ConstU64<{ SLOT_DURATION / 2 }>;
     type WeightInfo = ();
 }
@@ -302,7 +302,7 @@ impl Get<u64> for TotalSpacePledged {
             .expect("Piece size is definitely small enough to fit into u64; qed");
         // Operations reordered to avoid u64 overflow, but essentially are:
         // u64::MAX * SlotProbability / (solution_range / PIECE_SIZE)
-        u64::MAX / Subspace::solution_ranges().current * piece_size * SlotProbability::get().0
+        u64::MAX / Kumandra::solution_ranges().current * piece_size * SlotProbability::get().0
             / SlotProbability::get().1
     }
 }
@@ -311,7 +311,7 @@ pub struct BlockchainHistorySize;
 
 impl Get<u64> for BlockchainHistorySize {
     fn get() -> u64 {
-        Subspace::archived_history_size()
+        Kumandra::archived_history_size()
     }
 }
 
@@ -324,7 +324,7 @@ impl pallet_transaction_fees::Config for Runtime {
     type TotalSpacePledged = TotalSpacePledged;
     type BlockchainHistorySize = BlockchainHistorySize;
     type Currency = Balances;
-    type FindBlockRewardAddress = Subspace;
+    type FindBlockRewardAddress = Kumandra;
     type WeightInfo = ();
 }
 
@@ -457,9 +457,9 @@ where
     type OverarchingCall = Call;
 }
 
-impl pallet_offences_subspace::Config for Runtime {
+impl pallet_offences_kumandra::Config for Runtime {
     type Event = Event;
-    type OnOffenceHandler = Subspace;
+    type OnOffenceHandler = Kumandra;
 }
 
 impl pallet_executor::Config for Runtime {
@@ -475,7 +475,7 @@ impl pallet_rewards::Config for Runtime {
     type Event = Event;
     type Currency = Balances;
     type BlockReward = BlockReward;
-    type FindBlockRewardAddress = Subspace;
+    type FindBlockRewardAddress = Kumandra;
     type WeightInfo = ();
 }
 
@@ -571,8 +571,8 @@ construct_runtime!(
         System: frame_system = 0,
         Timestamp: pallet_timestamp = 1,
 
-        Subspace: pallet_subspace = 2,
-        OffencesSubspace: pallet_offences_subspace = 3,
+        Kumandra: pallet_kumandra = 2,
+        OffencesKumandra: pallet_offences_kumandra = 3,
         Rewards: pallet_rewards = 9,
 
         Balances: pallet_balances = 4,
@@ -624,7 +624,7 @@ pub type SignedPayload = generic::SignedPayload<Call, SignedExtra>;
 
 fn extract_root_blocks(ext: &UncheckedExtrinsic) -> Option<Vec<RootBlock>> {
     match &ext.function {
-        Call::Subspace(pallet_subspace::Call::store_root_blocks { root_blocks }) => {
+        Call::Kumandra(pallet_kumandra::Call::store_root_blocks { root_blocks }) => {
             Some(root_blocks.clone())
         }
         _ => None,
@@ -793,10 +793,10 @@ fn extrinsics_shuffling_seed<Block: BlockT>(header: Block::Header) -> Randomness
         let mut pre_digest: Option<_> = None;
         for log in header.digest().logs() {
             match (
-                log.as_subspace_pre_digest::<FarmerPublicKey>(),
+                log.as_kumandra_pre_digest::<FarmerPublicKey>(),
                 pre_digest.is_some(),
             ) {
-                (Some(_), true) => panic!("Multiple Subspace pre-runtime digests in a header"),
+                (Some(_), true) => panic!("Multiple Kumandra pre-runtime digests in a header"),
                 (None, _) => {}
                 (s, false) => pre_digest = s,
             }
@@ -866,57 +866,57 @@ impl_runtime_apis! {
         }
     }
 
-    impl sp_consensus_subspace::SubspaceApi<Block> for Runtime {
+    impl kp_consensus::KumandraApi<Block> for Runtime {
         fn confirmation_depth_k() -> <<Block as BlockT>::Header as HeaderT>::Number {
-            <Self as pallet_subspace::Config>::ConfirmationDepthK::get()
+            <Self as pallet_kumandra::Config>::ConfirmationDepthK::get()
         }
 
         fn total_pieces() -> u64 {
-            <pallet_subspace::Pallet<Runtime>>::total_pieces()
+            <pallet_kumandra::Pallet<Runtime>>::total_pieces()
         }
 
         fn record_size() -> u32 {
-            <Self as pallet_subspace::Config>::RecordSize::get()
+            <Self as pallet_kumandra::Config>::RecordSize::get()
         }
 
         fn max_plot_size() -> u64 {
-            <Self as pallet_subspace::Config>::MaxPlotSize::get()
+            <Self as pallet_kumandra::Config>::MaxPlotSize::get()
         }
 
         fn recorded_history_segment_size() -> u32 {
-            <Self as pallet_subspace::Config>::RecordedHistorySegmentSize::get()
+            <Self as pallet_kumandra::Config>::RecordedHistorySegmentSize::get()
         }
 
         fn slot_duration() -> Duration {
-            Duration::from_millis(Subspace::slot_duration())
+            Duration::from_millis(Kumandra::slot_duration())
         }
 
         fn global_randomnesses() -> GlobalRandomnesses {
-            Subspace::global_randomnesses()
+            Kumandra::global_randomnesses()
         }
 
         fn solution_ranges() -> SolutionRanges {
-            Subspace::solution_ranges()
+            Kumandra::solution_ranges()
         }
 
         fn salts() -> Salts {
-            Subspace::salts()
+            Kumandra::salts()
         }
 
         fn submit_report_equivocation_extrinsic(
             equivocation_proof: EquivocationProof<<Block as BlockT>::Header>,
         ) -> Option<()> {
-            Subspace::submit_equivocation_report(equivocation_proof)
+            Kumandra::submit_equivocation_report(equivocation_proof)
         }
 
         fn is_in_block_list(farmer_public_key: &FarmerPublicKey) -> bool {
             // TODO: Either check tx pool too for pending equivocations or replace equivocation
             //  mechanism with an alternative one, so that blocking happens faster
-            Subspace::is_in_block_list(farmer_public_key)
+            Kumandra::is_in_block_list(farmer_public_key)
         }
 
         fn records_root(segment_index: u64) -> Option<Sha256Hash> {
-            Subspace::records_root(segment_index)
+            Kumandra::records_root(segment_index)
         }
 
         fn extract_root_blocks(ext: &<Block as BlockT>::Extrinsic) -> Option<Vec<RootBlock>> {

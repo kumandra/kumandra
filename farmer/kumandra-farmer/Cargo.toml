@@ -1,9 +1,9 @@
 [package]
-name = "subspace-farmer"
-description = "Farmer for the Subspace Network Blockchain"
+name = "kumandra-farmer"
+description = "Farmer for the Kumandra Network Blockchain"
 license = "MIT OR Apache-2.0"
 version = "0.3.0"
-authors = ["Nazar Mokrynskyi <nazar@mokrynskyi.com>"]
+authors = ["KOOMPI"]
 edition = "2021"
 include = [
     "/src",
@@ -34,13 +34,13 @@ rayon = "1.5.2"
 schnorrkel = "0.9.1"
 serde = { version = "1.0.136", features = ["derive"] }
 serde_json = "1.0.79"
-sp-core = { version = "6.0.0", git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
+sp-core = { git = "https://github.com/paritytech/substrate", rev = "c4f3d028621edb293d2c423516221aa396f76a2d" }
 ss58-registry = "1.17.0"
-subspace-archiving = { version = "0.1.0", path = "../subspace-archiving" }
-subspace-solving = { version = "0.1.0", path = "../subspace-solving" }
-subspace-core-primitives = { version = "0.1.0", path = "../subspace-core-primitives" }
-subspace-networking = { version = "0.1.0", path = "../subspace-networking" }
-subspace-rpc-primitives = { version = "0.1.0", path = "../subspace-rpc-primitives" }
+kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving" }
+kumandra-solving = { version = "0.1.0", path = "../../modules/solving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../../kumandra-primitives/core" }
+kumandra-networking = { version = "0.1.0", path = "../../kumandra-node/networking" }
+kumandra-rpc-primitives = { version = "0.1.0", path = "../../kumandra-primitives/rpc" }
 thiserror = "1.0.30"
 tokio = { version = "1.17.0", features = ["macros", "parking_lot", "rt-multi-thread"] }
 zeroize = "1.5.4"
@@ -64,7 +64,7 @@ tempfile = "3.3.0"
 default = []
 # Compile with CUDA support and use it if compatible GPU is available
 cuda = [
-    "subspace-solving/cuda",
+    "kumandra-solving/cuda",
 ]
 
 [[bench]]

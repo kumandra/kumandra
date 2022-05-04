@@ -9,8 +9,8 @@ use sp_core::crypto::PublicError;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::time::Duration;
-use subspace_core_primitives::PublicKey;
-use subspace_networking::libp2p::Multiaddr;
+use kumandra_core_primitives::PublicKey;
+use kumandra_networking::libp2p::Multiaddr;
 
 const BEST_BLOCK_NUMBER_CHECK_INTERVAL: Duration = Duration::from_secs(5);
 
@@ -23,11 +23,11 @@ struct FarmingArgs {
     /// Custom path for data storage instead of platform-specific default
     #[clap(long, value_hint = ValueHint::FilePath)]
     custom_path: Option<PathBuf>,
-    /// Multiaddr to listen on for subspace networking, for instance `/ip4/0.0.0.0/tcp/0`,
-    /// multiple are supported, subspace networking is disabled when none specified
+    /// Multiaddr to listen on for kumandra networking, for instance `/ip4/0.0.0.0/tcp/0`,
+    /// multiple are supported, kumandra networking is disabled when none specified
     #[clap(long)]
     listen_on: Vec<Multiaddr>,
-    /// WebSocket RPC URL of the Subspace node to connect to
+    /// WebSocket RPC URL of the Kumandra node to connect to
     #[clap(long, value_hint = ValueHint::Url, default_value = "ws://127.0.0.1:9944")]
     node_rpc_url: String,
     /// Host and port where built-in WebSocket RPC server should listen for incoming connections

@@ -11,12 +11,12 @@ use crate::plot::Plot;
 use crate::PiecesToPlot;
 use log::error;
 use std::sync::Arc;
-use subspace_core_primitives::{FlatPieces, PieceIndex};
-use subspace_solving::{BatchEncodeError, SubspaceCodec};
+use kumandra_core_primitives::{FlatPieces, PieceIndex};
+use kumandra_solving::{BatchEncodeError, KumandraCodec};
 
 /// Generates a function that will plot pieces.
 pub fn plot_pieces(
-    mut subspace_codec: SubspaceCodec,
+    mut kumandra_codec: KumandraCodec,
     plot: &Plot,
     commitments: Commitments,
 ) -> impl FnMut(PiecesToPlot) -> bool + Send + 'static {
@@ -25,7 +25,7 @@ pub fn plot_pieces(
     move |pieces_to_plot| {
         if let Some(plot) = weak_plot.upgrade() {
             if let Err(error) = plot_pieces_internal(
-                &mut subspace_codec,
+                &mut kumandra_codec,
                 &plot,
                 &commitments,
                 pieces_to_plot.piece_index_offset,
@@ -44,7 +44,7 @@ pub fn plot_pieces(
 
 /// Plot a set of pieces into a particular plot and commitment database.
 fn plot_pieces_internal(
-    subspace_codec: &mut SubspaceCodec,
+    kumandra_codec: &mut KumandraCodec,
     plot: &Plot,
     commitments: &Commitments,
     piece_index_offset: u64,
@@ -54,7 +54,7 @@ fn plot_pieces_internal(
         .take(pieces.count())
         .collect::<Vec<PieceIndex>>();
 
-    subspace_codec.batch_encode(&mut pieces, &piece_indexes)?;
+    kumandra_codec.batch_encode(&mut pieces, &piece_indexes)?;
 
     let pieces = Arc::new(pieces);
 

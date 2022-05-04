@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Subspace test service only.
+//! Kumandra test service only.
 
 #![warn(missing_docs, unused_crate_dependencies)]
 
@@ -34,10 +34,10 @@ use sp_blockchain::HeaderBackend;
 use sp_keyring::Sr25519Keyring;
 use sp_runtime::{codec::Encode, generic, traits::IdentifyAccount, MultiSigner};
 use std::sync::Arc;
-use subspace_runtime_primitives::Balance;
-use subspace_service::{NewFull, SubspaceConfiguration};
-use subspace_test_client::{chain_spec, start_farmer, Backend, Client, TestExecutorDispatch};
-use subspace_test_runtime::{
+use kumandra_runtime_primitives::Balance;
+use kumandra_service::{NewFull, KumandraConfiguration};
+use kumandra_test_client::{chain_spec, start_farmer, Backend, Client, TestExecutorDispatch};
+use kumandra_test_runtime::{
     BlockHashCount, Runtime, SignedExtra, SignedPayload, UncheckedExtrinsic, VERSION,
 };
 use substrate_test_client::{
@@ -54,7 +54,7 @@ pub fn new_full(
     NewFull<Arc<Client>>,
     NativeElseWasmExecutor<TestExecutorDispatch>,
 ) {
-    let config = SubspaceConfiguration {
+    let config = KumandraConfiguration {
         base: config,
         force_new_slot_notifications: true,
     };
@@ -64,18 +64,18 @@ pub fn new_full(
         config.max_runtime_instances,
         config.runtime_cache_size,
     );
-    let new_full = subspace_service::new_full::<
-        subspace_test_runtime::RuntimeApi,
+    let new_full = kumandra_service::new_full::<
+        kumandra_test_runtime::RuntimeApi,
         TestExecutorDispatch,
     >(config, enable_rpc_extensions)
-    .expect("Failed to create Subspace full client");
+    .expect("Failed to create Kumandra full client");
     if run_farmer {
         start_farmer(&new_full);
     }
     (new_full, executor)
 }
 
-/// Create a Subspace `Configuration`.
+/// Create a Kumandra `Configuration`.
 ///
 /// By default an in-memory socket will be used, therefore you need to provide boot
 /// nodes if you want the future node to be connected to other nodes.
@@ -93,7 +93,7 @@ pub fn node_config(
         Role::Full
     };
     let key_seed = key.to_seed();
-    let spec = chain_spec::subspace_local_testnet_config();
+    let spec = chain_spec::kumandra_local_testnet_config();
 
     let mut network_config = NetworkConfiguration::new(
         key_seed.to_string(),
@@ -114,7 +114,7 @@ pub fn node_config(
     network_config.transport = TransportConfig::MemoryOnly;
 
     Configuration {
-        impl_name: "subspace-test-node".to_string(),
+        impl_name: "kumandra-test-node".to_string(),
         impl_version: "0.1".to_string(),
         role,
         tokio_handle,
@@ -175,7 +175,7 @@ pub fn run_validator_node(
     key: Sr25519Keyring,
     boot_nodes: Vec<MultiaddrWithPeerId>,
     run_farmer: bool,
-) -> (SubspaceTestNode, NetworkStarter) {
+) -> (KumandraTestNode, NetworkStarter) {
     let config = node_config(tokio_handle, key, boot_nodes, run_farmer);
     let multiaddr = config.network.listen_addresses[0].clone();
     let (
@@ -195,7 +195,7 @@ pub fn run_validator_node(
     let addr = MultiaddrWithPeerId { multiaddr, peer_id };
 
     (
-        SubspaceTestNode {
+        KumandraTestNode {
             task_manager,
             client,
             backend,
@@ -207,8 +207,8 @@ pub fn run_validator_node(
     )
 }
 
-/// A Subspace test node instance used for testing.
-pub struct SubspaceTestNode {
+/// A Kumandra test node instance used for testing.
+pub struct KumandraTestNode {
     /// `TaskManager`'s instance.
     pub task_manager: TaskManager,
     /// Client's instance.
@@ -223,11 +223,11 @@ pub struct SubspaceTestNode {
     pub rpc_handlers: RpcHandlers,
 }
 
-impl SubspaceTestNode {
+impl KumandraTestNode {
     /// Send an extrinsic to this node.
     pub async fn send_extrinsic(
         &self,
-        function: impl Into<subspace_test_runtime::Call>,
+        function: impl Into<kumandra_test_runtime::Call>,
         caller: Sr25519Keyring,
     ) -> Result<RpcTransactionOutput, RpcTransactionError> {
         let extrinsic = construct_extrinsic(&*self.client, function, caller, 0);
@@ -244,7 +244,7 @@ impl SubspaceTestNode {
 /// Construct an extrinsic that can be applied to the test runtime.
 pub fn construct_extrinsic(
     client: &Client,
-    function: impl Into<subspace_test_runtime::Call>,
+    function: impl Into<kumandra_test_runtime::Call>,
     caller: Sr25519Keyring,
     nonce: u32,
 ) -> UncheckedExtrinsic {
@@ -285,7 +285,7 @@ pub fn construct_extrinsic(
     let signature = raw_payload.using_encoded(|e| caller.sign(e));
     UncheckedExtrinsic::new_signed(
         function,
-        subspace_test_runtime::Address::Id(caller.public().into()),
+        kumandra_test_runtime::Address::Id(caller.public().into()),
         sp_runtime::MultiSignature::Sr25519(signature),
         extra,
     )
@@ -298,7 +298,7 @@ pub fn construct_transfer_extrinsic(
     dest: sp_keyring::AccountKeyring,
     value: Balance,
 ) -> UncheckedExtrinsic {
-    let function = subspace_test_runtime::Call::Balances(pallet_balances::Call::transfer {
+    let function = kumandra_test_runtime::Call::Balances(pallet_balances::Call::transfer {
         dest: MultiSigner::from(dest.public()).into_account().into(),
         value,
     });

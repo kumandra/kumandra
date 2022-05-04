@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use rand::prelude::*;
-use subspace_core_primitives::PIECE_SIZE;
-use subspace_farmer::Plot;
+use kumandra_core_primitives::PIECE_SIZE;
+use kumandra_farmer::Plot;
 use tempfile::TempDir;
 
 #[tokio::main]

@@ -1,9 +1,9 @@
 use crate::rpc_client::{Error as MockError, RpcClient};
 use async_trait::async_trait;
 use std::sync::Arc;
-use subspace_archiving::archiver::ArchivedSegment;
-use subspace_core_primitives::BlockNumber;
-use subspace_rpc_primitives::{
+use kumandra_archiving::archiver::ArchivedSegment;
+use kumandra_core_primitives::BlockNumber;
+use kumandra_rpc_primitives::{
     BlockSignature, BlockSigningInfo, FarmerMetadata, SlotInfo, SolutionResponse,
 };
 use tokio::sync::mpsc::Receiver;

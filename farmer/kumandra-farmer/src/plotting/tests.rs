@@ -8,11 +8,11 @@ use crate::{plotting, Archiving};
 use rand::prelude::*;
 use rand::Rng;
 use std::time::Duration;
-use subspace_archiving::archiver::Archiver;
-use subspace_core_primitives::objects::BlockObjectMapping;
-use subspace_core_primitives::{PieceIndexHash, Salt, PIECE_SIZE, SHA256_HASH_SIZE};
-use subspace_rpc_primitives::FarmerMetadata;
-use subspace_solving::SubspaceCodec;
+use kumandra_archiving::archiver::Archiver;
+use kumandra_core_primitives::objects::BlockObjectMapping;
+use kumandra_core_primitives::{PieceIndexHash, Salt, PIECE_SIZE, SHA256_HASH_SIZE};
+use kumandra_rpc_primitives::FarmerMetadata;
+use kumandra_solving::KumandraCodec;
 use tempfile::TempDir;
 
 const MERKLE_NUM_LEAVES: usize = 8_usize;
@@ -66,7 +66,7 @@ async fn plotting_happy_path() {
         }
     }
 
-    let subspace_codec = SubspaceCodec::new(identity.public_key());
+    let kumandra_codec = KumandraCodec::new(identity.public_key());
 
     // Start archiving task
     let archiving_instance = Archiving::start(
@@ -74,7 +74,7 @@ async fn plotting_happy_path() {
         object_mappings,
         client.clone(),
         BEST_BLOCK_NUMBER_CHECK_INTERVAL,
-        plotting::plot_pieces(subspace_codec, &plot, commitments),
+        plotting::plot_pieces(kumandra_codec, &plot, commitments),
     )
     .await
     .unwrap();
@@ -151,7 +151,7 @@ async fn plotting_piece_eviction() {
         }
     }
 
-    let subspace_codec = SubspaceCodec::new(identity.public_key());
+    let kumandra_codec = KumandraCodec::new(identity.public_key());
 
     // Start archiving task
     let archiving_instance = Archiving::start(
@@ -159,7 +159,7 @@ async fn plotting_piece_eviction() {
         object_mappings,
         client.clone(),
         BEST_BLOCK_NUMBER_CHECK_INTERVAL,
-        plotting::plot_pieces(subspace_codec, &plot, commitments.clone()),
+        plotting::plot_pieces(kumandra_codec, &plot, commitments.clone()),
     )
     .await
     .unwrap();
@@ -185,9 +185,9 @@ async fn plotting_piece_eviction() {
                 //  allow `None` and not errors once that is the case
                 if let Ok(mut read_piece) = plot.read_piece(PieceIndexHash::from_index(piece_index))
                 {
-                    let correct_tag = subspace_solving::create_tag(&read_piece, salt);
+                    let correct_tag = kumandra_solving::create_tag(&read_piece, salt);
 
-                    subspace_codec.decode(&mut read_piece, piece_index).unwrap();
+                    kumandra_codec.decode(&mut read_piece, piece_index).unwrap();
 
                     // Must be able to find correct tag in the database
                     assert!(commitments

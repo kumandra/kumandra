@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Subspace Labs, Inc.
+// Copyright (C) 2022 KOOMPI, Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Subspace chain configurations.
+//! Kumandra chain configurations.
 
 use frame_support::traits::Get;
 use sc_service::{ChainType, Properties};
@@ -30,9 +30,9 @@ use kumandra_runtime::{
 use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
 
 const POLKADOT_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
-const SUBSPACE_TELEMETRY_URL: &str = "wss://telemetry.subspace.network/submit/";
-const TESTNET_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-snapshot-2022-mar-09.json");
-const TESTNET_BOOTSTRAP_NODE: &str = "/dns/farm-rpc.subspace.network/tcp/30333/p2p/12D3KooWPjMZuSYj35ehced2MTJFf95upwpHKgKUrFRfHwohzJXr";
+const KUMANDRA_TELEMETRY_URL: &str = "wss://telemetry.kumandra.network/submit/";
+// const TESTNET_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-snapshot-2022-mar-09.json");
+// const TESTNET_BOOTSTRAP_NODE: &str = "/dns/farm-rpc.kumandra.network/tcp/30333/p2p/{$PEERID}}";
 
 /// List of accounts which should receive token grants, amounts are specified in SSC.
 const TOKEN_GRANTS: &[(&str, u128)] = &[
@@ -61,8 +61,8 @@ const TOKEN_GRANTS: &[(&str, u128)] = &[
     ("5FZwEgsvZz1vpeH7UsskmNmTpbfXvAcojjgVfShgbRqgC1nx", 27_800),
 ];
 
-/// The `ChainSpec` parameterized for the subspace runtime.
-pub type SubspaceChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
+/// The `ChainSpec` parameterized for the kumandra runtime.
+pub type KumandraChainSpec = sc_service::GenericChainSpec<GenesisConfig>;
 
 /// Generate a crypto pair from seed.
 pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
@@ -78,21 +78,21 @@ pub fn get_account_id_from_seed(seed: &str) -> AccountId {
     AccountPublic::from(get_from_seed::<sr25519::Public>(seed)).into_account()
 }
 
-pub fn testnet_config_json() -> Result<SubspaceChainSpec, String> {
-    SubspaceChainSpec::from_json_bytes(TESTNET_CHAIN_SPEC)
+pub fn testnet_config_json() -> Result<KumandraChainSpec, String> {
+    KumandraChainSpec::from_json_bytes(TESTNET_CHAIN_SPEC)
 }
-pub fn testnet_config_compiled() -> Result<SubspaceChainSpec, String> {
+pub fn testnet_config_compiled() -> Result<KumandraChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
     properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
     properties.insert("tokenSymbol".into(), "tSSC".into());
 
-    Ok(SubspaceChainSpec::from_genesis(
+    Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Subspace testnet",
+        "Kumandra testnet",
         // ID
         "kumandra_test",
-        ChainType::Custom("Subspace testnet".to_string()),
+        ChainType::Custom("Kumandra testnet".to_string()),
         || {
             let sudo_account =
                 AccountId::from_ss58check("5CXTmJEusve5ixyJufqHThmy4qUrrm6FyLCR7QfE4bbyMTNC")
@@ -154,12 +154,12 @@ pub fn testnet_config_compiled() -> Result<SubspaceChainSpec, String> {
         Some(
             TelemetryEndpoints::new(vec![
                 (POLKADOT_TELEMETRY_URL.into(), 1),
-                (SUBSPACE_TELEMETRY_URL.into(), 1),
+                (KUMANDRA_TELEMETRY_URL.into(), 1),
             ])
             .map_err(|error| error.to_string())?,
         ),
         // Protocol ID
-        Some("subspace-substrate"),
+        Some("kumandra-substrate"),
         None,
         // Properties
         Some(properties),
@@ -168,7 +168,7 @@ pub fn testnet_config_compiled() -> Result<SubspaceChainSpec, String> {
     ))
 }
 
-pub fn dev_config() -> Result<SubspaceChainSpec, String> {
+pub fn dev_config() -> Result<KumandraChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
     properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
@@ -176,9 +176,9 @@ pub fn dev_config() -> Result<SubspaceChainSpec, String> {
 
     let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
-    Ok(SubspaceChainSpec::from_genesis(
+    Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Subspace development",
+        "Kumandra development",
         // ID
         "kumandra_dev",
         ChainType::Development,
@@ -215,7 +215,7 @@ pub fn dev_config() -> Result<SubspaceChainSpec, String> {
     ))
 }
 
-pub fn local_config() -> Result<SubspaceChainSpec, String> {
+pub fn local_config() -> Result<KumandraChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
     properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
@@ -223,9 +223,9 @@ pub fn local_config() -> Result<SubspaceChainSpec, String> {
 
     let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
-    Ok(SubspaceChainSpec::from_genesis(
+    Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Subspace local",
+        "Kumandra local",
         // ID
         "kumandra_local",
         ChainType::Local,

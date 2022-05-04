@@ -4,15 +4,15 @@ use log::{info, warn};
 use std::mem;
 use std::sync::Arc;
 use std::time::Duration;
-use subspace_core_primitives::PIECE_SIZE;
-use subspace_farmer::multi_farming::MultiFarming;
-use subspace_farmer::ws_rpc_server::{RpcServer, RpcServerImpl};
-use subspace_farmer::{retrieve_piece_from_plots, NodeRpcClient, ObjectMappings, Plot, RpcClient};
-use subspace_networking::libp2p::multiaddr::Protocol;
-use subspace_networking::libp2p::multihash::Multihash;
-use subspace_networking::multimess::MultihashCode;
-use subspace_networking::Config;
-use subspace_rpc_primitives::FarmerMetadata;
+use kumandra_core_primitives::PIECE_SIZE;
+use kumandra_farmer::multi_farming::MultiFarming;
+use kumandra_farmer::ws_rpc_server::{RpcServer, RpcServerImpl};
+use kumandra_farmer::{retrieve_piece_from_plots, NodeRpcClient, ObjectMappings, Plot, RpcClient};
+use kumandra_networking::libp2p::multiaddr::Protocol;
+use kumandra_networking::libp2p::multihash::Multihash;
+use kumandra_networking::multimess::MultihashCode;
+use kumandra_networking::Config;
+use kumandra_rpc_primitives::FarmerMetadata;
 
 use crate::FarmingArgs;
 
@@ -109,7 +109,7 @@ pub(crate) async fn farm(
 
     info!("WS RPC server listening on {}", ws_server_addr);
 
-    let (node, mut node_runner) = subspace_networking::create(Config {
+    let (node, mut node_runner) = kumandra_networking::create(Config {
         bootstrap_nodes,
         listen_on,
         value_getter: Arc::new({
@@ -136,7 +136,7 @@ pub(crate) async fn farm(
     .detach();
 
     tokio::spawn(async move {
-        info!("Starting subspace network node instance");
+        info!("Starting kumandra network node instance");
 
         node_runner.run().await;
     });

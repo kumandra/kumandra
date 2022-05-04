@@ -5,7 +5,7 @@ use schnorrkel::{context::SigningContext, Keypair, PublicKey, SecretKey, Signatu
 use sp_core::sr25519::Pair;
 use std::fs;
 use std::path::Path;
-use subspace_solving::SOLUTION_SIGNING_CONTEXT;
+use kumandra_solving::SOLUTION_SIGNING_CONTEXT;
 use zeroize::{Zeroize, Zeroizing};
 
 /// Signing context hardcoded in Substrate implementation and used for signing blocks.

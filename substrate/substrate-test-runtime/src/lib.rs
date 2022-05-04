@@ -56,7 +56,7 @@ use sp_trie::{trie_types::TrieDB, PrefixedMemoryDB, StorageProof};
 #[cfg(any(feature = "std", test))]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
-use subspace_core_primitives::PIECE_SIZE;
+use kumandra_core_primitives::PIECE_SIZE;
 use trie_db::{Trie, TrieMut};
 // bench on latest state.
 use sp_trie::trie_types::TrieDBMutV1 as TrieDBMut;
@@ -503,8 +503,8 @@ impl From<frame_system::Event<Runtime>> for Event {
     }
 }
 
-impl From<pallet_subspace::Event> for Event {
-    fn from(_evt: pallet_subspace::Event) -> Self {
+impl From<pallet_kumandra::Event> for Event {
+    fn from(_evt: pallet_kumandra::Event) -> Self {
         unimplemented!("Not required in tests!")
     }
 }
@@ -535,8 +535,8 @@ impl frame_support::traits::PalletInfo for Runtime {
         if type_id == sp_std::any::TypeId::of::<pallet_babe::Pallet<Runtime>>() {
             return Some("Babe");
         }
-        if type_id == sp_std::any::TypeId::of::<pallet_subspace::Pallet<Runtime>>() {
-            return Some("Subspace");
+        if type_id == sp_std::any::TypeId::of::<pallet_kumandra::Pallet<Runtime>>() {
+            return Some("Kumandra");
         }
 
         None
@@ -654,7 +654,7 @@ parameter_types! {
     pub const ShouldAdjustSolutionRange: bool = false;
 }
 
-impl pallet_subspace::Config for Runtime {
+impl pallet_kumandra::Config for Runtime {
     type Event = Event;
     type GlobalRandomnessUpdateInterval = ConstU64<10>;
     type EraDuration = ConstU64<5>;
@@ -668,9 +668,9 @@ impl pallet_subspace::Config for Runtime {
     type MaxPlotSize = ConstU64<{ 10 * 1024 * 1024 * 1024 / PIECE_SIZE as u64 }>;
     type RecordedHistorySegmentSize = ConstU32<{ 3840 * 256 / 2 }>;
     type ShouldAdjustSolutionRange = ShouldAdjustSolutionRange;
-    type GlobalRandomnessIntervalTrigger = pallet_subspace::NormalGlobalRandomnessInterval;
-    type EraChangeTrigger = pallet_subspace::NormalEraChange;
-    type EonChangeTrigger = pallet_subspace::NormalEonChange;
+    type GlobalRandomnessIntervalTrigger = pallet_kumandra::NormalGlobalRandomnessInterval;
+    type EraChangeTrigger = pallet_kumandra::NormalEraChange;
+    type EonChangeTrigger = pallet_kumandra::NormalEonChange;
 
     type HandleEquivocation = ();
 
@@ -925,73 +925,73 @@ cfg_if! {
                 }
             }
 
-            impl sp_consensus_subspace::SubspaceApi<Block> for Runtime {
+            impl kp_consensus::KumandraApi<Block> for Runtime {
                 fn confirmation_depth_k() -> <<Block as BlockT>::Header as HeaderT>::Number {
-                    <Self as pallet_subspace::Config>::ConfirmationDepthK::get()
+                    <Self as pallet_kumandra::Config>::ConfirmationDepthK::get()
                 }
 
                 fn max_plot_size() -> u64 {
-                    <Self as pallet_subspace::Config>::MaxPlotSize::get()
+                    <Self as pallet_kumandra::Config>::MaxPlotSize::get()
                 }
 
                 fn record_size() -> u32 {
-                    <Self as pallet_subspace::Config>::RecordSize::get()
+                    <Self as pallet_kumandra::Config>::RecordSize::get()
                 }
 
                 fn total_pieces() -> u64 {
-                    <pallet_subspace::Pallet<Runtime>>::total_pieces()
+                    <pallet_kumandra::Pallet<Runtime>>::total_pieces()
                 }
 
                 fn recorded_history_segment_size() -> u32 {
-                    <Self as pallet_subspace::Config>::RecordedHistorySegmentSize::get()
+                    <Self as pallet_kumandra::Config>::RecordedHistorySegmentSize::get()
                 }
 
                 fn slot_duration() -> core::time::Duration {
                     core::time::Duration::from_millis(
-                        <pallet_subspace::Pallet<Runtime>>::slot_duration()
+                        <pallet_kumandra::Pallet<Runtime>>::slot_duration()
                     )
                 }
 
-                fn global_randomnesses() -> sp_consensus_subspace::GlobalRandomnesses {
-                    <pallet_subspace::Pallet<Runtime>>::global_randomnesses()
+                fn global_randomnesses() -> kp_consensus::GlobalRandomnesses {
+                    <pallet_kumandra::Pallet<Runtime>>::global_randomnesses()
                 }
 
-                fn solution_ranges() -> sp_consensus_subspace::SolutionRanges {
-                    <pallet_subspace::Pallet<Runtime>>::solution_ranges()
+                fn solution_ranges() -> kp_consensus::SolutionRanges {
+                    <pallet_kumandra::Pallet<Runtime>>::solution_ranges()
                 }
 
-                fn salts() -> sp_consensus_subspace::Salts {
-                    <pallet_subspace::Pallet<Runtime>>::salts()
+                fn salts() -> kp_consensus::Salts {
+                    <pallet_kumandra::Pallet<Runtime>>::salts()
                 }
 
                 fn submit_report_equivocation_extrinsic(
-                    equivocation_proof: sp_consensus_subspace::EquivocationProof<
+                    equivocation_proof: kp_consensus::EquivocationProof<
                         <Block as BlockT>::Header,
                     >,
                 ) -> Option<()> {
-                    <pallet_subspace::Pallet<Runtime>>::submit_test_equivocation_report(
+                    <pallet_kumandra::Pallet<Runtime>>::submit_test_equivocation_report(
                         equivocation_proof,
                     )
                 }
 
-                fn is_in_block_list(farmer_public_key: &sp_consensus_subspace::FarmerPublicKey) -> bool {
-                    <pallet_subspace::Pallet<Runtime>>::is_in_block_list(farmer_public_key)
+                fn is_in_block_list(farmer_public_key: &kp_consensus::FarmerPublicKey) -> bool {
+                    <pallet_kumandra::Pallet<Runtime>>::is_in_block_list(farmer_public_key)
                 }
 
-                fn records_root(segment_index: u64) -> Option<subspace_core_primitives::Sha256Hash> {
-                    <pallet_subspace::Pallet<Runtime>>::records_root(segment_index)
+                fn records_root(segment_index: u64) -> Option<kumandra_core_primitives::Sha256Hash> {
+                    <pallet_kumandra::Pallet<Runtime>>::records_root(segment_index)
                 }
 
                 fn extract_root_blocks(
                     _ext: &<Block as BlockT>::Extrinsic
-                ) -> Option<Vec<subspace_core_primitives::RootBlock>> {
+                ) -> Option<Vec<kumandra_core_primitives::RootBlock>> {
                     panic!("Not needed in tests")
                 }
 
                 fn extract_block_object_mapping(
                     _block: Block,
-                ) -> subspace_core_primitives::objects::BlockObjectMapping {
-                    subspace_core_primitives::objects::BlockObjectMapping::default()
+                ) -> kumandra_core_primitives::objects::BlockObjectMapping {
+                    kumandra_core_primitives::objects::BlockObjectMapping::default()
                 }
             }
 
@@ -1247,73 +1247,73 @@ cfg_if! {
                 }
             }
 
-            impl sp_consensus_subspace::SubspaceApi<Block> for Runtime {
+            impl kp_consensus::KumandraApi<Block> for Runtime {
                 fn confirmation_depth_k() -> <<Block as BlockT>::Header as HeaderT>::Number {
-                    <Self as pallet_subspace::Config>::ConfirmationDepthK::get()
+                    <Self as pallet_kumandra::Config>::ConfirmationDepthK::get()
                 }
 
                 fn record_size() -> u32 {
-                    <Self as pallet_subspace::Config>::RecordSize::get()
+                    <Self as pallet_kumandra::Config>::RecordSize::get()
                 }
 
                 fn max_plot_size() -> u64 {
-                    <Self as pallet_subspace::Config>::MaxPlotSize::get()
+                    <Self as pallet_kumandra::Config>::MaxPlotSize::get()
                 }
 
                 fn total_pieces() -> u64 {
-                    <pallet_subspace::Pallet<Runtime>>::total_pieces()
+                    <pallet_kumandra::Pallet<Runtime>>::total_pieces()
                 }
 
                 fn recorded_history_segment_size() -> u32 {
-                    <Self as pallet_subspace::Config>::RecordedHistorySegmentSize::get()
+                    <Self as pallet_kumandra::Config>::RecordedHistorySegmentSize::get()
                 }
 
                 fn slot_duration() -> core::time::Duration {
                     core::time::Duration::from_millis(
-                        <pallet_subspace::Pallet<Runtime>>::slot_duration()
+                        <pallet_kumandra::Pallet<Runtime>>::slot_duration()
                     )
                 }
 
-                fn global_randomnesses() -> sp_consensus_subspace::GlobalRandomnesses {
-                    <pallet_subspace::Pallet<Runtime>>::global_randomnesses()
+                fn global_randomnesses() -> kp_consensus::GlobalRandomnesses {
+                    <pallet_kumandra::Pallet<Runtime>>::global_randomnesses()
                 }
 
-                fn solution_ranges() -> sp_consensus_subspace::SolutionRanges {
-                    <pallet_subspace::Pallet<Runtime>>::solution_ranges()
+                fn solution_ranges() -> kp_consensus::SolutionRanges {
+                    <pallet_kumandra::Pallet<Runtime>>::solution_ranges()
                 }
 
-                fn salts() -> sp_consensus_subspace::Salts {
-                    <pallet_subspace::Pallet<Runtime>>::salts()
+                fn salts() -> kp_consensus::Salts {
+                    <pallet_kumandra::Pallet<Runtime>>::salts()
                 }
 
                 fn submit_report_equivocation_extrinsic(
-                    equivocation_proof: sp_consensus_subspace::EquivocationProof<
+                    equivocation_proof: kp_consensus::EquivocationProof<
                         <Block as BlockT>::Header,
                     >,
                 ) -> Option<()> {
-                    <pallet_subspace::Pallet<Runtime>>::submit_test_equivocation_report(
+                    <pallet_kumandra::Pallet<Runtime>>::submit_test_equivocation_report(
                         equivocation_proof,
                     )
                 }
 
-                fn is_in_block_list(farmer_public_key: &sp_consensus_subspace::FarmerPublicKey) -> bool {
-                    <pallet_subspace::Pallet<Runtime>>::is_in_block_list(farmer_public_key)
+                fn is_in_block_list(farmer_public_key: &kp_consensus::FarmerPublicKey) -> bool {
+                    <pallet_kumandra::Pallet<Runtime>>::is_in_block_list(farmer_public_key)
                 }
 
-                fn records_root(segment_index: u64) -> Option<subspace_core_primitives::Sha256Hash> {
-                    <pallet_subspace::Pallet<Runtime>>::records_root(segment_index)
+                fn records_root(segment_index: u64) -> Option<kumandra_core_primitives::Sha256Hash> {
+                    <pallet_kumandra::Pallet<Runtime>>::records_root(segment_index)
                 }
 
                 fn extract_root_blocks(
                     _ext: &<Block as BlockT>::Extrinsic
-                ) -> Option<Vec<subspace_core_primitives::RootBlock>> {
+                ) -> Option<Vec<kumandra_core_primitives::RootBlock>> {
                     panic!("Not needed in tests")
                 }
 
                 fn extract_block_object_mapping(
                     _block: Block,
-                ) -> subspace_core_primitives::objects::BlockObjectMapping {
-                    subspace_core_primitives::objects::BlockObjectMapping::default()
+                ) -> kumandra_core_primitives::objects::BlockObjectMapping {
+                    kumandra_core_primitives::objects::BlockObjectMapping::default()
                 }
             }
 

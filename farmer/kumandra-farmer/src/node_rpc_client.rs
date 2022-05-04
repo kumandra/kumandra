@@ -5,9 +5,9 @@ use jsonrpsee::core::Error as JsonError;
 use jsonrpsee::rpc_params;
 use jsonrpsee::ws_client::{WsClient, WsClientBuilder};
 use std::sync::Arc;
-use subspace_archiving::archiver::ArchivedSegment;
-use subspace_core_primitives::BlockNumber;
-use subspace_rpc_primitives::{
+use kumandra_archiving::archiver::ArchivedSegment;
+use kumandra_core_primitives::BlockNumber;
+use kumandra_rpc_primitives::{
     BlockSignature, BlockSigningInfo, FarmerMetadata, SlotInfo, SolutionResponse,
 };
 use tokio::sync::mpsc;
@@ -32,14 +32,14 @@ impl RpcClient for NodeRpcClient {
     async fn farmer_metadata(&self) -> Result<FarmerMetadata, RpcError> {
         Ok(self
             .client
-            .request("subspace_getFarmerMetadata", rpc_params![])
+            .request("kumandra_getFarmerMetadata", rpc_params![])
             .await?)
     }
 
     async fn best_block_number(&self) -> Result<BlockNumber, RpcError> {
         Ok(self
             .client
-            .request("subspace_getBestBlockNumber", rpc_params![])
+            .request("kumandra_getBestBlockNumber", rpc_params![])
             .await?)
     }
 
@@ -47,9 +47,9 @@ impl RpcClient for NodeRpcClient {
         let mut subscription = self
             .client
             .subscribe(
-                "subspace_subscribeSlotInfo",
+                "kumandra_subscribeSlotInfo",
                 rpc_params![],
-                "subspace_unsubscribeSlotInfo",
+                "kumandra_unsubscribeSlotInfo",
             )
             .await?;
 
@@ -71,7 +71,7 @@ impl RpcClient for NodeRpcClient {
         Ok(self
             .client
             .request(
-                "subspace_submitSolutionResponse",
+                "kumandra_submitSolutionResponse",
                 rpc_params![&solution_response],
             )
             .await?)
@@ -81,9 +81,9 @@ impl RpcClient for NodeRpcClient {
         let mut subscription = self
             .client
             .subscribe(
-                "subspace_subscribeBlockSigning",
+                "kumandra_subscribeBlockSigning",
                 rpc_params![],
-                "subspace_unsubscribeBlockSigning",
+                "kumandra_unsubscribeBlockSigning",
             )
             .await?;
 
@@ -106,7 +106,7 @@ impl RpcClient for NodeRpcClient {
         Ok(self
             .client
             .request(
-                "subspace_submitBlockSignature",
+                "kumandra_submitBlockSignature",
                 rpc_params![&block_signature],
             )
             .await?)
@@ -116,9 +116,9 @@ impl RpcClient for NodeRpcClient {
         let mut subscription = self
             .client
             .subscribe(
-                "subspace_subscribeArchivedSegment",
+                "kumandra_subscribeArchivedSegment",
                 rpc_params![],
-                "subspace_unsubscribeArchivedSegment",
+                "kumandra_unsubscribeArchivedSegment",
             )
             .await?;
 
@@ -137,7 +137,7 @@ impl RpcClient for NodeRpcClient {
         Ok(self
             .client
             .request(
-                "subspace_acknowledgeArchivedSegment",
+                "kumandra_acknowledgeArchivedSegment",
                 rpc_params![&segment_index],
             )
             .await?)

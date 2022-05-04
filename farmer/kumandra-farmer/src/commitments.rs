@@ -13,7 +13,7 @@ use rocksdb::DB;
 use std::io;
 use std::path::PathBuf;
 use std::sync::Arc;
-use subspace_core_primitives::{Piece, Salt, Tag, PIECE_SIZE};
+use kumandra_core_primitives::{Piece, Salt, Tag, PIECE_SIZE};
 use thiserror::Error;
 
 const BATCH_SIZE: u64 = (16 * 1024 * 1024 / PIECE_SIZE) as u64;
@@ -136,7 +136,7 @@ impl Commitments {
 
                 let tags: Vec<Tag> = pieces
                     .par_chunks_exact(PIECE_SIZE)
-                    .map(|piece| subspace_solving::create_tag(piece, salt))
+                    .map(|piece| kumandra_solving::create_tag(piece, salt))
                     .collect();
 
                 for (tag, offset) in tags.iter().zip(batch_start..) {
@@ -198,7 +198,7 @@ impl Commitments {
 
             if let Some(db) = db_guard.as_ref() {
                 for piece in pieces {
-                    let tag = subspace_solving::create_tag(piece, salt);
+                    let tag = kumandra_solving::create_tag(piece, salt);
                     db.delete(tag).map_err(CommitmentError::CommitmentDb)?;
                 }
             }
@@ -237,7 +237,7 @@ impl Commitments {
             if let Some(db) = db_guard.as_ref() {
                 let tags_with_offset: Vec<(PieceOffset, Tag)> = pieces_with_offsets()
                     .map(|(piece_offset, piece)| {
-                        (piece_offset, subspace_solving::create_tag(piece, salt))
+                        (piece_offset, kumandra_solving::create_tag(piece, salt))
                     })
                     .collect();
 

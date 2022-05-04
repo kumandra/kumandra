@@ -11,8 +11,8 @@ use std::{
     ops::{Deref, DerefMut},
     sync::Arc,
 };
-use subspace_archiving::archiver::{Segment, SegmentItem};
-use subspace_core_primitives::{Piece, PieceIndex, Sha256Hash, PIECE_SIZE};
+use kumandra_archiving::archiver::{Segment, SegmentItem};
+use kumandra_core_primitives::{Piece, PieceIndex, Sha256Hash, PIECE_SIZE};
 
 /// Maximum expected size of one object in bytes
 const MAX_OBJECT_SIZE: usize = 5 * 1024 * 1024;
@@ -130,9 +130,9 @@ pub trait Rpc {
 /// # async fn f() -> anyhow::Result<()> {
 /// use std::sync::Arc;
 /// use jsonrpsee::ws_server::WsServerBuilder;
-/// use subspace_farmer::{Identity, ObjectMappings, Plot};
-/// use subspace_farmer::ws_rpc_server::{RpcServer, RpcServerImpl};
-/// use subspace_solving::SubspaceCodec;
+/// use kumandra_farmer::{Identity, ObjectMappings, Plot};
+/// use kumandra_farmer::ws_rpc_server::{RpcServer, RpcServerImpl};
+/// use kumandra_solving::KumandraCodec;
 ///
 /// let base_directory = "/path/to/base/dir";
 /// let ws_server_listen_addr = "127.0.0.1:0";

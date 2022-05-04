@@ -6,8 +6,8 @@ use crate::plot::Plot;
 use futures::channel::mpsc;
 use futures::{SinkExt, StreamExt};
 use std::sync::Arc;
-use subspace_core_primitives::{FlatPieces, Salt, Tag, TAG_SIZE};
-use subspace_rpc_primitives::SlotInfo;
+use kumandra_core_primitives::{FlatPieces, Salt, Tag, TAG_SIZE};
+use kumandra_rpc_primitives::SlotInfo;
 use tempfile::TempDir;
 use tokio::time::{sleep, Duration};
 

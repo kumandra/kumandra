@@ -3,7 +3,7 @@ use crate::plot::Plot;
 use rand::prelude::*;
 use rand::rngs::StdRng;
 use std::sync::Arc;
-use subspace_core_primitives::{FlatPieces, Salt, Tag, PIECE_SIZE};
+use kumandra_core_primitives::{FlatPieces, Salt, Tag, PIECE_SIZE};
 use tempfile::TempDir;
 
 fn init() {

@@ -13,10 +13,10 @@ use std::path::Path;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::{Arc, Weak};
-use subspace_core_primitives::{
+use kumandra_core_primitives::{
     FlatPieces, Piece, PieceIndex, PieceIndexHash, PublicKey, PIECE_SIZE,
 };
-use subspace_solving::{PieceDistance, SubspaceCodec};
+use kumandra_solving::{PieceDistance, KumandraCodec};
 use thiserror::Error;
 
 /// Index of piece on disk
@@ -151,7 +151,7 @@ pub fn retrieve_piece_from_plots(
         })
         .map(|(mut piece, public_key)| {
             // TODO: Do not recreate codec each time
-            SubspaceCodec::new(&public_key)
+            KumandraCodec::new(&public_key)
                 .decode(&mut piece, piece_index)
                 .map_err(|_| io::Error::other("Failed to decode piece"))
                 .map(move |()| piece)
@@ -444,10 +444,10 @@ impl IndexHashToOffsetDB {
             let upper_bound = iter.key().map(PieceDistance::from_big_endian)?;
 
             // Pick key which has maximum distance to our key
-            if subspace_core_primitives::bidirectional_distance(
+            if kumandra_core_primitives::bidirectional_distance(
                 &lower_bound,
                 &PieceDistance::MIDDLE,
-            ) < subspace_core_primitives::bidirectional_distance(
+            ) < kumandra_core_primitives::bidirectional_distance(
                 &upper_bound,
                 &PieceDistance::MIDDLE,
             ) {
@@ -483,7 +483,7 @@ impl IndexHashToOffsetDB {
     fn should_store(&self, index_hash: &PieceIndexHash) -> bool {
         self.max_distance_key
             .map(|max_distance_key| {
-                subspace_core_primitives::bidirectional_distance(
+                kumandra_core_primitives::bidirectional_distance(
                     &max_distance_key,
                     &PieceDistance::MIDDLE,
                 ) >= PieceDistance::distance(index_hash, self.address)
@@ -521,7 +521,7 @@ impl IndexHashToOffsetDB {
         self.max_distance_key = match self.max_distance_key {
             Some(max_distance_key) => {
                 if PieceDistance::distance(index_hash, self.address)
-                    > subspace_core_primitives::bidirectional_distance(
+                    > kumandra_core_primitives::bidirectional_distance(
                         &max_distance_key,
                         &PieceDistance::MIDDLE,
                     )

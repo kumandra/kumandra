@@ -4,14 +4,14 @@ use sc_chain_spec::ChainType;
 use sp_core::{sr25519, Pair, Public};
 use sp_executor::ExecutorId;
 use sp_runtime::traits::{IdentifyAccount, Verify};
-use subspace_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
-use subspace_test_runtime::{
+use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, Signature};
+use kumandra_test_runtime::{
     BalancesConfig, ExecutorConfig, GenesisConfig, SudoConfig, SystemConfig, VestingConfig, SSC,
     WASM_BINARY,
 };
 
-/// The `ChainSpec` parameterized for subspace test runtime.
-pub type TestChainSpec = sc_service::GenericChainSpec<subspace_test_runtime::GenesisConfig>;
+/// The `ChainSpec` parameterized for kumandra test runtime.
+pub type TestChainSpec = sc_service::GenericChainSpec<kumandra_test_runtime::GenesisConfig>;
 
 /// Generate a crypto pair from seed.
 pub fn get_from_seed<TPublic: Public>(seed: &str) -> <TPublic::Pair as Pair>::Public {
@@ -28,7 +28,7 @@ pub fn get_account_id_from_seed(seed: &str) -> AccountId {
 }
 
 /// Local testnet config (multivalidator Alice + Bob).
-pub fn subspace_local_testnet_config() -> TestChainSpec {
+pub fn kumandra_local_testnet_config() -> TestChainSpec {
     let wasm_binary = WASM_BINARY.expect("Development wasm not available");
     TestChainSpec::from_genesis(
         "Local Testnet",
@@ -63,7 +63,7 @@ pub fn subspace_local_testnet_config() -> TestChainSpec {
         },
         vec![],
         None,
-        Some("subspace-test"),
+        Some("kumandra-test"),
         None,
         None,
         Default::default(),

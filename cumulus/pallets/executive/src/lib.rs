@@ -19,7 +19,7 @@
 //!
 //! This module is derived from frame_executive with some custom modifications for
 //! collecting the intermediate storage roots in the block execution required for
-//! the fraud proof of decoupled execution in Subspace.
+//! the fraud proof of decoupled execution in Kumandra.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 

@@ -33,7 +33,7 @@ impl SecondaryChainCli {
 
 impl SubstrateCli for SecondaryChainCli {
     fn impl_name() -> String {
-        "Subspace Executor".into()
+        "Kumandra Executor".into()
     }
 
     fn impl_version() -> String {
@@ -43,11 +43,11 @@ impl SubstrateCli for SecondaryChainCli {
     fn executable_name() -> String {
         // Customize to make sure directory used for data by default is the same regardless of the
         // name of the executable file.
-        "subspace-node".to_string()
+        "kumandra-node".to_string()
     }
 
     fn description() -> String {
-        "Subspace Executor".into()
+        "Kumandra Executor".into()
     }
 
     fn author() -> String {
@@ -55,7 +55,7 @@ impl SubstrateCli for SecondaryChainCli {
     }
 
     fn support_url() -> String {
-        "https://github.com/subspace/subspace/issues/new".into()
+        "https://github.com/kumandra/kumandra/issues/new".into()
     }
 
     fn copyright_start_year() -> i32 {
