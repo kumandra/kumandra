@@ -178,7 +178,7 @@ pub fn dev_config() -> Result<KumandraChainSpec, String> {
 
     Ok(KumandraChainSpec::from_genesis(
         // Name
-        "Kumandra development",
+        "Development",
         // ID
         "kumandra_dev",
         ChainType::Development,
