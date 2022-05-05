@@ -172,7 +172,7 @@ pub fn dev_config() -> Result<KumandraChainSpec, String> {
     let mut properties = Properties::new();
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
     properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
-    properties.insert("tokenSymbol".into(), "tKMD".into());
+    properties.insert("tokenSymbol".into(), "DKMD".into());
 
     let wasm_binary = WASM_BINARY.ok_or_else(|| "Development wasm not available".to_string())?;
 
@@ -189,10 +189,10 @@ pub fn dev_config() -> Result<KumandraChainSpec, String> {
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice"), 100_000_000 * KMD),
+                    (get_account_id_from_seed("Bob"), 100_000_000 * KMD),
+                    (get_account_id_from_seed("Alice//stash"), 100_000_000 * KMD),
+                    (get_account_id_from_seed("Bob//stash"), 100_000_000 * KMD),
                 ],
                 vec![],
                 (
