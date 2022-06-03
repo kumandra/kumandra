@@ -2,17 +2,14 @@
 
 members = [
     "runtime",
+    "node",
     "finality-kumandra",
     "pallets/kumandra",
     "pallets/elections",
     "primitives",
 ]
 
-# exclude = [
-#   "flooder",
-#   "e2e-tests",
-#   "aleph-client",
-#   "fork-off",
-#   "benches/payout-stakers",
+exclude = [
+  "clients",
 #   "bin/cliain",
-# ]
+]
