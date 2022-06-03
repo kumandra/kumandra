@@ -1,0 +1,23 @@
+use crate::{
+    debug::{element_prompt, entry_prompt, pallet_prompt},
+    AnyConnection,
+};
+use primitives::AuthorityId;
+
+pub fn print_storage<C: AnyConnection>(connection: &C) {
+    let authorities: Vec<AuthorityId> = connection
+        .as_connection()
+        .get_storage_value("Kumandra", "Authorities", None)
+        .expect("Api call should succeed")
+        .expect("Authorities should always be present");
+
+    println!("{}", pallet_prompt("Kumandra"));
+    println!("{}", entry_prompt("Authorities"));
+
+    for auth in authorities {
+        println!(
+            "{}",
+            element_prompt(format!("\tAuthority {:?}", auth.to_string()))
+        );
+    }
+}
