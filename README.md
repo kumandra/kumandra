@@ -1,0 +1,1 @@
+Kumandra Protocol is a decentralized cloud computing and storage and other competitor that focuses on consumer and user that have unused compute resource that they want to contribute to the Kumandra community and get reward in Kumandra Token. Its native Kumandra tokens are used to pay for transaction fees, host Dapp and buy storage on the Kumandra crypto platform.
