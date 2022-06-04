@@ -7,9 +7,11 @@ members = [
     "pallets/kumandra",
     "pallets/elections",
     "primitives",
+    "dragon",
+
 ]
 
 exclude = [
   "clients",
-#   "bin/cliain",
+ # "dragon",
 ]

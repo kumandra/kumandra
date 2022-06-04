@@ -1,6 +1,6 @@
 use crate::AnyConnection;
 
-mod pallet_kumandra;
+mod kumandra;
 mod elections;
 mod treasury;
 

@@ -92,13 +92,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "aleph_client"
+name = "clients"
 version = "1.1.0"
 dependencies = [
  "anyhow",
  "hex",
  "log",
- "pallet-aleph",
+ "pallet-kumandra",
  "pallet-balances",
  "pallet-multisig",
  "pallet-staking",
@@ -400,10 +400,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "cliain"
+name = "dragon"
 version = "0.2.0"
 dependencies = [
- "aleph_client",
+ "clients",
  "clap",
  "dialoguer",
  "env_logger",
@@ -1681,7 +1681,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "029d8d0b2f198229de29dca79676f2738ff952edf3fde542eb8bf94d8c21b435"
 
 [[package]]
-name = "pallet-aleph"
+name = "pallet-kumandra"
 version = "0.2.0"
 dependencies = [
  "frame-support",

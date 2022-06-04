@@ -12,7 +12,7 @@ pallet-staking = {git = "https://github.com/paritytech/substrate.git",branch = "
 # other dependencies
 primitives = { path = "../primitives", default-features = false}
 clap = {version = "3.0", features = ["derive"]}
-aleph_client = {path = "../client" }
+clients = {path = "../clients" }
 env_logger = "0.8"
 log = "0.4"
 codec = { package = 'parity-scale-codec', version = "3.0.0", default-features = false,  features = ['derive']}

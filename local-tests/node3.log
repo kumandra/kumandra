@@ -1,0 +1,1454 @@
+2022-06-04 16:21:15 Kumandra Node    
+2022-06-04 16:21:15 ✌️  version 0.5.0-4fb0894-x86_64-linux-gnu    
+2022-06-04 16:21:15 ❤️  by KOOMPI, 2021-2022    
+2022-06-04 16:21:15 📋 Chain specification: Kumandra Development    
+2022-06-04 16:21:15 🏷  Node name: node3    
+2022-06-04 16:21:15 👤 Role: AUTHORITY    
+2022-06-04 16:21:15 💾 Database: RocksDb at /home/smull/kumandra/local-tests/5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy/chains/a0dnet1/db/full    
+2022-06-04 16:21:15 ⛓  Native runtime: kumandra-node-14 (kumandra-node-1.tx6.au1)    
+2022-06-04 16:21:21 🔨 Initializing Genesis block/state (state: 0x9825…b3be, header-hash: 0xfc2e…9e9f)    
+2022-06-04 16:21:23 Using default protocol ID "sup" because none is configured in the chain specs    
+2022-06-04 16:21:23 🏷  Local node identity is: 12D3KooWP87B9ASXKr4GsLEweemK6bxnBfjjFmXqAWaZYzJzWnc5    
+2022-06-04 16:21:23 🔍 Discovered new external address for our node: /dns4/localhost/tcp/30337/p2p/12D3KooWP87B9ASXKr4GsLEweemK6bxnBfjjFmXqAWaZYzJzWnc5/p2p/12D3KooWP87B9ASXKr4GsLEweemK6bxnBfjjFmXqAWaZYzJzWnc5    
+2022-06-04 16:21:23 📦 Highest known block at #0    
+2022-06-04 16:21:23 〽️ Prometheus exporter started at 127.0.0.1:9615    
+2022-06-04 16:21:23 Listening for new connections on 0.0.0.0:9947.    
+2022-06-04 16:21:23 Running session 0.    
+2022-06-04 16:21:23 NodeIndex(3) Spawning party for a session.    
+2022-06-04 16:21:23 NodeIndex(3) Spawning network.    
+2022-06-04 16:21:23 NodeIndex(3) Network spawned.    
+2022-06-04 16:21:23 NodeIndex(3) Initializing Runway.    
+2022-06-04 16:21:23 NodeIndex(3) Runway initialized.    
+2022-06-04 16:21:23 NodeIndex(3) Initializing Member.    
+2022-06-04 16:21:23 NodeIndex(3) Member initialized.    
+2022-06-04 16:21:23 loaded units from backup. Loaded 0 units    
+2022-06-04 16:21:23 NodeIndex(3) Runway started.    
+2022-06-04 16:21:23 NodeIndex(3) Starting all services...    
+2022-06-04 16:21:23 NodeIndex(3) All services started.    
+2022-06-04 16:21:25 ✨ Imported #1 (0xbf06…afce)    
+2022-06-04 16:21:26 ✨ Imported #2 (0xad90…7288)    
+2022-06-04 16:21:27 🙌 Starting consensus session on top of parent 0xad90375960532e7acbc18f93720656d47fe0b1144bb24308a4f0c8b159847288    
+2022-06-04 16:21:27 🎁 Prepared block for proposing at 3 (0 ms) [hash: 0xad458bb27b6fdc536b2da7f53a60bab267bf4307020450ed8e0a1c93757650a8; parent_hash: 0xad90…7288; extrinsics (1): [0x8b20…1c6e]]    
+2022-06-04 16:21:27 🔖 Pre-sealed block for proposal at 3. Hash now 0xd1e9dddcd23193db1a234f554064a35c9aa69864aee8f6cd40f5d07e7bcde0ba, previously 0xad458bb27b6fdc536b2da7f53a60bab267bf4307020450ed8e0a1c93757650a8.    
+2022-06-04 16:21:27 ✨ Imported #3 (0xd1e9…e0ba)    
+2022-06-04 16:21:28 ✨ Imported #4 (0x68e4…0b15)    
+2022-06-04 16:21:28 💤 Idle (3 peers), best: #4 (0x68e4…0b15), finalized #0 (0xfc2e…9e9f), ⬇ 2.9kiB/s ⬆ 2.8kiB/s    
+2022-06-04 16:21:29 ✨ Imported #5 (0xa1d0…e361)    
+2022-06-04 16:21:30 ✨ Imported #6 (0x5731…df6d)    
+2022-06-04 16:21:31 🙌 Starting consensus session on top of parent 0x5731e0c6bc90ccdfa5e745747cef19a39176ace0eb1a4dd9d8c05d0a8922df6d    
+2022-06-04 16:21:31 🎁 Prepared block for proposing at 7 (0 ms) [hash: 0x346bdd59ed02086bf42845fb53daf51398306e8559bf180e6601b09cb1fb889b; parent_hash: 0x5731…df6d; extrinsics (1): [0x8501…db4b]]    
+2022-06-04 16:21:31 🔖 Pre-sealed block for proposal at 7. Hash now 0x88264032dfc386691770e549a8367fc9f7f80016471c9c07a6587b2fbc75c251, previously 0x346bdd59ed02086bf42845fb53daf51398306e8559bf180e6601b09cb1fb889b.    
+2022-06-04 16:21:31 ✨ Imported #7 (0x8826…c251)    
+2022-06-04 16:21:32 ✨ Imported #8 (0xee92…9cf0)    
+2022-06-04 16:21:33 ✨ Imported #9 (0xe544…e9bd)    
+2022-06-04 16:21:33 💤 Idle (3 peers), best: #9 (0xe544…e9bd), finalized #0 (0xfc2e…9e9f), ⬇ 1.4kiB/s ⬆ 1.3kiB/s    
+2022-06-04 16:21:34 ✨ Imported #10 (0x1370…29de)    
+2022-06-04 16:21:35 🙌 Starting consensus session on top of parent 0x1370d68829e23d96ec0338529bc2fded424f91bff7b8f7478174c095a01329de    
+2022-06-04 16:21:35 🎁 Prepared block for proposing at 11 (0 ms) [hash: 0x3ed93b0dcda3f1497be990190875164bfd917d2fdfd2c51c775d2148cb536df5; parent_hash: 0x1370…29de; extrinsics (1): [0xfbf8…477c]]    
+2022-06-04 16:21:35 🔖 Pre-sealed block for proposal at 11. Hash now 0x02f1c691ab841acfa1fd237edaff9ff8ccff8751fef95393aba979661db014ce, previously 0x3ed93b0dcda3f1497be990190875164bfd917d2fdfd2c51c775d2148cb536df5.    
+2022-06-04 16:21:35 ✨ Imported #11 (0x02f1…14ce)    
+2022-06-04 16:21:36 ✨ Imported #12 (0x6248…f0f8)    
+2022-06-04 16:21:37 ✨ Imported #13 (0x1541…b166)    
+2022-06-04 16:21:38 ✨ Imported #14 (0xea71…8f44)    
+2022-06-04 16:21:38 💤 Idle (3 peers), best: #14 (0xea71…8f44), finalized #0 (0xfc2e…9e9f), ⬇ 0.8kiB/s ⬆ 0.9kiB/s    
+2022-06-04 16:21:39 🙌 Starting consensus session on top of parent 0xea7125711470a40fad13216297c57ff97507f6df3e02d68d41e4d3c387358f44    
+2022-06-04 16:21:39 🎁 Prepared block for proposing at 15 (0 ms) [hash: 0xd2a7d56e879a91778a4822a52c0394676b884e3e3fe7612bebf001a6bef668d3; parent_hash: 0xea71…8f44; extrinsics (1): [0xd757…9996]]    
+2022-06-04 16:21:39 🔖 Pre-sealed block for proposal at 15. Hash now 0x9b103e335ba733fe87c1d63734c34b215f64572855ef92b46172e5d5b35cd384, previously 0xd2a7d56e879a91778a4822a52c0394676b884e3e3fe7612bebf001a6bef668d3.    
+2022-06-04 16:21:39 ✨ Imported #15 (0x9b10…d384)    
+2022-06-04 16:21:40 ✨ Imported #16 (0x4132…4218)    
+2022-06-04 16:21:41 ✨ Imported #17 (0x2343…7cb8)    
+2022-06-04 16:21:42 ✨ Imported #18 (0xe5e0…292c)    
+2022-06-04 16:21:43 🙌 Starting consensus session on top of parent 0xe5e078c9fa11a78a63a4586ac7b5b7185933bdcf2a1c649a06e490ac83c9292c    
+2022-06-04 16:21:43 🎁 Prepared block for proposing at 19 (0 ms) [hash: 0x40ae40d6fda704d5e7a44730cf0a7758d7a068b05bc17baf7ca249564ce5f987; parent_hash: 0xe5e0…292c; extrinsics (1): [0xca63…f104]]    
+2022-06-04 16:21:43 🔖 Pre-sealed block for proposal at 19. Hash now 0x72dd41cbe7aae32689b34e823f64f5858ea641922d6ef904152d622a42a8b28c, previously 0x40ae40d6fda704d5e7a44730cf0a7758d7a068b05bc17baf7ca249564ce5f987.    
+2022-06-04 16:21:43 ✨ Imported #19 (0x72dd…b28c)    
+2022-06-04 16:21:43 💤 Idle (3 peers), best: #19 (0x72dd…b28c), finalized #0 (0xfc2e…9e9f), ⬇ 1.5kiB/s ⬆ 1.8kiB/s    
+2022-06-04 16:21:44 ✨ Imported #20 (0xc7f0…5380)    
+2022-06-04 16:21:45 ✨ Imported #21 (0x1e01…0aef)    
+2022-06-04 16:21:46 ✨ Imported #22 (0xbde1…1318)    
+2022-06-04 16:21:47 🙌 Starting consensus session on top of parent 0xbde11209a1918ee4ed45fef94dc9d011aac6ae04cdbcf194835f5b5298611318    
+2022-06-04 16:21:47 🎁 Prepared block for proposing at 23 (0 ms) [hash: 0xbd6c27d12bada297240dbb722bdf99512c65f994ce455cbe6aaae9bda30eb17c; parent_hash: 0xbde1…1318; extrinsics (1): [0xce29…e099]]    
+2022-06-04 16:21:47 🔖 Pre-sealed block for proposal at 23. Hash now 0xd44e15a4d7fa8718b89f228e6c544f8d684017d2df71c4c5f0f1755dce560521, previously 0xbd6c27d12bada297240dbb722bdf99512c65f994ce455cbe6aaae9bda30eb17c.    
+2022-06-04 16:21:47 ✨ Imported #23 (0xd44e…0521)    
+2022-06-04 16:21:48 ✨ Imported #24 (0xf104…640a)    
+2022-06-04 16:21:48 💤 Idle (3 peers), best: #24 (0xf104…640a), finalized #0 (0xfc2e…9e9f), ⬇ 1.2kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:21:49 ✨ Imported #25 (0x741f…6154)    
+2022-06-04 16:21:50 ✨ Imported #26 (0x9baf…8d3c)    
+2022-06-04 16:21:51 🙌 Starting consensus session on top of parent 0x9baf987392b1538bb833031117f1fd9a547ca2e3d8117179063eed2f1f988d3c    
+2022-06-04 16:21:51 🎁 Prepared block for proposing at 27 (0 ms) [hash: 0x83781143eb8126f1a815493a8ac2d0d448bf66b739a3cfdd8d1fa66dea46a59b; parent_hash: 0x9baf…8d3c; extrinsics (1): [0x8dfa…06e1]]    
+2022-06-04 16:21:51 🔖 Pre-sealed block for proposal at 27. Hash now 0x57c0e775b993aca3aeb31eb470f63a44fb2b1c988e712390140f1a80b5335bcc, previously 0x83781143eb8126f1a815493a8ac2d0d448bf66b739a3cfdd8d1fa66dea46a59b.    
+2022-06-04 16:21:51 ✨ Imported #27 (0x57c0…5bcc)    
+2022-06-04 16:21:52 ✨ Imported #28 (0x49bb…366e)    
+2022-06-04 16:21:53 ✨ Imported #29 (0x4897…08dd)    
+2022-06-04 16:21:53 💤 Idle (3 peers), best: #29 (0x4897…08dd), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 0.7kiB/s    
+2022-06-04 16:21:54 ✨ Imported #30 (0xa67e…9d29)    
+2022-06-04 16:21:55 🙌 Starting consensus session on top of parent 0xa67e20093fcb02be2c01197e7dd93a2cdd28b662975ee2c4d470f4f00c7a9d29    
+2022-06-04 16:21:55 🎁 Prepared block for proposing at 31 (2 ms) [hash: 0x52f5e870ef844d3dabc8f7a2a67f8797c36763fa322171cbb175dbb31ac6f0d7; parent_hash: 0xa67e…9d29; extrinsics (1): [0xe385…8b01]]    
+2022-06-04 16:21:55 🔖 Pre-sealed block for proposal at 31. Hash now 0xa8070d705a7419a63c72a6a98adf5b9f9019fd3eecd3a4a69f1d358016a9a547, previously 0x52f5e870ef844d3dabc8f7a2a67f8797c36763fa322171cbb175dbb31ac6f0d7.    
+2022-06-04 16:21:55 ✨ Imported #31 (0xa807…a547)    
+2022-06-04 16:21:56 ✨ Imported #32 (0x8d74…efd1)    
+2022-06-04 16:21:57 ✨ Imported #33 (0x6bd3…c7c1)    
+2022-06-04 16:21:58 ✨ Imported #34 (0xcd01…93e3)    
+2022-06-04 16:21:58 💤 Idle (3 peers), best: #34 (0xcd01…93e3), finalized #0 (0xfc2e…9e9f), ⬇ 1.6kiB/s ⬆ 1.4kiB/s    
+2022-06-04 16:21:59 🙌 Starting consensus session on top of parent 0xcd0122c60308e637469b396187001cf01ae597970354cc33a2edaddab2da93e3    
+2022-06-04 16:21:59 🎁 Prepared block for proposing at 35 (0 ms) [hash: 0x7fca33e00a23d14a2522f99ebb96eb73e72a7ee763004537659f86409194c756; parent_hash: 0xcd01…93e3; extrinsics (1): [0x119b…58e5]]    
+2022-06-04 16:21:59 🔖 Pre-sealed block for proposal at 35. Hash now 0x183c4737947dc89df81dd52b1172fec8b41201f18fa87c28b1bbcfbb1758d927, previously 0x7fca33e00a23d14a2522f99ebb96eb73e72a7ee763004537659f86409194c756.    
+2022-06-04 16:21:59 ✨ Imported #35 (0x183c…d927)    
+2022-06-04 16:22:00 ✨ Imported #36 (0xa794…a6ff)    
+2022-06-04 16:22:01 ✨ Imported #37 (0xbc66…4dd3)    
+2022-06-04 16:22:02 ✨ Imported #38 (0x0791…184f)    
+2022-06-04 16:22:03 🙌 Starting consensus session on top of parent 0x0791c7c3d7f86072bda99d7f03216b5869c8ed046e111ea2d279e3f45aca184f    
+2022-06-04 16:22:03 🎁 Prepared block for proposing at 39 (0 ms) [hash: 0xa6e2dd5918d4e601be43ecc1f1085dd404cde9f2be4e7b19648c3ca705cadadf; parent_hash: 0x0791…184f; extrinsics (1): [0x9aa1…f872]]    
+2022-06-04 16:22:03 🔖 Pre-sealed block for proposal at 39. Hash now 0xe28c1f8fb9d341fcc7355bf3807ad31a0949f745693b4f44d270098354202da1, previously 0xa6e2dd5918d4e601be43ecc1f1085dd404cde9f2be4e7b19648c3ca705cadadf.    
+2022-06-04 16:22:03 ✨ Imported #39 (0xe28c…2da1)    
+2022-06-04 16:22:03 💤 Idle (3 peers), best: #39 (0xe28c…2da1), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 1.4kiB/s    
+2022-06-04 16:22:04 ✨ Imported #40 (0x17f0…6be5)    
+2022-06-04 16:22:05 ✨ Imported #41 (0x070d…c533)    
+2022-06-04 16:22:06 ✨ Imported #42 (0xc2ba…faa6)    
+2022-06-04 16:22:07 🙌 Starting consensus session on top of parent 0xc2ba29fcd8dd2934c8e49be020ba470a2c0051667c3b7345c05f64bcaac3faa6    
+2022-06-04 16:22:07 🎁 Prepared block for proposing at 43 (0 ms) [hash: 0x4147c3baad6e22107ac5c874981ed8a00b213df11359cf611d78d4ebc0cc541d; parent_hash: 0xc2ba…faa6; extrinsics (1): [0x95e1…0855]]    
+2022-06-04 16:22:07 🔖 Pre-sealed block for proposal at 43. Hash now 0xd4a61a378e8724552288a786a5f66acf20cf15b5598bffe02130d7711e3d650a, previously 0x4147c3baad6e22107ac5c874981ed8a00b213df11359cf611d78d4ebc0cc541d.    
+2022-06-04 16:22:07 ✨ Imported #43 (0xd4a6…650a)    
+2022-06-04 16:22:08 ✨ Imported #44 (0x075d…0473)    
+2022-06-04 16:22:08 💤 Idle (3 peers), best: #44 (0x075d…0473), finalized #0 (0xfc2e…9e9f), ⬇ 0.9kiB/s ⬆ 0.8kiB/s    
+2022-06-04 16:22:09 ✨ Imported #45 (0x6dc9…80ee)    
+2022-06-04 16:22:10 ✨ Imported #46 (0xaff9…ab18)    
+2022-06-04 16:22:11 🙌 Starting consensus session on top of parent 0xaff9d143d4b1fdfbe14682d441c44ecc2aed6727a608eb938c1672d99bbbab18    
+2022-06-04 16:22:11 🎁 Prepared block for proposing at 47 (0 ms) [hash: 0xa149ba693cd7993baeec98f7637d5841ff5ff12dbc26ae090e3c729a66ab77da; parent_hash: 0xaff9…ab18; extrinsics (1): [0xea3d…33b4]]    
+2022-06-04 16:22:11 🔖 Pre-sealed block for proposal at 47. Hash now 0x3a948716531022c62fac3e021a6f6a02456b8b86413f57966787f2462a5febf1, previously 0xa149ba693cd7993baeec98f7637d5841ff5ff12dbc26ae090e3c729a66ab77da.    
+2022-06-04 16:22:11 ✨ Imported #47 (0x3a94…ebf1)    
+2022-06-04 16:22:12 ✨ Imported #48 (0x9bc7…90c3)    
+2022-06-04 16:22:13 ✨ Imported #49 (0x56c9…05de)    
+2022-06-04 16:22:13 💤 Idle (3 peers), best: #49 (0x56c9…05de), finalized #0 (0xfc2e…9e9f), ⬇ 1.3kiB/s ⬆ 1.2kiB/s    
+2022-06-04 16:22:14 ✨ Imported #50 (0xf5c5…9489)    
+2022-06-04 16:22:15 🙌 Starting consensus session on top of parent 0xf5c54d94fc3999b6a1d2dfde7e285f724fa691d55b84265bc010b7319ad59489    
+2022-06-04 16:22:15 🎁 Prepared block for proposing at 51 (0 ms) [hash: 0xe4923ae9599e472d474a515df0872660da03eb8ff43f00e0512b118c3eedbe16; parent_hash: 0xf5c5…9489; extrinsics (1): [0x15ad…cacf]]    
+2022-06-04 16:22:15 🔖 Pre-sealed block for proposal at 51. Hash now 0xc1d64f99c1bfb562aa3e68e4a4a5fa8182dd6b6f2ae3296cb01002c59e8e2c67, previously 0xe4923ae9599e472d474a515df0872660da03eb8ff43f00e0512b118c3eedbe16.    
+2022-06-04 16:22:15 ✨ Imported #51 (0xc1d6…2c67)    
+2022-06-04 16:22:16 ✨ Imported #52 (0xbb54…afa6)    
+2022-06-04 16:22:17 ✨ Imported #53 (0x5d28…f6a2)    
+2022-06-04 16:22:18 ✨ Imported #54 (0x1781…1f74)    
+2022-06-04 16:22:18 💤 Idle (3 peers), best: #54 (0x1781…1f74), finalized #0 (0xfc2e…9e9f), ⬇ 0.7kiB/s ⬆ 0.9kiB/s    
+2022-06-04 16:22:19 🙌 Starting consensus session on top of parent 0x1781414b6663ea3a05ee71325628424bab43934b71f03802e2095e0e7e331f74    
+2022-06-04 16:22:19 🎁 Prepared block for proposing at 55 (0 ms) [hash: 0xb4597b376c71d2259788beede77dbbdcef6b22d83527d85a98ec54fdbe5ccb1a; parent_hash: 0x1781…1f74; extrinsics (1): [0xe36d…17de]]    
+2022-06-04 16:22:19 🔖 Pre-sealed block for proposal at 55. Hash now 0xaf07624592457f51040e07400eb8212a3cde4987dd6fc7c1daaf4234e818990d, previously 0xb4597b376c71d2259788beede77dbbdcef6b22d83527d85a98ec54fdbe5ccb1a.    
+2022-06-04 16:22:19 ✨ Imported #55 (0xaf07…990d)    
+2022-06-04 16:22:20 ✨ Imported #56 (0x1d7b…a5b6)    
+2022-06-04 16:22:21 ✨ Imported #57 (0x9a2e…53ff)    
+2022-06-04 16:22:22 ✨ Imported #58 (0x8276…2d6b)    
+2022-06-04 16:22:23 🙌 Starting consensus session on top of parent 0x8276d7d648fd291daa25eff717eb925dd260e11eb4ba814247652425a9722d6b    
+2022-06-04 16:22:23 🎁 Prepared block for proposing at 59 (0 ms) [hash: 0xa6b88e9a89e4d2d46a32db64c24db938f35352857cf194b1608fdc9bbb975f8b; parent_hash: 0x8276…2d6b; extrinsics (1): [0x4fa1…cff8]]    
+2022-06-04 16:22:23 🔖 Pre-sealed block for proposal at 59. Hash now 0x9f74ef253fbd9edaa2668cd6d1c3651b0d97c49892033c40ed68b7f7603068d0, previously 0xa6b88e9a89e4d2d46a32db64c24db938f35352857cf194b1608fdc9bbb975f8b.    
+2022-06-04 16:22:23 ✨ Imported #59 (0x9f74…68d0)    
+2022-06-04 16:22:23 💤 Idle (3 peers), best: #59 (0x9f74…68d0), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 1.3kiB/s    
+2022-06-04 16:22:24 ✨ Imported #60 (0xe5d2…3f7d)    
+2022-06-04 16:22:25 ✨ Imported #61 (0xcd7a…4d68)    
+2022-06-04 16:22:26 ✨ Imported #62 (0x7259…64c9)    
+2022-06-04 16:22:27 🙌 Starting consensus session on top of parent 0x7259943466de8e92cbc0c1d4ab88581660c0b48e61062924d83310f7f06a64c9    
+2022-06-04 16:22:27 🎁 Prepared block for proposing at 63 (0 ms) [hash: 0xf95000aad8619e749d1d4b29c4ad280a2c3c3025285354d5c357c4c351f9051c; parent_hash: 0x7259…64c9; extrinsics (1): [0x4441…7ff5]]    
+2022-06-04 16:22:27 🔖 Pre-sealed block for proposal at 63. Hash now 0x9b46abc60eab6ac6a0fa05e995c1ffe0c346f457e024a201014ef064c26ae869, previously 0xf95000aad8619e749d1d4b29c4ad280a2c3c3025285354d5c357c4c351f9051c.    
+2022-06-04 16:22:27 ✨ Imported #63 (0x9b46…e869)    
+2022-06-04 16:22:28 ✨ Imported #64 (0xf7db…3780)    
+2022-06-04 16:22:28 💤 Idle (3 peers), best: #64 (0xf7db…3780), finalized #0 (0xfc2e…9e9f), ⬇ 1.3kiB/s ⬆ 1.3kiB/s    
+2022-06-04 16:22:29 ✨ Imported #65 (0x7018…8ed9)    
+2022-06-04 16:22:30 ✨ Imported #66 (0xc139…fe38)    
+2022-06-04 16:22:31 🙌 Starting consensus session on top of parent 0xc139645be0fbc9ada1094570ac8fd03eb3f82d9a7fdce541619529e66ff3fe38    
+2022-06-04 16:22:31 🎁 Prepared block for proposing at 67 (0 ms) [hash: 0xb4f74b52cfc3b9596a307ba080cefb7b7fa880e17f3d5861e5f813b1cd41334d; parent_hash: 0xc139…fe38; extrinsics (1): [0x404b…8ff1]]    
+2022-06-04 16:22:31 🔖 Pre-sealed block for proposal at 67. Hash now 0x69d45b0f14b9e93f6a59e2b0f3a227f948eebd7392ebde20678f1c086dc8ad9c, previously 0xb4f74b52cfc3b9596a307ba080cefb7b7fa880e17f3d5861e5f813b1cd41334d.    
+2022-06-04 16:22:31 ✨ Imported #67 (0x69d4…ad9c)    
+2022-06-04 16:22:32 ✨ Imported #68 (0x0a2e…d5e6)    
+2022-06-04 16:22:33 ✨ Imported #69 (0x469d…a710)    
+2022-06-04 16:22:33 💤 Idle (3 peers), best: #69 (0x469d…a710), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:22:34 ✨ Imported #70 (0x35e4…0f9d)    
+2022-06-04 16:22:35 🙌 Starting consensus session on top of parent 0x35e4aa22052d5e611fd694be7b2e0b4fdb25040ce63ff1fcd9a4bdcb66930f9d    
+2022-06-04 16:22:35 🎁 Prepared block for proposing at 71 (0 ms) [hash: 0x34da677ac46612442223e9f795fefe4622b66b633e1a16d1f30692290ae52e96; parent_hash: 0x35e4…0f9d; extrinsics (1): [0xf182…9efd]]    
+2022-06-04 16:22:35 🔖 Pre-sealed block for proposal at 71. Hash now 0x77a53e1e25c96e673b03d9c1757f8be1db0076e441f4ae4b101bbfde674e25df, previously 0x34da677ac46612442223e9f795fefe4622b66b633e1a16d1f30692290ae52e96.    
+2022-06-04 16:22:35 ✨ Imported #71 (0x77a5…25df)    
+2022-06-04 16:22:36 ✨ Imported #72 (0xcd2a…ecfd)    
+2022-06-04 16:22:37 ✨ Imported #73 (0xd5c4…c185)    
+2022-06-04 16:22:38 ✨ Imported #74 (0xd1c6…15fc)    
+2022-06-04 16:22:38 💤 Idle (3 peers), best: #74 (0xd1c6…15fc), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:22:39 🙌 Starting consensus session on top of parent 0xd1c642feed331eccba5209240d6468b8bdefccaaa18de64c19f6ac524d1f15fc    
+2022-06-04 16:22:39 🎁 Prepared block for proposing at 75 (0 ms) [hash: 0x9db732c8b97300882ff52ec6c46ff723b10e329ca5540ad71a85955a9bae2b4d; parent_hash: 0xd1c6…15fc; extrinsics (1): [0x7fbc…ad41]]    
+2022-06-04 16:22:39 🔖 Pre-sealed block for proposal at 75. Hash now 0x5d3b74fc70e7d8124d96aa1b8bae567eccde74343b3bfc289ac64f3e98e40829, previously 0x9db732c8b97300882ff52ec6c46ff723b10e329ca5540ad71a85955a9bae2b4d.    
+2022-06-04 16:22:39 ✨ Imported #75 (0x5d3b…0829)    
+2022-06-04 16:22:40 ✨ Imported #76 (0xfac9…cb7e)    
+2022-06-04 16:22:41 ✨ Imported #77 (0xf657…9419)    
+2022-06-04 16:22:42 ✨ Imported #78 (0x1358…d9b0)    
+2022-06-04 16:22:43 🙌 Starting consensus session on top of parent 0x1358e71786287dabfdfdbd59b48d024f96b8c16ba9f063ac2e39218f2d92d9b0    
+2022-06-04 16:22:43 🎁 Prepared block for proposing at 79 (0 ms) [hash: 0xd2a151d54418c7263a27e8f6f6792bff59379e5adad42430277f4824ad267f88; parent_hash: 0x1358…d9b0; extrinsics (1): [0x8c14…eb41]]    
+2022-06-04 16:22:43 🔖 Pre-sealed block for proposal at 79. Hash now 0x22596fbdc1f00e46e143b6cde5c022e1207e5cf8596ffc98351bb1ccbf689926, previously 0xd2a151d54418c7263a27e8f6f6792bff59379e5adad42430277f4824ad267f88.    
+2022-06-04 16:22:43 ✨ Imported #79 (0x2259…9926)    
+2022-06-04 16:22:43 💤 Idle (3 peers), best: #79 (0x2259…9926), finalized #0 (0xfc2e…9e9f), ⬇ 0.9kiB/s ⬆ 1.2kiB/s    
+2022-06-04 16:22:44 ✨ Imported #80 (0x02a2…7e72)    
+2022-06-04 16:22:45 ✨ Imported #81 (0x1f6e…f965)    
+2022-06-04 16:22:46 ✨ Imported #82 (0xaacc…5090)    
+2022-06-04 16:22:47 🙌 Starting consensus session on top of parent 0xaacc180896204011698b40396115f58871569d9a053c3ff293a1bd5b191b5090    
+2022-06-04 16:22:47 🎁 Prepared block for proposing at 83 (0 ms) [hash: 0x2b6e61ab6cb0d1d8f141cf07cb59a54c92df87d8852b9d3ec4763ca7f4df09dc; parent_hash: 0xaacc…5090; extrinsics (1): [0x95a2…8cf9]]    
+2022-06-04 16:22:47 🔖 Pre-sealed block for proposal at 83. Hash now 0x703c6f51c7b80038ebfd2aad9142514fa7a23e05d23793d533d6d83f8ce20c7e, previously 0x2b6e61ab6cb0d1d8f141cf07cb59a54c92df87d8852b9d3ec4763ca7f4df09dc.    
+2022-06-04 16:22:47 ✨ Imported #83 (0x703c…0c7e)    
+2022-06-04 16:22:48 ✨ Imported #84 (0xc955…1ba3)    
+2022-06-04 16:22:48 💤 Idle (3 peers), best: #84 (0xc955…1ba3), finalized #0 (0xfc2e…9e9f), ⬇ 1.2kiB/s ⬆ 1.0kiB/s    
+2022-06-04 16:22:49 ✨ Imported #85 (0xc143…19c3)    
+2022-06-04 16:22:50 ✨ Imported #86 (0xbe14…70fa)    
+2022-06-04 16:22:51 🙌 Starting consensus session on top of parent 0xbe146755f18c67f12ea87a8cc93123c42b3abd3d7cb2c469e55c8d0573a070fa    
+2022-06-04 16:22:51 🎁 Prepared block for proposing at 87 (0 ms) [hash: 0xfab5088594aff716ea66a4ce9b74f6cadbf8e91145df3e6e741a6200a81b979e; parent_hash: 0xbe14…70fa; extrinsics (1): [0xf19f…3072]]    
+2022-06-04 16:22:51 🔖 Pre-sealed block for proposal at 87. Hash now 0x4f6403d8c0b8dd6930c6ba1172a95faf4862a7f61fa84f0b7f4b1f341c2b050d, previously 0xfab5088594aff716ea66a4ce9b74f6cadbf8e91145df3e6e741a6200a81b979e.    
+2022-06-04 16:22:51 ✨ Imported #87 (0x4f64…050d)    
+2022-06-04 16:22:52 ✨ Imported #88 (0xfa09…e8e1)    
+2022-06-04 16:22:53 ✨ Imported #89 (0x3409…a782)    
+2022-06-04 16:22:53 💤 Idle (3 peers), best: #89 (0x3409…a782), finalized #0 (0xfc2e…9e9f), ⬇ 1.1kiB/s ⬆ 0.9kiB/s    
+2022-06-04 16:22:54 ✨ Imported #90 (0xffc8…62f3)    
+2022-06-04 16:22:55 🙌 Starting consensus session on top of parent 0xffc8eee8923b93cdb830d2ef9b5befda867f59a8ed87c6810a8c3659d5a462f3    
+2022-06-04 16:22:55 🎁 Prepared block for proposing at 91 (0 ms) [hash: 0x2492780f0e970ec5f003927422a133420f630557a4695f0505548bf0ed244d85; parent_hash: 0xffc8…62f3; extrinsics (1): [0x64b3…0c9a]]    
+2022-06-04 16:22:55 🔖 Pre-sealed block for proposal at 91. Hash now 0x287019ef57d4e6e8380a432cacab6a28f34d2827ac0f368f4befe6055dc3c84d, previously 0x2492780f0e970ec5f003927422a133420f630557a4695f0505548bf0ed244d85.    
+2022-06-04 16:22:55 ✨ Imported #91 (0x2870…c84d)    
+2022-06-04 16:22:56 ✨ Imported #92 (0x84a9…081c)    
+2022-06-04 16:22:57 ✨ Imported #93 (0x850b…3f87)    
+2022-06-04 16:22:58 ✨ Imported #94 (0x10ee…09c8)    
+2022-06-04 16:22:58 💤 Idle (3 peers), best: #94 (0x10ee…09c8), finalized #0 (0xfc2e…9e9f), ⬇ 2.4kiB/s ⬆ 2.4kiB/s    
+2022-06-04 16:22:59 🙌 Starting consensus session on top of parent 0x10ee7809069aa23f5006048718dc38cc41cc3aae7969901d045647f9d2cf09c8    
+2022-06-04 16:22:59 🎁 Prepared block for proposing at 95 (0 ms) [hash: 0x844a18f3788dd2c406cc5b8ab56bd51f1bd9b5340c62e6fafc5a19fa4400d68b; parent_hash: 0x10ee…09c8; extrinsics (1): [0x83b5…f6aa]]    
+2022-06-04 16:22:59 🔖 Pre-sealed block for proposal at 95. Hash now 0xa117381d6573c333d15e71aabe0d280a0ef41444d8dc0f462fac4274d6d4ec39, previously 0x844a18f3788dd2c406cc5b8ab56bd51f1bd9b5340c62e6fafc5a19fa4400d68b.    
+2022-06-04 16:22:59 ✨ Imported #95 (0xa117…ec39)    
+2022-06-04 16:23:00 ✨ Imported #96 (0x78ac…b08d)    
+2022-06-04 16:23:01 ✨ Imported #97 (0x3deb…8d8a)    
+2022-06-04 16:23:02 ✨ Imported #98 (0x0f25…4e34)    
+2022-06-04 16:23:03 🙌 Starting consensus session on top of parent 0x0f251e8c2248db86c72000a67f9c334c1bc0506185b67843f73014f061a64e34    
+2022-06-04 16:23:03 🎁 Prepared block for proposing at 99 (0 ms) [hash: 0x91b561a52f8d1e0ae37fb5c048ff7372586245575b21c8d87f76bb1af34e3d66; parent_hash: 0x0f25…4e34; extrinsics (1): [0xd2ab…30ed]]    
+2022-06-04 16:23:03 🔖 Pre-sealed block for proposal at 99. Hash now 0x95bab021e2f7fa22b78f054efa1df03fdc35bd7f88e82bfa69e4f0c27dcc0722, previously 0x91b561a52f8d1e0ae37fb5c048ff7372586245575b21c8d87f76bb1af34e3d66.    
+2022-06-04 16:23:03 ✨ Imported #99 (0x95ba…0722)    
+2022-06-04 16:23:03 💤 Idle (3 peers), best: #99 (0x95ba…0722), finalized #0 (0xfc2e…9e9f), ⬇ 0.8kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:23:04 ✨ Imported #100 (0x4926…9f5a)    
+2022-06-04 16:23:05 ✨ Imported #101 (0x7b68…387f)    
+2022-06-04 16:23:06 ✨ Imported #102 (0x96dc…1d84)    
+2022-06-04 16:23:07 🙌 Starting consensus session on top of parent 0x96dc0ed1a5397c06e03c6f4ef26272e737147e93b78eb2e9691304cb26fd1d84    
+2022-06-04 16:23:07 🎁 Prepared block for proposing at 103 (0 ms) [hash: 0x131042c1708602cc6d558c57e4be9c1e6ed2b5177e6619e79206ac7f9f547760; parent_hash: 0x96dc…1d84; extrinsics (1): [0x744d…404a]]    
+2022-06-04 16:23:07 🔖 Pre-sealed block for proposal at 103. Hash now 0xa4d789113273641b2ac5a1da2f472e5576b90b4e33111130b51aa06cd99ec4e2, previously 0x131042c1708602cc6d558c57e4be9c1e6ed2b5177e6619e79206ac7f9f547760.    
+2022-06-04 16:23:07 ✨ Imported #103 (0xa4d7…c4e2)    
+2022-06-04 16:23:08 ✨ Imported #104 (0x2ea8…097a)    
+2022-06-04 16:23:08 💤 Idle (3 peers), best: #104 (0x2ea8…097a), finalized #0 (0xfc2e…9e9f), ⬇ 1.2kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:23:09 ✨ Imported #105 (0xcc0d…854b)    
+2022-06-04 16:23:10 ✨ Imported #106 (0xfeb2…a025)    
+2022-06-04 16:23:11 🙌 Starting consensus session on top of parent 0xfeb24c1dad8e326bebafc19375db25e4d93edaaec132f6b33e31c0329be1a025    
+2022-06-04 16:23:11 🎁 Prepared block for proposing at 107 (0 ms) [hash: 0x52c6e1fe3128d93a44e8e0690c63eb9e81ea11e2768176fc7a6f456c5be6a2c9; parent_hash: 0xfeb2…a025; extrinsics (1): [0xff6f…517a]]    
+2022-06-04 16:23:11 🔖 Pre-sealed block for proposal at 107. Hash now 0x36b632fabff7e5a22058b8d0307bbcf3f517e1cd5d78031353b34e7a350b71cc, previously 0x52c6e1fe3128d93a44e8e0690c63eb9e81ea11e2768176fc7a6f456c5be6a2c9.    
+2022-06-04 16:23:11 ✨ Imported #107 (0x36b6…71cc)    
+2022-06-04 16:23:12 ✨ Imported #108 (0x6965…bd5d)    
+2022-06-04 16:23:13 ✨ Imported #109 (0x856c…202f)    
+2022-06-04 16:23:13 💤 Idle (3 peers), best: #109 (0x856c…202f), finalized #0 (0xfc2e…9e9f), ⬇ 1.3kiB/s ⬆ 1.1kiB/s    
+2022-06-04 16:23:14 ✨ Imported #110 (0xd09a…8e15)    
+2022-06-04 16:23:15 🙌 Starting consensus session on top of parent 0xd09a0df05836c37c357e8d0342de06e3eb03e2adbd43b9e04603780829a38e15    
+2022-06-04 16:23:15 🎁 Prepared block for proposing at 111 (0 ms) [hash: 0x69fd4927610072a7df19ec8ec236eb41a47f362e3439fb611c652603d7b9c4b2; parent_hash: 0xd09a…8e15; extrinsics (1): [0x8b6e…74b4]]    
+2022-06-04 16:23:15 🔖 Pre-sealed block for proposal at 111. Hash now 0xcab04e48afc95ab0755428a9d0b2de73f3db0650f1b6b6d3488745696a1828eb, previously 0x69fd4927610072a7df19ec8ec236eb41a47f362e3439fb611c652603d7b9c4b2.    
+2022-06-04 16:23:15 ✨ Imported #111 (0xcab0…28eb)    
+2022-06-04 16:23:16 ✨ Imported #112 (0xd798…f904)    
+2022-06-04 16:23:17 ✨ Imported #113 (0xd241…d960)    
+2022-06-04 16:23:18 ✨ Imported #114 (0x7b30…dcab)    
+2022-06-04 16:23:18 💤 Idle (3 peers), best: #114 (0x7b30…dcab), finalized #0 (0xfc2e…9e9f), ⬇ 0.9kiB/s ⬆ 0.9kiB/s    
+2022-06-04 16:23:19 🙌 Starting consensus session on top of parent 0x7b30034053c49f576ad066a5d07a842b6ed88bebb4f8bf05c6563b36e67bdcab    
+2022-06-04 16:23:19 🎁 Prepared block for proposing at 115 (0 ms) [hash: 0x404500ddec08231808103ddae4925fb7f535bc2b48ecdef2f452dcb8e720838b; parent_hash: 0x7b30…dcab; extrinsics (1): [0x4732…3a8d]]    
+2022-06-04 16:23:19 🔖 Pre-sealed block for proposal at 115. Hash now 0x664e8eb11985e404c58517c1e04b5715afeb122476a44e1553c565e8c0194ae7, previously 0x404500ddec08231808103ddae4925fb7f535bc2b48ecdef2f452dcb8e720838b.    
+2022-06-04 16:23:19 ✨ Imported #115 (0x664e…4ae7)    
+2022-06-04 16:23:20 ✨ Imported #116 (0x5413…e3a5)    
+2022-06-04 16:23:21 ✨ Imported #117 (0x250a…0441)    
+2022-06-04 16:23:22 ✨ Imported #118 (0x582e…801d)    
+2022-06-04 16:23:23 🙌 Starting consensus session on top of parent 0x582e3359405ad07d226b1225ba2359984df91739163fb8b162050b3728ac801d    
+2022-06-04 16:23:23 🎁 Prepared block for proposing at 119 (0 ms) [hash: 0x77f28f2f799846bb955f0be60d75ea9a58acad81b3989bd6ced2c139b32e3f08; parent_hash: 0x582e…801d; extrinsics (1): [0xdc41…099e]]    
+2022-06-04 16:23:23 🔖 Pre-sealed block for proposal at 119. Hash now 0x279a9096c2dd4baf1f1b0db816fb51e26de6ef8bd0ca0bba36bda12b77bb21cf, previously 0x77f28f2f799846bb955f0be60d75ea9a58acad81b3989bd6ced2c139b32e3f08.    
+2022-06-04 16:23:23 ✨ Imported #119 (0x279a…21cf)    
+2022-06-04 16:23:23 💤 Idle (3 peers), best: #119 (0x279a…21cf), finalized #0 (0xfc2e…9e9f), ⬇ 1.0kiB/s ⬆ 1.3kiB/s    
+2022-06-04 16:23:24 ✨ Imported #120 (0x3009…45ff)    
+2022-06-04 16:23:25 ✨ Imported #121 (0xc92a…d328)    
+2022-06-04 16:23:26 ✨ Imported #122 (0x6008…c42d)    
+2022-06-04 16:23:27 🙌 Starting consensus session on top of parent 0x6008b27c047b76dc357881dad30bb498e61f9dac85687326d498e8a45a82c42d    
+2022-06-04 16:23:27 🎁 Prepared block for proposing at 123 (1 ms) [hash: 0x7656cccd610200b411194f6c6b97c755c8f32a3960f2f0bc35ca33cd66feedd9; parent_hash: 0x6008…c42d; extrinsics (1): [0x85aa…2539]]    
+2022-06-04 16:23:27 🔖 Pre-sealed block for proposal at 123. Hash now 0x2648a0fe93ada1c702ac9e28709b67fdbdd92c07f826dcdf5e3282f0efaec3a5, previously 0x7656cccd610200b411194f6c6b97c755c8f32a3960f2f0bc35ca33cd66feedd9.    
+2022-06-04 16:23:27 ✨ Imported #123 (0x2648…c3a5)    
+2022-06-04 16:23:27 received next round from unit collection: 0    
+2022-06-04 16:23:28 ✨ Imported #124 (0xcd10…5941)    
+2022-06-04 16:23:28 💤 Idle (3 peers), best: #124 (0xcd10…5941), finalized #0 (0xfc2e…9e9f), ⬇ 1.6kiB/s ⬆ 1.6kiB/s    
+2022-06-04 16:23:29 ✨ Imported #125 (0x7fd1…95a6)    
+2022-06-04 16:23:30 ✨ Imported #126 (0x6de1…8ecc)    
+2022-06-04 16:23:31 🙌 Starting consensus session on top of parent 0x6de1c29387acaaf76535ff5cc06f295d98f973c6b07944fc7da31219d8bd8ecc    
+2022-06-04 16:23:31 🎁 Prepared block for proposing at 127 (0 ms) [hash: 0x5fe579bfc61c6117deb18e9c2cc7310a94d76f98593f22c3c11555eb1cfa1ad2; parent_hash: 0x6de1…8ecc; extrinsics (1): [0x5e30…26fc]]    
+2022-06-04 16:23:31 🔖 Pre-sealed block for proposal at 127. Hash now 0x9b79a698ae229614c7cc6feaae00ef41f7db8d0b76243b23dc748aae1bd2539e, previously 0x5fe579bfc61c6117deb18e9c2cc7310a94d76f98593f22c3c11555eb1cfa1ad2.    
+2022-06-04 16:23:31 ✨ Imported #127 (0x9b79…539e)    
+2022-06-04 16:23:32 ✨ Imported #128 (0x3351…a528)    
+2022-06-04 16:23:33 ✨ Imported #129 (0x7aeb…6ba8)    
+2022-06-04 16:23:33 💤 Idle (3 peers), best: #129 (0x7aeb…6ba8), finalized #7 (0x8826…c251), ⬇ 3.5kiB/s ⬆ 3.5kiB/s    
+2022-06-04 16:23:34 ✨ Imported #130 (0xc366…7e03)    
+2022-06-04 16:23:35 🙌 Starting consensus session on top of parent 0xc3669854a7e778f6e9370c0922b0b2aa48887e27b50c45d47f1042452d297e03    
+2022-06-04 16:23:35 🎁 Prepared block for proposing at 131 (0 ms) [hash: 0x4dca04d28dd1ca08f69fafe2dfcde9b9c594afa63580435d218d913590c23470; parent_hash: 0xc366…7e03; extrinsics (1): [0x9612…f9b4]]    
+2022-06-04 16:23:35 🔖 Pre-sealed block for proposal at 131. Hash now 0x900dd5231546908f65e9f30ccebf2d486f26194ee4524b49554fac67ac555451, previously 0x4dca04d28dd1ca08f69fafe2dfcde9b9c594afa63580435d218d913590c23470.    
+2022-06-04 16:23:35 ✨ Imported #131 (0x900d…5451)    
+2022-06-04 16:23:36 ✨ Imported #132 (0x3843…2dcb)    
+2022-06-04 16:23:37 ✨ Imported #133 (0x8e2f…023f)    
+2022-06-04 16:23:38 ✨ Imported #134 (0x58dc…a713)    
+2022-06-04 16:23:38 💤 Idle (3 peers), best: #134 (0x58dc…a713), finalized #21 (0x1e01…0aef), ⬇ 7.8kiB/s ⬆ 7.9kiB/s    
+2022-06-04 16:23:39 🙌 Starting consensus session on top of parent 0x58dce1ee27b77e52acfce7add59e9302cc99c23dc9b25b61a73600538565a713    
+2022-06-04 16:23:39 🎁 Prepared block for proposing at 135 (0 ms) [hash: 0x9ed8eae21b93830178a1bdc1e13a010db51d2866c6a51dc3c870e5456a8e9212; parent_hash: 0x58dc…a713; extrinsics (1): [0x9551…6f07]]    
+2022-06-04 16:23:39 🔖 Pre-sealed block for proposal at 135. Hash now 0x54210dbd9e83e078e20f7604a5193890d53fd40038a6d81345435e1ef0399cf3, previously 0x9ed8eae21b93830178a1bdc1e13a010db51d2866c6a51dc3c870e5456a8e9212.    
+2022-06-04 16:23:39 ✨ Imported #135 (0x5421…9cf3)    
+2022-06-04 16:23:40 ✨ Imported #136 (0x473e…4418)    
+2022-06-04 16:23:41 ✨ Imported #137 (0xcb64…f1e3)    
+2022-06-04 16:23:42 ✨ Imported #138 (0xd9ec…8403)    
+2022-06-04 16:23:43 🙌 Starting consensus session on top of parent 0xd9ec7cce7b580843093f72b33cb26497a5c81bbde79bf802d6e44fdca3bd8403    
+2022-06-04 16:23:43 🎁 Prepared block for proposing at 139 (0 ms) [hash: 0xa68de07830c86d2e07495dcdcb6ecb89faf3053b8c525546c95fa948f2c82a91; parent_hash: 0xd9ec…8403; extrinsics (1): [0x0cef…a77a]]    
+2022-06-04 16:23:43 🔖 Pre-sealed block for proposal at 139. Hash now 0x33968756163d38ed4644605f13682b1da0b1b972de495487159038ec54f9cf47, previously 0xa68de07830c86d2e07495dcdcb6ecb89faf3053b8c525546c95fa948f2c82a91.    
+2022-06-04 16:23:43 ✨ Imported #139 (0x3396…cf47)    
+2022-06-04 16:23:43 💤 Idle (3 peers), best: #139 (0x3396…cf47), finalized #35 (0x183c…d927), ⬇ 8.8kiB/s ⬆ 9.2kiB/s    
+2022-06-04 16:23:44 ✨ Imported #140 (0x7499…5cb3)    
+2022-06-04 16:23:45 ✨ Imported #141 (0x6655…4bb7)    
+2022-06-04 16:23:46 ✨ Imported #142 (0xb755…b68f)    
+2022-06-04 16:23:47 🙌 Starting consensus session on top of parent 0xb75520c12340734d48d10beea4cc77faad27de45c10e836e913d055d7ba1b68f    
+2022-06-04 16:23:47 🎁 Prepared block for proposing at 143 (0 ms) [hash: 0x7afa44e9cfea4290edf19e14eb3cf158fc11f96b200a9486f779818d2eed4d91; parent_hash: 0xb755…b68f; extrinsics (1): [0x595e…8057]]    
+2022-06-04 16:23:47 🔖 Pre-sealed block for proposal at 143. Hash now 0x5ba448e1a126abb82a2bba9d9fe80f5ac7c11593119115bc24b4d79d49e91bcd, previously 0x7afa44e9cfea4290edf19e14eb3cf158fc11f96b200a9486f779818d2eed4d91.    
+2022-06-04 16:23:47 ✨ Imported #143 (0x5ba4…1bcd)    
+2022-06-04 16:23:48 ✨ Imported #144 (0x06f9…7edf)    
+2022-06-04 16:23:48 💤 Idle (3 peers), best: #144 (0x06f9…7edf), finalized #56 (0x1d7b…a5b6), ⬇ 11.2kiB/s ⬆ 11.0kiB/s    
+2022-06-04 16:23:49 ✨ Imported #145 (0x8b27…61ad)    
+2022-06-04 16:23:50 ✨ Imported #146 (0x4c11…4ec7)    
+2022-06-04 16:23:51 🙌 Starting consensus session on top of parent 0x4c110e6abe1d7e635ddeb6bd50ab4895fe23e6dd95e57152ab2e79b001bf4ec7    
+2022-06-04 16:23:51 🎁 Prepared block for proposing at 147 (0 ms) [hash: 0x75d1c9de9498337a0c6f42104c246914033dcded8c4874e7005a53a0c1b17ec5; parent_hash: 0x4c11…4ec7; extrinsics (1): [0x23a8…5730]]    
+2022-06-04 16:23:51 🔖 Pre-sealed block for proposal at 147. Hash now 0x50f12e50f4c81b693f8f0d3c03180ab5753f584313d45f1112039a670eb313e1, previously 0x75d1c9de9498337a0c6f42104c246914033dcded8c4874e7005a53a0c1b17ec5.    
+2022-06-04 16:23:51 ✨ Imported #147 (0x50f1…13e1)    
+2022-06-04 16:23:52 ✨ Imported #148 (0xa7f6…812f)    
+2022-06-04 16:23:53 ✨ Imported #149 (0xfc69…cf85)    
+2022-06-04 16:23:53 💤 Idle (3 peers), best: #149 (0xfc69…cf85), finalized #70 (0x35e4…0f9d), ⬇ 10.6kiB/s ⬆ 10.6kiB/s    
+2022-06-04 16:23:54 ✨ Imported #150 (0x1b1e…782b)    
+2022-06-04 16:23:55 🙌 Starting consensus session on top of parent 0x1b1e3a4764d13a8e158944becd146081b33c316664262e032935762fa600782b    
+2022-06-04 16:23:55 🎁 Prepared block for proposing at 151 (0 ms) [hash: 0x420286c7a2e40e6b4d6c28ccdc99308ef376e0744e0c0ea15ef60f16c097d56b; parent_hash: 0x1b1e…782b; extrinsics (1): [0x3ffe…f2e2]]    
+2022-06-04 16:23:55 🔖 Pre-sealed block for proposal at 151. Hash now 0x267ca71cccb884f275fc9180c0da8b961c85255318f9ec14c65f99597cd8d530, previously 0x420286c7a2e40e6b4d6c28ccdc99308ef376e0744e0c0ea15ef60f16c097d56b.    
+2022-06-04 16:23:55 ✨ Imported #151 (0x267c…d530)    
+2022-06-04 16:23:56 ✨ Imported #152 (0xc6f6…3c95)    
+2022-06-04 16:23:57 ✨ Imported #153 (0x5dff…6709)    
+2022-06-04 16:23:58 ✨ Imported #154 (0xd32c…ad51)    
+2022-06-04 16:23:58 💤 Idle (3 peers), best: #154 (0xd32c…ad51), finalized #84 (0xc955…1ba3), ⬇ 11.6kiB/s ⬆ 11.9kiB/s    
+2022-06-04 16:23:59 🙌 Starting consensus session on top of parent 0xd32cca2501b6de6b1f2c0a8db1fd4cb47dfbb8d062869468e3d2bde1f630ad51    
+2022-06-04 16:23:59 🎁 Prepared block for proposing at 155 (0 ms) [hash: 0x01feea0bcc637274e31318fcba54863c9ee0be767f230ecaaaa9d92284726228; parent_hash: 0xd32c…ad51; extrinsics (1): [0x050a…d757]]    
+2022-06-04 16:23:59 🔖 Pre-sealed block for proposal at 155. Hash now 0x2e8c927b9155923b108e6e5dc0c412210f4d1d4e7b117ab7e8b355446ac31b16, previously 0x01feea0bcc637274e31318fcba54863c9ee0be767f230ecaaaa9d92284726228.    
+2022-06-04 16:23:59 ✨ Imported #155 (0x2e8c…1b16)    
+2022-06-04 16:24:00 ✨ Imported #156 (0xe7b1…b567)    
+2022-06-04 16:24:01 ✨ Imported #157 (0xc13e…944b)    
+2022-06-04 16:24:02 ✨ Imported #158 (0x1327…adda)    
+2022-06-04 16:24:03 🙌 Starting consensus session on top of parent 0x1327207c578b60b73101bcdfbab7d22a960485d202c2932fe4e56cb37606adda    
+2022-06-04 16:24:03 🎁 Prepared block for proposing at 159 (0 ms) [hash: 0xa6b3a3b4440cacbd28814647eaad268f95ee4950e9591f6b0ac1b84d4f495cef; parent_hash: 0x1327…adda; extrinsics (1): [0x07c6…7ea2]]    
+2022-06-04 16:24:03 🔖 Pre-sealed block for proposal at 159. Hash now 0x166b2f19749c85300e4a4cc3258e467b207f6f25416ec3a6c2b0b6bd93ebd9d3, previously 0xa6b3a3b4440cacbd28814647eaad268f95ee4950e9591f6b0ac1b84d4f495cef.    
+2022-06-04 16:24:03 ✨ Imported #159 (0x166b…d9d3)    
+2022-06-04 16:24:03 💤 Idle (3 peers), best: #159 (0x166b…d9d3), finalized #98 (0x0f25…4e34), ⬇ 13.0kiB/s ⬆ 13.3kiB/s    
+2022-06-04 16:24:04 ✨ Imported #160 (0xe51d…e6b9)    
+2022-06-04 16:24:05 ✨ Imported #161 (0xace6…7eb3)    
+2022-06-04 16:24:06 ✨ Imported #162 (0x216f…e102)    
+2022-06-04 16:24:07 🙌 Starting consensus session on top of parent 0x216f9bc240752ca479e69e540eccae3f7d96e8cbe50dc78ab91319cc427be102    
+2022-06-04 16:24:07 🎁 Prepared block for proposing at 163 (0 ms) [hash: 0x79077536e5046d3312cdd27d49734f53a67c4295d39760db0f50862a7bebb6bd; parent_hash: 0x216f…e102; extrinsics (1): [0xfc22…8249]]    
+2022-06-04 16:24:07 🔖 Pre-sealed block for proposal at 163. Hash now 0x6d7c448b51e1cb4b870acd40fcf779e61b9050d28a237840e4c7422ff9f61c0a, previously 0x79077536e5046d3312cdd27d49734f53a67c4295d39760db0f50862a7bebb6bd.    
+2022-06-04 16:24:07 ✨ Imported #163 (0x6d7c…1c0a)    
+2022-06-04 16:24:08 ✨ Imported #164 (0x84ec…be80)    
+2022-06-04 16:24:08 💤 Idle (3 peers), best: #164 (0x84ec…be80), finalized #112 (0xd798…f904), ⬇ 13.6kiB/s ⬆ 13.7kiB/s    
+2022-06-04 16:24:09 ✨ Imported #165 (0x42d0…c961)    
+2022-06-04 16:24:10 ✨ Imported #166 (0x6941…56c5)    
+2022-06-04 16:24:11 🙌 Starting consensus session on top of parent 0x69412e69feec8f3ac6e5989869d786ad846e759738dbc515c96179e9a7cd56c5    
+2022-06-04 16:24:11 🎁 Prepared block for proposing at 167 (0 ms) [hash: 0x47c08dc42ebd7d52fce01b1cc82918dd10486bff544510c58f841697d24269f7; parent_hash: 0x6941…56c5; extrinsics (1): [0x4aec…2af1]]    
+2022-06-04 16:24:11 🔖 Pre-sealed block for proposal at 167. Hash now 0xa7f89d742af8024247f89b39676d31ac391da01082b76ea31e3b41e48119241b, previously 0x47c08dc42ebd7d52fce01b1cc82918dd10486bff544510c58f841697d24269f7.    
+2022-06-04 16:24:11 ✨ Imported #167 (0xa7f8…241b)    
+2022-06-04 16:24:12 ✨ Imported #168 (0xf6c6…1118)    
+2022-06-04 16:24:13 ✨ Imported #169 (0x29a5…1b4e)    
+2022-06-04 16:24:13 💤 Idle (3 peers), best: #169 (0x29a5…1b4e), finalized #126 (0x6de1…8ecc), ⬇ 13.6kiB/s ⬆ 13.6kiB/s    
+2022-06-04 16:24:14 ✨ Imported #170 (0xa459…4221)    
+2022-06-04 16:24:15 🙌 Starting consensus session on top of parent 0xa459aa5d9e8ebe7946fc822ab14bd8b44c7103a89a5a5e1666902f0568884221    
+2022-06-04 16:24:15 🎁 Prepared block for proposing at 171 (0 ms) [hash: 0xf8fcc329c6e618210757835bb5782bbe34177002e6705088c89d8d280fa80a6f; parent_hash: 0xa459…4221; extrinsics (1): [0x37ed…9e6e]]    
+2022-06-04 16:24:15 🔖 Pre-sealed block for proposal at 171. Hash now 0x4906b952114786b1db9d09c5014a2b15df8146415b7d57a10cc75116f9328057, previously 0xf8fcc329c6e618210757835bb5782bbe34177002e6705088c89d8d280fa80a6f.    
+2022-06-04 16:24:15 ✨ Imported #171 (0x4906…8057)    
+2022-06-04 16:24:16 ✨ Imported #172 (0x8501…866c)    
+2022-06-04 16:24:17 ✨ Imported #173 (0x0c35…25b0)    
+2022-06-04 16:24:18 ✨ Imported #174 (0x58c4…6147)    
+2022-06-04 16:24:18 💤 Idle (3 peers), best: #174 (0x58c4…6147), finalized #140 (0x7499…5cb3), ⬇ 13.3kiB/s ⬆ 13.3kiB/s    
+2022-06-04 16:24:19 🙌 Starting consensus session on top of parent 0x58c4305fdcad55206b8bb4ca0772b124d98104b3d8d901518df4844af5746147    
+2022-06-04 16:24:19 🎁 Prepared block for proposing at 175 (0 ms) [hash: 0x34e4084f120dd9ea8857ca0e27d1170892e77adecc2c81891a919d0d4c69d57b; parent_hash: 0x58c4…6147; extrinsics (1): [0xaeed…7940]]    
+2022-06-04 16:24:19 🔖 Pre-sealed block for proposal at 175. Hash now 0x7ec39ec21a0a93dad0659e4aecbdd48a06e861b547d2026bff7f3743b8f42cd4, previously 0x34e4084f120dd9ea8857ca0e27d1170892e77adecc2c81891a919d0d4c69d57b.    
+2022-06-04 16:24:19 ✨ Imported #175 (0x7ec3…2cd4)    
+2022-06-04 16:24:20 ✨ Imported #176 (0x2081…94fa)    
+2022-06-04 16:24:21 ✨ Imported #177 (0xdb86…07d5)    
+2022-06-04 16:24:22 ✨ Imported #178 (0xf406…1eb4)    
+2022-06-04 16:24:23 🙌 Starting consensus session on top of parent 0xf406003d8b7b7125c7e125986c9e839c60d4318dce1a4868cf736f76e93e1eb4    
+2022-06-04 16:24:23 🎁 Prepared block for proposing at 179 (0 ms) [hash: 0x9c3b2801f4288855291aa1abb928c6049cdeb6abb0e6461e0c150188f0d08ee0; parent_hash: 0xf406…1eb4; extrinsics (1): [0xb55d…10bd]]    
+2022-06-04 16:24:23 🔖 Pre-sealed block for proposal at 179. Hash now 0xc3735a59c9cea8b2740e4c196093fade0f0153c6a063590190d801eb773e970f, previously 0x9c3b2801f4288855291aa1abb928c6049cdeb6abb0e6461e0c150188f0d08ee0.    
+2022-06-04 16:24:23 ✨ Imported #179 (0xc373…970f)    
+2022-06-04 16:24:23 💤 Idle (3 peers), best: #179 (0xc373…970f), finalized #154 (0xd32c…ad51), ⬇ 13.2kiB/s ⬆ 13.5kiB/s    
+2022-06-04 16:24:24 ✨ Imported #180 (0xcf35…f744)    
+2022-06-04 16:24:25 ✨ Imported #181 (0xb50d…b233)    
+2022-06-04 16:24:26 ✨ Imported #182 (0xe50a…ff12)    
+2022-06-04 16:24:27 🙌 Starting consensus session on top of parent 0xe50ad2919e88f62503b1a2c6759d330dab5b71ef5010e3b35ef9eb5cf3beff12    
+2022-06-04 16:24:27 🎁 Prepared block for proposing at 183 (0 ms) [hash: 0x658b5f6354b700c124c73812e06533ce86bf0a03a07f4b6d98cc81413d8621d1; parent_hash: 0xe50a…ff12; extrinsics (1): [0x3cc4…b274]]    
+2022-06-04 16:24:27 🔖 Pre-sealed block for proposal at 183. Hash now 0x47070d1e19d87239d4afed9b66b916f0502df8aaa24d82524c5526f7a794a23b, previously 0x658b5f6354b700c124c73812e06533ce86bf0a03a07f4b6d98cc81413d8621d1.    
+2022-06-04 16:24:27 ✨ Imported #183 (0x4707…a23b)    
+2022-06-04 16:24:28 ✨ Imported #184 (0x8322…940b)    
+2022-06-04 16:24:28 💤 Idle (3 peers), best: #184 (0x8322…940b), finalized #168 (0xf6c6…1118), ⬇ 14.1kiB/s ⬆ 14.0kiB/s    
+2022-06-04 16:24:29 ✨ Imported #185 (0x68e1…0f3e)    
+2022-06-04 16:24:30 ✨ Imported #186 (0xa4b3…07fe)    
+2022-06-04 16:24:31 🙌 Starting consensus session on top of parent 0xa4b359e42ea1048e55a9aef30347a7e514dfc19cc951e56254c93ea771ee07fe    
+2022-06-04 16:24:31 🎁 Prepared block for proposing at 187 (0 ms) [hash: 0x3676b4b91b3b0b1ca77c68378f11971530a7d81ae221ca2207a99d6209d89935; parent_hash: 0xa4b3…07fe; extrinsics (1): [0x70e3…2a78]]    
+2022-06-04 16:24:31 🔖 Pre-sealed block for proposal at 187. Hash now 0x122cc3120fc5763623cead2d46e8b0d1b1f6837191b32ef870d799dee429f859, previously 0x3676b4b91b3b0b1ca77c68378f11971530a7d81ae221ca2207a99d6209d89935.    
+2022-06-04 16:24:31 ✨ Imported #187 (0x122c…f859)    
+2022-06-04 16:24:32 ✨ Imported #188 (0xe20e…853c)    
+2022-06-04 16:24:33 ✨ Imported #189 (0xb707…2b66)    
+2022-06-04 16:24:33 💤 Idle (3 peers), best: #189 (0xb707…2b66), finalized #182 (0xe50a…ff12), ⬇ 14.8kiB/s ⬆ 14.8kiB/s    
+2022-06-04 16:24:34 ✨ Imported #190 (0x9175…c56e)    
+2022-06-04 16:24:35 🙌 Starting consensus session on top of parent 0x917503d7505bfa0b41a02a210e5d43846e7a2e8287981ccca02a9d840b9cc56e    
+2022-06-04 16:24:35 🎁 Prepared block for proposing at 191 (0 ms) [hash: 0xd164da6beb3b41ea2450843adeaf49a8396e2940496238a62364991050193c0d; parent_hash: 0x9175…c56e; extrinsics (1): [0x8385…dd14]]    
+2022-06-04 16:24:35 🔖 Pre-sealed block for proposal at 191. Hash now 0x85e138bcd2bf099f9e1a03c1f3023cf04ae1a0d6ca4b1a04d2e9a72627b8034c, previously 0xd164da6beb3b41ea2450843adeaf49a8396e2940496238a62364991050193c0d.    
+2022-06-04 16:24:35 ✨ Imported #191 (0x85e1…034c)    
+2022-06-04 16:24:36 ✨ Imported #192 (0x6fd4…98b8)    
+2022-06-04 16:24:37 ✨ Imported #193 (0x6e8b…8d95)    
+2022-06-04 16:24:38 ✨ Imported #194 (0x145d…3003)    
+2022-06-04 16:24:38 💤 Idle (3 peers), best: #194 (0x145d…3003), finalized #192 (0x6fd4…98b8), ⬇ 17.4kiB/s ⬆ 17.5kiB/s    
+2022-06-04 16:24:39 🙌 Starting consensus session on top of parent 0x145d8bcdb062d6f7a4e1e260edbed05b73cb016130162198b61f8af6f4203003    
+2022-06-04 16:24:39 🎁 Prepared block for proposing at 195 (0 ms) [hash: 0xa3eba8bb41f9f9d1181073be0a19bf73947408b2f3772ce36c5672c940a812d3; parent_hash: 0x145d…3003; extrinsics (1): [0xd336…eb5b]]    
+2022-06-04 16:24:39 🔖 Pre-sealed block for proposal at 195. Hash now 0x068f45ca8a46bbd32faea59b147d74d43945ef6968ec3e5286ba32ae4b97d43c, previously 0xa3eba8bb41f9f9d1181073be0a19bf73947408b2f3772ce36c5672c940a812d3.    
+2022-06-04 16:24:39 ✨ Imported #195 (0x068f…d43c)    
+2022-06-04 16:24:40 ✨ Imported #196 (0x7d80…8281)    
+2022-06-04 16:24:41 ✨ Imported #197 (0x636b…05a2)    
+2022-06-04 16:24:42 ✨ Imported #198 (0x4a34…1d0f)    
+2022-06-04 16:24:43 🙌 Starting consensus session on top of parent 0x4a344e4e41cc2e3ef284408edfeb3c836abbf1d6209f8d4439db388d499d1d0f    
+2022-06-04 16:24:43 🎁 Prepared block for proposing at 199 (0 ms) [hash: 0x0abf83c06de6059ff8a4e4135aafecb011757d405959958e33a9da7f7cc3815b; parent_hash: 0x4a34…1d0f; extrinsics (1): [0xc6f5…d6fe]]    
+2022-06-04 16:24:43 🔖 Pre-sealed block for proposal at 199. Hash now 0xe4bbe2972f5cb90bc8e31e0b6bcdae549b20cf65d9a6f216c3ab8db3d53c5240, previously 0x0abf83c06de6059ff8a4e4135aafecb011757d405959958e33a9da7f7cc3815b.    
+2022-06-04 16:24:43 ✨ Imported #199 (0xe4bb…5240)    
+2022-06-04 16:24:43 💤 Idle (3 peers), best: #199 (0xe4bb…5240), finalized #197 (0x636b…05a2), ⬇ 18.0kiB/s ⬆ 18.3kiB/s    
+2022-06-04 16:24:44 ✨ Imported #200 (0x1114…352e)    
+2022-06-04 16:24:45 ✨ Imported #201 (0x1e1c…1315)    
+2022-06-04 16:24:46 ✨ Imported #202 (0xb9b6…3dac)    
+2022-06-04 16:24:47 🙌 Starting consensus session on top of parent 0xb9b6477ac4867bd7a14d0e6770353f7213acedc35edfddd42f974c3b3a3b3dac    
+2022-06-04 16:24:47 🎁 Prepared block for proposing at 203 (0 ms) [hash: 0x1cd25dbaea1aa05cd858413f3eb861ddbca2368071afb9c1a1c3234f110a0939; parent_hash: 0xb9b6…3dac; extrinsics (1): [0x3f39…7ede]]    
+2022-06-04 16:24:47 🔖 Pre-sealed block for proposal at 203. Hash now 0xf3a40b2fee7557972c515ba80f129c04b7c83c32e0dcde87c4a7c7fca05d9f7e, previously 0x1cd25dbaea1aa05cd858413f3eb861ddbca2368071afb9c1a1c3234f110a0939.    
+2022-06-04 16:24:47 ✨ Imported #203 (0xf3a4…9f7e)    
+2022-06-04 16:24:48 ✨ Imported #204 (0x6b6b…cdd2)    
+2022-06-04 16:24:48 💤 Idle (3 peers), best: #204 (0x6b6b…cdd2), finalized #202 (0xb9b6…3dac), ⬇ 18.0kiB/s ⬆ 18.1kiB/s    
+2022-06-04 16:24:49 ✨ Imported #205 (0x746c…81ff)    
+2022-06-04 16:24:50 ✨ Imported #206 (0x5c79…bbaa)    
+2022-06-04 16:24:51 🙌 Starting consensus session on top of parent 0x5c79ba04aef392c7810ec67b02084ac409e49d0abc60277f8c6b5f75ef95bbaa    
+2022-06-04 16:24:51 🎁 Prepared block for proposing at 207 (0 ms) [hash: 0xe07ba22f189833bde85f2e53ab11998bfa27c1a6a94134b1ad6f454362e29dfc; parent_hash: 0x5c79…bbaa; extrinsics (1): [0x49c2…579f]]    
+2022-06-04 16:24:51 🔖 Pre-sealed block for proposal at 207. Hash now 0x97393e866da0a0fd2908683d802386ad33e949214121ffdced555f0f30dae385, previously 0xe07ba22f189833bde85f2e53ab11998bfa27c1a6a94134b1ad6f454362e29dfc.    
+2022-06-04 16:24:51 ✨ Imported #207 (0x9739…e385)    
+2022-06-04 16:24:52 ✨ Imported #208 (0x3b97…e8d4)    
+2022-06-04 16:24:53 ✨ Imported #209 (0x7043…b76a)    
+2022-06-04 16:24:53 💤 Idle (3 peers), best: #209 (0x7043…b76a), finalized #207 (0x9739…e385), ⬇ 17.6kiB/s ⬆ 17.8kiB/s    
+2022-06-04 16:24:54 ✨ Imported #210 (0x3ca4…0f52)    
+2022-06-04 16:24:55 🙌 Starting consensus session on top of parent 0x3ca4bd43e008ad681791079703c634519d2301ac71652be088967dde169a0f52    
+2022-06-04 16:24:55 🎁 Prepared block for proposing at 211 (0 ms) [hash: 0x529c8d6bd60a6c917fe73bbc75c6c01e67d4c7e40e80c17c7c603b47dc3bdc07; parent_hash: 0x3ca4…0f52; extrinsics (1): [0x7d33…bc4d]]    
+2022-06-04 16:24:55 🔖 Pre-sealed block for proposal at 211. Hash now 0x0780849f5c811543eb660264a0b515dfd4a27a5e06a48b71aac00a952d3744cb, previously 0x529c8d6bd60a6c917fe73bbc75c6c01e67d4c7e40e80c17c7c603b47dc3bdc07.    
+2022-06-04 16:24:55 ✨ Imported #211 (0x0780…44cb)    
+2022-06-04 16:24:56 ✨ Imported #212 (0xd66b…335f)    
+2022-06-04 16:24:57 ✨ Imported #213 (0xcf00…0e9b)    
+2022-06-04 16:24:58 ✨ Imported #214 (0xcabb…43e2)    
+2022-06-04 16:24:58 💤 Idle (3 peers), best: #214 (0xcabb…43e2), finalized #212 (0xd66b…335f), ⬇ 18.3kiB/s ⬆ 18.2kiB/s    
+2022-06-04 16:24:59 🙌 Starting consensus session on top of parent 0xcabb67691c5f1280c427e06d97dc6e1c1e777ca3e5f9bd07173daefee98443e2    
+2022-06-04 16:24:59 🎁 Prepared block for proposing at 215 (0 ms) [hash: 0xb3736a46474a4a72947dc77ca262412ffe132c563f271a05326223f07e496ab9; parent_hash: 0xcabb…43e2; extrinsics (1): [0x0d39…0e13]]    
+2022-06-04 16:24:59 🔖 Pre-sealed block for proposal at 215. Hash now 0xd3b8ca1374d7490f5c079678961b86846e7229cca317d77d0d8ccb8dfbef4fdd, previously 0xb3736a46474a4a72947dc77ca262412ffe132c563f271a05326223f07e496ab9.    
+2022-06-04 16:24:59 ✨ Imported #215 (0xd3b8…4fdd)    
+2022-06-04 16:25:00 ✨ Imported #216 (0xbaca…e330)    
+2022-06-04 16:25:01 ✨ Imported #217 (0x59e1…16b4)    
+2022-06-04 16:25:02 ✨ Imported #218 (0x7133…e6d6)    
+2022-06-04 16:25:03 🙌 Starting consensus session on top of parent 0x71334b8a305b223a23da94f6bb4af68e82ec9a169ca0d74692c3b68f5fa0e6d6    
+2022-06-04 16:25:03 🎁 Prepared block for proposing at 219 (0 ms) [hash: 0xeb8e97e391ead187a9206b4284ee7f8a18083ab2f0bc0de299832b48ba3091ec; parent_hash: 0x7133…e6d6; extrinsics (1): [0xa1b0…fb93]]    
+2022-06-04 16:25:03 🔖 Pre-sealed block for proposal at 219. Hash now 0xc8a7234b8828fc12a58459da18cc003d205d96686e0af01bde8e8f58fac8e96e, previously 0xeb8e97e391ead187a9206b4284ee7f8a18083ab2f0bc0de299832b48ba3091ec.    
+2022-06-04 16:25:03 ✨ Imported #219 (0xc8a7…e96e)    
+2022-06-04 16:25:03 💤 Idle (3 peers), best: #219 (0xc8a7…e96e), finalized #217 (0x59e1…16b4), ⬇ 17.6kiB/s ⬆ 17.9kiB/s    
+2022-06-04 16:25:04 ✨ Imported #220 (0xf808…2de8)    
+2022-06-04 16:25:05 ✨ Imported #221 (0x239b…ba44)    
+2022-06-04 16:25:06 ✨ Imported #222 (0xe008…5591)    
+2022-06-04 16:25:07 🙌 Starting consensus session on top of parent 0xe0080c1b726c1c9554799305946da85eb3187da733471279a4aec316d9f25591    
+2022-06-04 16:25:07 🎁 Prepared block for proposing at 223 (0 ms) [hash: 0xaf8a4477d4508302b96ae05df73e9b69583075571e993fd3fa28233baa3ed300; parent_hash: 0xe008…5591; extrinsics (1): [0xde8e…1e36]]    
+2022-06-04 16:25:07 🔖 Pre-sealed block for proposal at 223. Hash now 0x31534553957f0db866cd956675950373cb5380343a14289dec0113ae413bd1c4, previously 0xaf8a4477d4508302b96ae05df73e9b69583075571e993fd3fa28233baa3ed300.    
+2022-06-04 16:25:07 ✨ Imported #223 (0x3153…d1c4)    
+2022-06-04 16:25:08 ✨ Imported #224 (0xe1c5…a9ab)    
+2022-06-04 16:25:08 💤 Idle (3 peers), best: #224 (0xe1c5…a9ab), finalized #222 (0xe008…5591), ⬇ 18.1kiB/s ⬆ 18.2kiB/s    
+2022-06-04 16:25:09 ✨ Imported #225 (0x3cac…a794)    
+2022-06-04 16:25:10 ✨ Imported #226 (0xe010…bc53)    
+2022-06-04 16:25:11 🙌 Starting consensus session on top of parent 0xe0103d14d90c2c7ecc841dc3d8a96d863a97599f94428b3f04dd1f21f898bc53    
+2022-06-04 16:25:11 🎁 Prepared block for proposing at 227 (0 ms) [hash: 0x99012b5cdbf9afee01aeb1da72743c080d47dac9ff12c77246e698f3c5eb9d2f; parent_hash: 0xe010…bc53; extrinsics (1): [0xee6a…5612]]    
+2022-06-04 16:25:11 🔖 Pre-sealed block for proposal at 227. Hash now 0xfff6eb74d53ea347c38373fe8c8de4d3732a0ed6c7685b5a8086c716ec87fa1c, previously 0x99012b5cdbf9afee01aeb1da72743c080d47dac9ff12c77246e698f3c5eb9d2f.    
+2022-06-04 16:25:11 ✨ Imported #227 (0xfff6…fa1c)    
+2022-06-04 16:25:12 ✨ Imported #228 (0xf37c…d31d)    
+2022-06-04 16:25:13 ✨ Imported #229 (0xa3ae…30ea)    
+2022-06-04 16:25:13 💤 Idle (3 peers), best: #229 (0xa3ae…30ea), finalized #227 (0xfff6…fa1c), ⬇ 18.1kiB/s ⬆ 18.3kiB/s    
+2022-06-04 16:25:14 ✨ Imported #230 (0x8f07…65e8)    
+2022-06-04 16:25:15 🙌 Starting consensus session on top of parent 0x8f07d7e9978359e4d7ea6f2ce68029284b625819be138edbe984eff8b19c65e8    
+2022-06-04 16:25:15 🎁 Prepared block for proposing at 231 (0 ms) [hash: 0x3c069e712d8b68c5bf059918c13feb71bd98e5a292ee12a2e8ee69a15621806e; parent_hash: 0x8f07…65e8; extrinsics (1): [0x4e90…0a6a]]    
+2022-06-04 16:25:15 🔖 Pre-sealed block for proposal at 231. Hash now 0xe4c6ebe1dddafa89bf5a5337fe8e50e88a56856ff9b98d13dd947883c23f1a76, previously 0x3c069e712d8b68c5bf059918c13feb71bd98e5a292ee12a2e8ee69a15621806e.    
+2022-06-04 16:25:15 ✨ Imported #231 (0xe4c6…1a76)    
+2022-06-04 16:25:16 ✨ Imported #232 (0x6269…b8e3)    
+2022-06-04 16:25:17 ✨ Imported #233 (0x568b…af9f)    
+2022-06-04 16:25:18 ✨ Imported #234 (0xf835…50be)    
+2022-06-04 16:25:18 💤 Idle (3 peers), best: #234 (0xf835…50be), finalized #232 (0x6269…b8e3), ⬇ 17.9kiB/s ⬆ 17.8kiB/s    
+2022-06-04 16:25:19 🙌 Starting consensus session on top of parent 0xf835fd944307ca1c61acdad3c747db2cfe3dfd33e4b5c9fb631b4bad088f50be    
+2022-06-04 16:25:19 🎁 Prepared block for proposing at 235 (0 ms) [hash: 0x83a38b4b2e27e49ea89d11f3a99b854c116ae840f07d4b18cf42086345cda068; parent_hash: 0xf835…50be; extrinsics (1): [0x2e33…2936]]    
+2022-06-04 16:25:19 🔖 Pre-sealed block for proposal at 235. Hash now 0x7f4a25316035b2f64ce8ea1713865c6569262e09f1181bdbf4b2646baa124c40, previously 0x83a38b4b2e27e49ea89d11f3a99b854c116ae840f07d4b18cf42086345cda068.    
+2022-06-04 16:25:19 ✨ Imported #235 (0x7f4a…4c40)    
+2022-06-04 16:25:20 ✨ Imported #236 (0xd94e…d42d)    
+2022-06-04 16:25:21 ✨ Imported #237 (0x564f…7ece)    
+2022-06-04 16:25:22 ✨ Imported #238 (0x8a23…a938)    
+2022-06-04 16:25:23 🙌 Starting consensus session on top of parent 0x8a2342f3813bc90c9ed4f64d9c8cd11ece556a6e858bc7ba622701b20d43a938    
+2022-06-04 16:25:23 🎁 Prepared block for proposing at 239 (0 ms) [hash: 0x51c4a3bd3cab2db704a670bf1da1a58ad7266a7064e711f769fc797239ab3532; parent_hash: 0x8a23…a938; extrinsics (1): [0x4038…179f]]    
+2022-06-04 16:25:23 🔖 Pre-sealed block for proposal at 239. Hash now 0xe66b32d2c5916f18646cf1aee5934beff7e95264bb2060b39abeefdd38520eb2, previously 0x51c4a3bd3cab2db704a670bf1da1a58ad7266a7064e711f769fc797239ab3532.    
+2022-06-04 16:25:23 ✨ Imported #239 (0xe66b…0eb2)    
+2022-06-04 16:25:23 💤 Idle (3 peers), best: #239 (0xe66b…0eb2), finalized #237 (0x564f…7ece), ⬇ 17.1kiB/s ⬆ 17.6kiB/s    
+2022-06-04 16:25:24 ✨ Imported #240 (0xeea6…d544)    
+2022-06-04 16:25:25 ✨ Imported #241 (0x3cad…edb7)    
+2022-06-04 16:25:26 ✨ Imported #242 (0xcffc…e229)    
+2022-06-04 16:25:27 🙌 Starting consensus session on top of parent 0xcffc2477ee1d4d393afe880855cafabf366a04c78e29449d6cbcc505bf8be229    
+2022-06-04 16:25:27 🎁 Prepared block for proposing at 243 (1 ms) [hash: 0xe7c2d583af97c3d6e845af228b8592777e6b9686e67f18b68a6aba300ce9a167; parent_hash: 0xcffc…e229; extrinsics (1): [0x9b64…f1c2]]    
+2022-06-04 16:25:27 🔖 Pre-sealed block for proposal at 243. Hash now 0xb2f6049505c586b23d01ce5e6ca778a9fb1ac6ad8338da22ac9224e912a2df49, previously 0xe7c2d583af97c3d6e845af228b8592777e6b9686e67f18b68a6aba300ce9a167.    
+2022-06-04 16:25:27 ✨ Imported #243 (0xb2f6…df49)    
+2022-06-04 16:25:28 ✨ Imported #244 (0xad32…9243)    
+2022-06-04 16:25:28 💤 Idle (3 peers), best: #244 (0xad32…9243), finalized #242 (0xcffc…e229), ⬇ 19.2kiB/s ⬆ 19.2kiB/s    
+2022-06-04 16:25:29 ✨ Imported #245 (0xffd6…9505)    
+2022-06-04 16:25:30 ✨ Imported #246 (0xb547…337e)    
+2022-06-04 16:25:31 🙌 Starting consensus session on top of parent 0xb5474f53c1e60c612c17c04497c023941b29efb92052298ba93d6b07a344337e    
+2022-06-04 16:25:31 🎁 Prepared block for proposing at 247 (0 ms) [hash: 0xf01374fc1cb7bd97f2f28756ffbfa336ae1ac78a7aedac8d4118f5f6d029b8fe; parent_hash: 0xb547…337e; extrinsics (1): [0x52ba…116b]]    
+2022-06-04 16:25:31 🔖 Pre-sealed block for proposal at 247. Hash now 0xc08acf08af309ff538986cb3f071c3db3b900a20e5a311d0f4a5fd7f1d8e4ac8, previously 0xf01374fc1cb7bd97f2f28756ffbfa336ae1ac78a7aedac8d4118f5f6d029b8fe.    
+2022-06-04 16:25:31 ✨ Imported #247 (0xc08a…4ac8)    
+2022-06-04 16:25:32 ✨ Imported #248 (0xa10b…6e93)    
+2022-06-04 16:25:33 ✨ Imported #249 (0x0469…e481)    
+2022-06-04 16:25:33 💤 Idle (3 peers), best: #249 (0x0469…e481), finalized #247 (0xc08a…4ac8), ⬇ 17.2kiB/s ⬆ 17.2kiB/s    
+2022-06-04 16:25:34 ✨ Imported #250 (0xf3b8…bd20)    
+2022-06-04 16:25:35 🙌 Starting consensus session on top of parent 0xf3b88861b2ef2145172814ea0b7f7c70714dc90ca8db4c6686f60a7aa16ebd20    
+2022-06-04 16:25:35 🎁 Prepared block for proposing at 251 (0 ms) [hash: 0x761f6fae7524f76442eb38fbc9136c6f1cda7a6bf91855772a8dc636a810f17b; parent_hash: 0xf3b8…bd20; extrinsics (1): [0x49bc…1967]]    
+2022-06-04 16:25:35 🔖 Pre-sealed block for proposal at 251. Hash now 0x823ae4806cacdd14ddff461979cc3bd18485571457a6d1c3d8d659ae388ae70f, previously 0x761f6fae7524f76442eb38fbc9136c6f1cda7a6bf91855772a8dc636a810f17b.    
+2022-06-04 16:25:35 ✨ Imported #251 (0x823a…e70f)    
+2022-06-04 16:25:36 ✨ Imported #252 (0x3324…e8b5)    
+2022-06-04 16:25:37 ✨ Imported #253 (0x0344…6941)    
+2022-06-04 16:25:38 ✨ Imported #254 (0xa000…d696)    
+2022-06-04 16:25:38 💤 Idle (3 peers), best: #254 (0xa000…d696), finalized #252 (0x3324…e8b5), ⬇ 19.7kiB/s ⬆ 20.0kiB/s    
+2022-06-04 16:25:39 🙌 Starting consensus session on top of parent 0xa000ce6d75903397434418809afdf1dc37eedf100a9c81f916eab19b6efad696    
+2022-06-04 16:25:39 🎁 Prepared block for proposing at 255 (0 ms) [hash: 0x024341791aeae363812f11f00a7609bbfad5bcb8214e95ab70fd30fbc11517d9; parent_hash: 0xa000…d696; extrinsics (1): [0xe3dd…ddcd]]    
+2022-06-04 16:25:39 🔖 Pre-sealed block for proposal at 255. Hash now 0x376f42bc02b0e78fc42e9ea488b427f83a172617e7226b253a946a40d83b601e, previously 0x024341791aeae363812f11f00a7609bbfad5bcb8214e95ab70fd30fbc11517d9.    
+2022-06-04 16:25:39 ✨ Imported #255 (0x376f…601e)    
+2022-06-04 16:25:40 ✨ Imported #256 (0x9b7b…5e43)    
+2022-06-04 16:25:41 ✨ Imported #257 (0x7984…889e)    
+2022-06-04 16:25:42 ✨ Imported #258 (0xe7d2…eced)    
+2022-06-04 16:25:43 🙌 Starting consensus session on top of parent 0xe7d27426e34e7298606aa95d3858b6963a15d9a157b686b475f626a18782eced    
+2022-06-04 16:25:43 🎁 Prepared block for proposing at 259 (0 ms) [hash: 0x4a70c6491dc802cd965fd4b9d3dfda8c0ec3b9b0dc98859a56bf46f988b20bf0; parent_hash: 0xe7d2…eced; extrinsics (1): [0x59c7…a003]]    
+2022-06-04 16:25:43 🔖 Pre-sealed block for proposal at 259. Hash now 0x5d3b97604d95d594c163d2e67b58d84d415b2e93bf2579bdd9d33dc3c6b014b4, previously 0x4a70c6491dc802cd965fd4b9d3dfda8c0ec3b9b0dc98859a56bf46f988b20bf0.    
+2022-06-04 16:25:43 ✨ Imported #259 (0x5d3b…14b4)    
+2022-06-04 16:25:43 💤 Idle (3 peers), best: #259 (0x5d3b…14b4), finalized #257 (0x7984…889e), ⬇ 20.8kiB/s ⬆ 21.1kiB/s    
+2022-06-04 16:25:44 ✨ Imported #260 (0xbca4…1f99)    
+2022-06-04 16:25:45 ✨ Imported #261 (0xc2a9…5461)    
+2022-06-04 16:25:46 ✨ Imported #262 (0xb3fa…1b9e)    
+2022-06-04 16:25:47 🙌 Starting consensus session on top of parent 0xb3fad8a8d5bfacdcca75e7aa9f1622b20f220d3d2cc40e796c3a343222401b9e    
+2022-06-04 16:25:47 🎁 Prepared block for proposing at 263 (0 ms) [hash: 0xc13f8748c507e4f1e56cb7dcf6788d890aa7d307479dc9a65bdf7248895baa75; parent_hash: 0xb3fa…1b9e; extrinsics (1): [0x2abd…0d02]]    
+2022-06-04 16:25:47 🔖 Pre-sealed block for proposal at 263. Hash now 0x984f4993f953acf45f0d726d4d137efc5b56500dcf16998f0058faaaa4872c9f, previously 0xc13f8748c507e4f1e56cb7dcf6788d890aa7d307479dc9a65bdf7248895baa75.    
+2022-06-04 16:25:47 ✨ Imported #263 (0x984f…2c9f)    
+2022-06-04 16:25:48 ✨ Imported #264 (0x36af…e55d)    
+2022-06-04 16:25:48 💤 Idle (3 peers), best: #264 (0x36af…e55d), finalized #262 (0xb3fa…1b9e), ⬇ 19.7kiB/s ⬆ 19.9kiB/s    
+2022-06-04 16:25:49 ✨ Imported #265 (0x3761…4060)    
+2022-06-04 16:25:50 ✨ Imported #266 (0x0f70…c18b)    
+2022-06-04 16:25:51 🙌 Starting consensus session on top of parent 0x0f702c723617d4a69211df4ed86a26a1119c292f91636cd043307b377cc6c18b    
+2022-06-04 16:25:51 🎁 Prepared block for proposing at 267 (0 ms) [hash: 0x989d076bf465abd1025a7f078118bd00cc4ec55394b5a541e17cf0ac9af65a1c; parent_hash: 0x0f70…c18b; extrinsics (1): [0xed96…a378]]    
+2022-06-04 16:25:51 🔖 Pre-sealed block for proposal at 267. Hash now 0x169739c0f59186ad68aa2872804c8353950c6f2f1b1f4700e177beb0fd641b7d, previously 0x989d076bf465abd1025a7f078118bd00cc4ec55394b5a541e17cf0ac9af65a1c.    
+2022-06-04 16:25:51 ✨ Imported #267 (0x1697…1b7d)    
+2022-06-04 16:25:52 ✨ Imported #268 (0x732d…6dbf)    
+2022-06-04 16:25:53 ✨ Imported #269 (0x3e0b…9fa4)    
+2022-06-04 16:25:53 💤 Idle (3 peers), best: #269 (0x3e0b…9fa4), finalized #267 (0x1697…1b7d), ⬇ 21.0kiB/s ⬆ 21.2kiB/s    
+2022-06-04 16:25:54 ✨ Imported #270 (0xb443…9e9f)    
+2022-06-04 16:25:55 🙌 Starting consensus session on top of parent 0xb44356710a39db03aecaa1b410c167984969db155d856fe428ccba7a59f39e9f    
+2022-06-04 16:25:55 🎁 Prepared block for proposing at 271 (0 ms) [hash: 0x16dac717f52fe5afa00581a92fcc101a06209c0520e6496630b085b18c7f2af8; parent_hash: 0xb443…9e9f; extrinsics (1): [0x8419…2b78]]    
+2022-06-04 16:25:55 🔖 Pre-sealed block for proposal at 271. Hash now 0xba0699947d661afacd4fb8ec06680df9efc2a21765ec71c7659ab4d7f5915368, previously 0x16dac717f52fe5afa00581a92fcc101a06209c0520e6496630b085b18c7f2af8.    
+2022-06-04 16:25:55 ✨ Imported #271 (0xba06…5368)    
+2022-06-04 16:25:56 ✨ Imported #272 (0x2aa3…4f66)    
+2022-06-04 16:25:57 ✨ Imported #273 (0x3380…987b)    
+2022-06-04 16:25:58 ✨ Imported #274 (0x3484…df26)    
+2022-06-04 16:25:58 💤 Idle (3 peers), best: #274 (0x3484…df26), finalized #272 (0x2aa3…4f66), ⬇ 21.3kiB/s ⬆ 21.3kiB/s    
+2022-06-04 16:25:59 🙌 Starting consensus session on top of parent 0x34842c29b96f7a4e4dc9d708da0d5054d0db77e9d49842476df7d5726318df26    
+2022-06-04 16:25:59 🎁 Prepared block for proposing at 275 (0 ms) [hash: 0xea62f61e7b5b885990fc61f6b179519ace60a022cc3952b224381e7161fc4300; parent_hash: 0x3484…df26; extrinsics (1): [0x01ab…694f]]    
+2022-06-04 16:25:59 🔖 Pre-sealed block for proposal at 275. Hash now 0xa8f94082e9049780d4f860ccaab1365d7e09b5f0e84ee57d89b3a854cc94df9b, previously 0xea62f61e7b5b885990fc61f6b179519ace60a022cc3952b224381e7161fc4300.    
+2022-06-04 16:25:59 ✨ Imported #275 (0xa8f9…df9b)    
+2022-06-04 16:26:00 ✨ Imported #276 (0x716e…5faf)    
+2022-06-04 16:26:01 ✨ Imported #277 (0xbbcd…0c9c)    
+2022-06-04 16:26:02 ✨ Imported #278 (0xabba…1fc5)    
+2022-06-04 16:26:03 🙌 Starting consensus session on top of parent 0xabba0c53fd8187167c3acc70c8153a91eced6858516315d949da956e2b9f1fc5    
+2022-06-04 16:26:03 🎁 Prepared block for proposing at 279 (0 ms) [hash: 0x73fc17e7324f000b9cc29f648b4b9124ac845b36336b42023d7fe6af6386bb0b; parent_hash: 0xabba…1fc5; extrinsics (1): [0x4616…461f]]    
+2022-06-04 16:26:03 🔖 Pre-sealed block for proposal at 279. Hash now 0xa6a92c4969cc9a63a8a5494af6ea7d98d8a0a3dd8682c4f435665597e03b9ecb, previously 0x73fc17e7324f000b9cc29f648b4b9124ac845b36336b42023d7fe6af6386bb0b.    
+2022-06-04 16:26:03 ✨ Imported #279 (0xa6a9…9ecb)    
+2022-06-04 16:26:03 💤 Idle (3 peers), best: #279 (0xa6a9…9ecb), finalized #277 (0xbbcd…0c9c), ⬇ 20.3kiB/s ⬆ 20.6kiB/s    
+2022-06-04 16:26:04 ✨ Imported #280 (0x4158…3bef)    
+2022-06-04 16:26:05 ✨ Imported #281 (0x3eaa…26a1)    
+2022-06-04 16:26:06 ✨ Imported #282 (0xad4e…901c)    
+2022-06-04 16:26:07 🙌 Starting consensus session on top of parent 0xad4ed1a4986c5819eeee294fc20bfbd02141ff35ae4bcbe997dbe8b6b569901c    
+2022-06-04 16:26:07 🎁 Prepared block for proposing at 283 (2 ms) [hash: 0xde8a2dda2bb22cb853c90c719f100ce9c12f9d3d48045845d9e727a314f503bc; parent_hash: 0xad4e…901c; extrinsics (2): [0x4cb4…8131, 0x249a…3d80]]    
+2022-06-04 16:26:07 🔖 Pre-sealed block for proposal at 283. Hash now 0xdb072968e57ff7e4f9bce44879da45d4b43f20d564e76e4497d1b8d573e4d8b8, previously 0xde8a2dda2bb22cb853c90c719f100ce9c12f9d3d48045845d9e727a314f503bc.    
+2022-06-04 16:26:07 ✨ Imported #283 (0xdb07…d8b8)    
+2022-06-04 16:26:08 ✨ Imported #284 (0x3d62…fc0a)    
+2022-06-04 16:26:08 💤 Idle (3 peers), best: #284 (0x3d62…fc0a), finalized #282 (0xad4e…901c), ⬇ 20.7kiB/s ⬆ 20.9kiB/s    
+2022-06-04 16:26:09 ✨ Imported #285 (0x6b1a…fdaf)    
+2022-06-04 16:26:10 ✨ Imported #286 (0xcb5b…e0a9)    
+2022-06-04 16:26:11 🙌 Starting consensus session on top of parent 0xcb5bf8da225d294e5cf7a61bf19ab540d3a7ac6c0fd69f5f50e7506afa9be0a9    
+2022-06-04 16:26:11 🎁 Prepared block for proposing at 287 (0 ms) [hash: 0xf07d2e512938b5c0058c9b27dea10a933221f43e915d42f07aed290d21792b52; parent_hash: 0xcb5b…e0a9; extrinsics (1): [0x65f6…7d6f]]    
+2022-06-04 16:26:11 🔖 Pre-sealed block for proposal at 287. Hash now 0xc2c3e660ce5133814da567d83b73aaddf9c6f725b92ef594895cc03ebc903fbc, previously 0xf07d2e512938b5c0058c9b27dea10a933221f43e915d42f07aed290d21792b52.    
+2022-06-04 16:26:11 ✨ Imported #287 (0xc2c3…3fbc)    
+2022-06-04 16:26:12 ✨ Imported #288 (0x3c8f…d78e)    
+2022-06-04 16:26:13 ✨ Imported #289 (0x768b…244b)    
+2022-06-04 16:26:13 💤 Idle (3 peers), best: #289 (0x768b…244b), finalized #287 (0xc2c3…3fbc), ⬇ 19.3kiB/s ⬆ 19.3kiB/s    
+2022-06-04 16:26:14 ✨ Imported #290 (0xe158…2bfb)    
+2022-06-04 16:26:15 🙌 Starting consensus session on top of parent 0xe158b49f3f5ee9b2400f8cb503a747155b432bb1c12b65b0a024a75b90f12bfb    
+2022-06-04 16:26:15 🎁 Prepared block for proposing at 291 (1 ms) [hash: 0xfa285746af671da2124924578710f0715993c914707728ba37fbb056286bc878; parent_hash: 0xe158…2bfb; extrinsics (2): [0x0868…36e6, 0x23ee…ae10]]    
+2022-06-04 16:26:15 🔖 Pre-sealed block for proposal at 291. Hash now 0xc184bb45825468561c6a8750f38ea68277ba0e4cfff8850ae5c3739d38173a46, previously 0xfa285746af671da2124924578710f0715993c914707728ba37fbb056286bc878.    
+2022-06-04 16:26:15 ✨ Imported #291 (0xc184…3a46)    
+2022-06-04 16:26:16 ✨ Imported #292 (0x9b02…5f89)    
+2022-06-04 16:26:17 ✨ Imported #293 (0x1ddd…30a4)    
+2022-06-04 16:26:18 ✨ Imported #294 (0x549f…1695)    
+2022-06-04 16:26:18 💤 Idle (3 peers), best: #294 (0x549f…1695), finalized #292 (0x9b02…5f89), ⬇ 20.6kiB/s ⬆ 20.8kiB/s    
+2022-06-04 16:26:19 🙌 Starting consensus session on top of parent 0x549f3d8ab0439317741560b31c8aa4abc8e3793c348d608870accbe725de1695    
+2022-06-04 16:26:19 🎁 Prepared block for proposing at 295 (0 ms) [hash: 0x44fc750177279963890ea0ece1fb9b31eef6594424f7fbdaaf1249fd3ea16018; parent_hash: 0x549f…1695; extrinsics (1): [0x6b45…0bc1]]    
+2022-06-04 16:26:19 🔖 Pre-sealed block for proposal at 295. Hash now 0x7c68954a49733b461508e6d668ed52590ced6edb7ec3c9f2a831006708fc2bb5, previously 0x44fc750177279963890ea0ece1fb9b31eef6594424f7fbdaaf1249fd3ea16018.    
+2022-06-04 16:26:19 ✨ Imported #295 (0x7c68…2bb5)    
+2022-06-04 16:26:20 ✨ Imported #296 (0x485b…2783)    
+2022-06-04 16:26:21 ✨ Imported #297 (0xc2a3…698b)    
+2022-06-04 16:26:22 ✨ Imported #298 (0x748c…9c2f)    
+2022-06-04 16:26:23 🙌 Starting consensus session on top of parent 0x748c0c0d59e06508a00cbef8dcd764c4c29df607ac12e4a54b2ac5398c2c9c2f    
+2022-06-04 16:26:23 🎁 Prepared block for proposing at 299 (0 ms) [hash: 0xb07371a56003252a3bff370c7d5d6e19905d57d74b8fb99e288c256d9e05e657; parent_hash: 0x748c…9c2f; extrinsics (1): [0x1e42…ca07]]    
+2022-06-04 16:26:23 🔖 Pre-sealed block for proposal at 299. Hash now 0xa3ee6a412ac5f06dbed4e04f1496cd4417308e1cd1a2fcfae59e8d2ab1a57fcb, previously 0xb07371a56003252a3bff370c7d5d6e19905d57d74b8fb99e288c256d9e05e657.    
+2022-06-04 16:26:23 ✨ Imported #299 (0xa3ee…7fcb)    
+2022-06-04 16:26:23 💤 Idle (3 peers), best: #299 (0xa3ee…7fcb), finalized #297 (0xc2a3…698b), ⬇ 20.8kiB/s ⬆ 21.4kiB/s    
+2022-06-04 16:26:24 ✨ Imported #300 (0x5f7b…a0bd)    
+2022-06-04 16:26:25 ✨ Imported #301 (0x6459…9f5e)    
+2022-06-04 16:26:26 ✨ Imported #302 (0x2cd7…0c18)    
+2022-06-04 16:26:27 🙌 Starting consensus session on top of parent 0x2cd78f33f80109e57e266e681f3d52bba6fd685e6baf5c7b8b5ef51303690c18    
+2022-06-04 16:26:27 🎁 Prepared block for proposing at 303 (1 ms) [hash: 0x959c05d7e0e26e432f661e29e9df4ca7c6965ee5f827e9e02f4c19f78941dddf; parent_hash: 0x2cd7…0c18; extrinsics (1): [0x1eef…dbfa]]    
+2022-06-04 16:26:27 🔖 Pre-sealed block for proposal at 303. Hash now 0x553274e338a33579efabe6863927b41982f71c9c1b9ccf82bcd4a62597912cb6, previously 0x959c05d7e0e26e432f661e29e9df4ca7c6965ee5f827e9e02f4c19f78941dddf.    
+2022-06-04 16:26:27 ✨ Imported #303 (0x5532…2cb6)    
+2022-06-04 16:26:28 ✨ Imported #304 (0xe959…d307)    
+2022-06-04 16:26:28 💤 Idle (3 peers), best: #304 (0xe959…d307), finalized #302 (0x2cd7…0c18), ⬇ 20.4kiB/s ⬆ 20.5kiB/s    
+2022-06-04 16:26:29 ✨ Imported #305 (0x63c8…ff3a)    
+2022-06-04 16:26:30 ✨ Imported #306 (0xffee…726b)    
+2022-06-04 16:26:31 🙌 Starting consensus session on top of parent 0xffee6e4473a2422bda0e0a3a5e865dcfd16d413a6dbafb19d72615810578726b    
+2022-06-04 16:26:31 🎁 Prepared block for proposing at 307 (0 ms) [hash: 0xeac48949967f85a02ab7c20097240c8a22fa5b86a3df2286f3fa33b8fbc0d2aa; parent_hash: 0xffee…726b; extrinsics (1): [0x2e57…82aa]]    
+2022-06-04 16:26:31 🔖 Pre-sealed block for proposal at 307. Hash now 0x61290290fa1d5bb817de123a59e83f8d39149740ffb4d527eeaec9c0279ec328, previously 0xeac48949967f85a02ab7c20097240c8a22fa5b86a3df2286f3fa33b8fbc0d2aa.    
+2022-06-04 16:26:31 ✨ Imported #307 (0x6129…c328)    
+2022-06-04 16:26:32 ✨ Imported #308 (0xcdc1…5ce0)    
+2022-06-04 16:26:33 ✨ Imported #309 (0x6324…46ac)    
+2022-06-04 16:26:33 💤 Idle (3 peers), best: #309 (0x6324…46ac), finalized #307 (0x6129…c328), ⬇ 20.7kiB/s ⬆ 20.7kiB/s    
+2022-06-04 16:26:34 ✨ Imported #310 (0x803c…3bdc)    
+2022-06-04 16:26:35 🙌 Starting consensus session on top of parent 0x803c22883f8c0a0fec0a2ba3b08f6dd87f352a73079cb9092f2274dd434e3bdc    
+2022-06-04 16:26:35 🎁 Prepared block for proposing at 311 (0 ms) [hash: 0x12babe2e1dfebb18aabf7ea728a96e9878de00f7b4947644ea01931289918d91; parent_hash: 0x803c…3bdc; extrinsics (1): [0xbf38…c7d8]]    
+2022-06-04 16:26:35 🔖 Pre-sealed block for proposal at 311. Hash now 0x258bd7ea47d4222aa54a4c4f24144b07452214545cf8710815f38a971077f0bf, previously 0x12babe2e1dfebb18aabf7ea728a96e9878de00f7b4947644ea01931289918d91.    
+2022-06-04 16:26:35 ✨ Imported #311 (0x258b…f0bf)    
+2022-06-04 16:26:36 ✨ Imported #312 (0x8104…dae9)    
+2022-06-04 16:26:37 ✨ Imported #313 (0x24f5…54dc)    
+2022-06-04 16:26:38 ✨ Imported #314 (0xf2dd…6537)    
+2022-06-04 16:26:38 💤 Idle (3 peers), best: #314 (0xf2dd…6537), finalized #312 (0x8104…dae9), ⬇ 20.7kiB/s ⬆ 20.7kiB/s    
+2022-06-04 16:26:39 🙌 Starting consensus session on top of parent 0xf2dd6a4497ef1dd5208b4f6b7d4b36db60556601798a06533e7a0d7bf2c16537    
+2022-06-04 16:26:39 🎁 Prepared block for proposing at 315 (0 ms) [hash: 0x47475f8ac0acac9750fed66d577ed65273fb287cf98ca6591bf6910c406d68d6; parent_hash: 0xf2dd…6537; extrinsics (1): [0xd472…725c]]    
+2022-06-04 16:26:39 🔖 Pre-sealed block for proposal at 315. Hash now 0x265a1290240fc213333ddc5f3f11e76b1bcfc9e52081a559d971fe517c4cbd70, previously 0x47475f8ac0acac9750fed66d577ed65273fb287cf98ca6591bf6910c406d68d6.    
+2022-06-04 16:26:39 ✨ Imported #315 (0x265a…bd70)    
+2022-06-04 16:26:40 ✨ Imported #316 (0xe347…247e)    
+2022-06-04 16:26:41 ✨ Imported #317 (0x0f83…bc30)    
+2022-06-04 16:26:42 ✨ Imported #318 (0xbfea…f1cb)    
+2022-06-04 16:26:43 🙌 Starting consensus session on top of parent 0xbfea84565e6fdb9c30d3e366b9fb8512ac1977faf8b60cda760595447718f1cb    
+2022-06-04 16:26:43 🎁 Prepared block for proposing at 319 (0 ms) [hash: 0xd46dcfbad6f19d2deee99071343b93e617497318a9028d18d76c1aba6efa5a13; parent_hash: 0xbfea…f1cb; extrinsics (1): [0x2b93…a47f]]    
+2022-06-04 16:26:43 🔖 Pre-sealed block for proposal at 319. Hash now 0xd268faa3add7647604e53c1694f302fc0c07c293c00ff793f7f782777ee5ee5c, previously 0xd46dcfbad6f19d2deee99071343b93e617497318a9028d18d76c1aba6efa5a13.    
+2022-06-04 16:26:43 ✨ Imported #319 (0xd268…ee5c)    
+2022-06-04 16:26:43 💤 Idle (3 peers), best: #319 (0xd268…ee5c), finalized #317 (0x0f83…bc30), ⬇ 19.3kiB/s ⬆ 19.5kiB/s    
+2022-06-04 16:26:44 ✨ Imported #320 (0x8eec…da34)    
+2022-06-04 16:26:45 ✨ Imported #321 (0x5456…88c5)    
+2022-06-04 16:26:46 ✨ Imported #322 (0x792c…6d96)    
+2022-06-04 16:26:47 🙌 Starting consensus session on top of parent 0x792c0a7f1ddfa8d75b63cccd6f68d74cc0e3f3b96064d98dd857fd29a7946d96    
+2022-06-04 16:26:47 🎁 Prepared block for proposing at 323 (0 ms) [hash: 0x73d92e46c02327dd65d298ecf9c2980ef73b99929753e9335954fd96d6e9f0fa; parent_hash: 0x792c…6d96; extrinsics (1): [0xe3ba…2c5c]]    
+2022-06-04 16:26:47 🔖 Pre-sealed block for proposal at 323. Hash now 0x1066cbc3fe905917e766e2b5ce68044a00849d36832c923847df6689c86fa952, previously 0x73d92e46c02327dd65d298ecf9c2980ef73b99929753e9335954fd96d6e9f0fa.    
+2022-06-04 16:26:47 ✨ Imported #323 (0x1066…a952)    
+2022-06-04 16:26:48 ✨ Imported #324 (0x28f6…9738)    
+2022-06-04 16:26:48 💤 Idle (3 peers), best: #324 (0x28f6…9738), finalized #322 (0x792c…6d96), ⬇ 20.5kiB/s ⬆ 20.2kiB/s    
+2022-06-04 16:26:49 ✨ Imported #325 (0xac41…77cd)    
+2022-06-04 16:26:50 ✨ Imported #326 (0x42b3…b7c1)    
+2022-06-04 16:26:51 🙌 Starting consensus session on top of parent 0x42b32b8832edf1c5a8c0958aa2ba4603b19e98abcfbdab68e34dc83ddb99b7c1    
+2022-06-04 16:26:51 🎁 Prepared block for proposing at 327 (0 ms) [hash: 0xab75d8badd6766baa1f70bfe3b5a21ebc966c58cc7568ada3a13895c6f104866; parent_hash: 0x42b3…b7c1; extrinsics (1): [0x4f72…f00c]]    
+2022-06-04 16:26:51 🔖 Pre-sealed block for proposal at 327. Hash now 0x8e06b5b580c1f2387ef50583c51251377102602b3f470e0d67eb021960e2e9b4, previously 0xab75d8badd6766baa1f70bfe3b5a21ebc966c58cc7568ada3a13895c6f104866.    
+2022-06-04 16:26:51 ✨ Imported #327 (0x8e06…e9b4)    
+2022-06-04 16:26:52 ✨ Imported #328 (0xe5ba…fa17)    
+2022-06-04 16:26:53 ✨ Imported #329 (0xe4e1…b493)    
+2022-06-04 16:26:53 💤 Idle (3 peers), best: #329 (0xe4e1…b493), finalized #327 (0x8e06…e9b4), ⬇ 20.3kiB/s ⬆ 20.4kiB/s    
+2022-06-04 16:26:54 ✨ Imported #330 (0xa1fd…5f74)    
+2022-06-04 16:26:55 🙌 Starting consensus session on top of parent 0xa1fd50e76812c3a7d54438a9e70d171107ebc9c6f311e49b33fbfde003fd5f74    
+2022-06-04 16:26:55 🎁 Prepared block for proposing at 331 (0 ms) [hash: 0xbe34f8526399071dcf446a5132ced17ddd7f089ae19da0454bf744d82e854ace; parent_hash: 0xa1fd…5f74; extrinsics (1): [0x3352…5015]]    
+2022-06-04 16:26:55 🔖 Pre-sealed block for proposal at 331. Hash now 0x1258948a5e6870eeabec95a965eb9884f136daa0969476a498a908c3300dff20, previously 0xbe34f8526399071dcf446a5132ced17ddd7f089ae19da0454bf744d82e854ace.    
+2022-06-04 16:26:55 ✨ Imported #331 (0x1258…ff20)    
+2022-06-04 16:26:56 ✨ Imported #332 (0x0490…8597)    
+2022-06-04 16:26:57 ✨ Imported #333 (0x380f…3912)    
+2022-06-04 16:26:58 ✨ Imported #334 (0x7d05…7946)    
+2022-06-04 16:26:58 💤 Idle (3 peers), best: #334 (0x7d05…7946), finalized #332 (0x0490…8597), ⬇ 20.7kiB/s ⬆ 20.8kiB/s    
+2022-06-04 16:26:59 🙌 Starting consensus session on top of parent 0x7d05d0a4562652e74ba1cd846f2c82abbddb7e4dc231da8064ea1b11255a7946    
+2022-06-04 16:26:59 🎁 Prepared block for proposing at 335 (0 ms) [hash: 0x9ea4ed6ee7c16cf123937b6fd3450111e644e89591347a4719826897b893c3c5; parent_hash: 0x7d05…7946; extrinsics (1): [0x7c65…e139]]    
+2022-06-04 16:26:59 🔖 Pre-sealed block for proposal at 335. Hash now 0x9cf953715fe60943ba32575e4d3fa6916089d05708469aff07ac51f005a928d0, previously 0x9ea4ed6ee7c16cf123937b6fd3450111e644e89591347a4719826897b893c3c5.    
+2022-06-04 16:26:59 ✨ Imported #335 (0x9cf9…28d0)    
+2022-06-04 16:27:00 ✨ Imported #336 (0x1566…4b26)    
+2022-06-04 16:27:01 ✨ Imported #337 (0x4383…fe7b)    
+2022-06-04 16:27:02 ✨ Imported #338 (0x5b26…7a30)    
+2022-06-04 16:27:03 🙌 Starting consensus session on top of parent 0x5b2614081fc6fd284c6e06785d88525bd37f4571b65ec28b36c26725960b7a30    
+2022-06-04 16:27:03 🎁 Prepared block for proposing at 339 (0 ms) [hash: 0x9a9d2a720100f6af3ef6829796fc3e6dade5e6f494c308fa1f03b4f20fa4d125; parent_hash: 0x5b26…7a30; extrinsics (1): [0xbbb4…1da2]]    
+2022-06-04 16:27:03 🔖 Pre-sealed block for proposal at 339. Hash now 0xdd13cb97653a67e3de29241b6dd88c0ff916cb3b5a59fb5f36726ac0c0936cfa, previously 0x9a9d2a720100f6af3ef6829796fc3e6dade5e6f494c308fa1f03b4f20fa4d125.    
+2022-06-04 16:27:03 ✨ Imported #339 (0xdd13…6cfa)    
+2022-06-04 16:27:03 💤 Idle (3 peers), best: #339 (0xdd13…6cfa), finalized #337 (0x4383…fe7b), ⬇ 19.5kiB/s ⬆ 20.0kiB/s    
+2022-06-04 16:27:04 ✨ Imported #340 (0x0758…db8f)    
+2022-06-04 16:27:05 ✨ Imported #341 (0x848d…02f2)    
+2022-06-04 16:27:06 ✨ Imported #342 (0x5754…abca)    
+2022-06-04 16:27:07 🙌 Starting consensus session on top of parent 0x57540c52dc857a0caf8c9bd1f308f65b69b47d58cd4cbba94c575e4cce79abca    
+2022-06-04 16:27:07 🎁 Prepared block for proposing at 343 (0 ms) [hash: 0x2856f30ad693512eb7d7a471f19a5903241ba25e5bafef11ba9facd3293aa68a; parent_hash: 0x5754…abca; extrinsics (1): [0x8a02…4eda]]    
+2022-06-04 16:27:07 🔖 Pre-sealed block for proposal at 343. Hash now 0x5bbeed0f691f4998a02930d5c5a3f028e44798ef507a6d842a7614f09f79893f, previously 0x2856f30ad693512eb7d7a471f19a5903241ba25e5bafef11ba9facd3293aa68a.    
+2022-06-04 16:27:07 ✨ Imported #343 (0x5bbe…893f)    
+2022-06-04 16:27:08 ✨ Imported #344 (0x49cc…8197)    
+2022-06-04 16:27:08 💤 Idle (3 peers), best: #344 (0x49cc…8197), finalized #342 (0x5754…abca), ⬇ 20.1kiB/s ⬆ 20.5kiB/s    
+2022-06-04 16:27:09 ✨ Imported #345 (0x913d…e96d)    
+2022-06-04 16:27:10 ✨ Imported #346 (0x746d…d797)    
+2022-06-04 16:27:11 🙌 Starting consensus session on top of parent 0x746d72d0f9a0dc3e7e6338c46477a2596b8d9b4accbfd444c9cbf46939e0d797    
+2022-06-04 16:27:11 🎁 Prepared block for proposing at 347 (0 ms) [hash: 0x1af44bbf82b1ef87048359504aec4ca23230109ee04f1d6f5c31391cddd25ae4; parent_hash: 0x746d…d797; extrinsics (1): [0x8824…1227]]    
+2022-06-04 16:27:11 🔖 Pre-sealed block for proposal at 347. Hash now 0xe0a42e94bd0d59e69eb8f95b951d6e1bc4a0e134125afc67c8336e02511787a6, previously 0x1af44bbf82b1ef87048359504aec4ca23230109ee04f1d6f5c31391cddd25ae4.    
+2022-06-04 16:27:11 ✨ Imported #347 (0xe0a4…87a6)    
+2022-06-04 16:27:12 ✨ Imported #348 (0xbffe…83fe)    
+2022-06-04 16:27:13 ✨ Imported #349 (0x3a2c…dc97)    
+2022-06-04 16:27:13 💤 Idle (3 peers), best: #349 (0x3a2c…dc97), finalized #347 (0xe0a4…87a6), ⬇ 19.7kiB/s ⬆ 19.9kiB/s    
+2022-06-04 16:27:14 ✨ Imported #350 (0xaff6…9006)    
+2022-06-04 16:27:15 🙌 Starting consensus session on top of parent 0xaff61c6b39072f63712375f92bc6f5a8673c85843c79b0db02cf824d8f879006    
+2022-06-04 16:27:15 🎁 Prepared block for proposing at 351 (0 ms) [hash: 0xdce0792deba2b7ae5fbc1812dc9965097c9c643ec93e55d58e9f2ef937c01005; parent_hash: 0xaff6…9006; extrinsics (1): [0xf4bc…dfc2]]    
+2022-06-04 16:27:15 🔖 Pre-sealed block for proposal at 351. Hash now 0x526a49a6d732472ba4bb8c0d54c7d7fc490234e701b276f04da8905d10bcb6be, previously 0xdce0792deba2b7ae5fbc1812dc9965097c9c643ec93e55d58e9f2ef937c01005.    
+2022-06-04 16:27:15 ✨ Imported #351 (0x526a…b6be)    
+2022-06-04 16:27:16 ✨ Imported #352 (0x5523…91c1)    
+2022-06-04 16:27:17 ✨ Imported #353 (0x8f82…ac02)    
+2022-06-04 16:27:18 ✨ Imported #354 (0x953b…3017)    
+2022-06-04 16:27:18 💤 Idle (3 peers), best: #354 (0x953b…3017), finalized #352 (0x5523…91c1), ⬇ 20.8kiB/s ⬆ 21.0kiB/s    
+2022-06-04 16:27:19 🙌 Starting consensus session on top of parent 0x953bd29ec9e21ef7fdcbc88a9ff64d713f60635a621996e5dee5dcf2f7433017    
+2022-06-04 16:27:19 🎁 Prepared block for proposing at 355 (0 ms) [hash: 0x71ddb816e462dfb0166d597868bb563b18dc601f57dc80a252d1f73fc669ab4e; parent_hash: 0x953b…3017; extrinsics (1): [0x4ebc…e333]]    
+2022-06-04 16:27:19 🔖 Pre-sealed block for proposal at 355. Hash now 0x8c5846bbadd8b951843c5615c54b8ed4d4958adcc0cbc595df44cbc9e3656f76, previously 0x71ddb816e462dfb0166d597868bb563b18dc601f57dc80a252d1f73fc669ab4e.    
+2022-06-04 16:27:19 ✨ Imported #355 (0x8c58…6f76)    
+2022-06-04 16:27:20 ✨ Imported #356 (0xe1f9…e7ef)    
+2022-06-04 16:27:21 ✨ Imported #357 (0x1174…f0eb)    
+2022-06-04 16:27:22 ✨ Imported #358 (0x5c5e…78d0)    
+2022-06-04 16:27:23 🙌 Starting consensus session on top of parent 0x5c5e32e1e56d8bca3ce803f45d75ad10fe78c807b716afc12aa1135b0cd878d0    
+2022-06-04 16:27:23 🎁 Prepared block for proposing at 359 (0 ms) [hash: 0xb0d2d63d25ff5fea0750e29a1144abadd1059c7c30d9c8dadf44e54c6b221d97; parent_hash: 0x5c5e…78d0; extrinsics (1): [0x3194…052d]]    
+2022-06-04 16:27:23 🔖 Pre-sealed block for proposal at 359. Hash now 0xabb0a17a9f7c045e0ad670f86f7e31857b0bd73e85167a9fa2979a8cd4743101, previously 0xb0d2d63d25ff5fea0750e29a1144abadd1059c7c30d9c8dadf44e54c6b221d97.    
+2022-06-04 16:27:23 ✨ Imported #359 (0xabb0…3101)    
+2022-06-04 16:27:23 💤 Idle (3 peers), best: #359 (0xabb0…3101), finalized #357 (0x1174…f0eb), ⬇ 20.1kiB/s ⬆ 20.5kiB/s    
+2022-06-04 16:27:24 ✨ Imported #360 (0xe835…12b5)    
+2022-06-04 16:27:25 ✨ Imported #361 (0x01e2…358f)    
+2022-06-04 16:27:26 ✨ Imported #362 (0x847f…2c71)    
+2022-06-04 16:27:27 🙌 Starting consensus session on top of parent 0x847faa8427353906b164f357634e79f403dd74526733a2a9aa725cd725ee2c71    
+2022-06-04 16:27:27 🎁 Prepared block for proposing at 363 (0 ms) [hash: 0xe5febd94c0bd472aacb5dfa74c058abe71330607fc1656266f0f1ed7e95ee910; parent_hash: 0x847f…2c71; extrinsics (1): [0x2a99…41e3]]    
+2022-06-04 16:27:27 🔖 Pre-sealed block for proposal at 363. Hash now 0xb2647cf57da8f0643090d05424e5b1d36748a497ec4f6a843a156f37e9b3c7dd, previously 0xe5febd94c0bd472aacb5dfa74c058abe71330607fc1656266f0f1ed7e95ee910.    
+2022-06-04 16:27:27 ✨ Imported #363 (0xb264…c7dd)    
+2022-06-04 16:27:28 ✨ Imported #364 (0x2ecf…2868)    
+2022-06-04 16:27:28 💤 Idle (3 peers), best: #364 (0x2ecf…2868), finalized #362 (0x847f…2c71), ⬇ 20.7kiB/s ⬆ 20.6kiB/s    
+2022-06-04 16:27:29 ✨ Imported #365 (0x4016…4ef6)    
+2022-06-04 16:27:30 ✨ Imported #366 (0xb18c…4e38)    
+2022-06-04 16:27:31 🙌 Starting consensus session on top of parent 0xb18c8a85ac7f00e8c33197bc5a4b55b1cc2a747223d6d31195d63ffddbc64e38    
+2022-06-04 16:27:31 🎁 Prepared block for proposing at 367 (0 ms) [hash: 0xa497969f669f0dd2795ae45ee6e92d1faf26fdcad31ce5c936a48c446856ca6c; parent_hash: 0xb18c…4e38; extrinsics (1): [0xae45…ef5d]]    
+2022-06-04 16:27:31 🔖 Pre-sealed block for proposal at 367. Hash now 0x83ffac79a43993afb88e8bb158481d0799bea97eea4ce9d5b25e0b741a692d30, previously 0xa497969f669f0dd2795ae45ee6e92d1faf26fdcad31ce5c936a48c446856ca6c.    
+2022-06-04 16:27:31 ✨ Imported #367 (0x83ff…2d30)    
+2022-06-04 16:27:32 ✨ Imported #368 (0x8300…a00b)    
+2022-06-04 16:27:33 ✨ Imported #369 (0xc57b…8a2d)    
+2022-06-04 16:27:33 💤 Idle (3 peers), best: #369 (0xc57b…8a2d), finalized #367 (0x83ff…2d30), ⬇ 20.3kiB/s ⬆ 20.1kiB/s    
+2022-06-04 16:27:34 ✨ Imported #370 (0x6e91…69fb)    
+2022-06-04 16:27:35 🙌 Starting consensus session on top of parent 0x6e9134eb45189f7f5b7aa45dbb58d08200c9f7f354f0f7284b90fb843b1f69fb    
+2022-06-04 16:27:35 🎁 Prepared block for proposing at 371 (0 ms) [hash: 0x43006b402bf33873c8ebdcd4e5e27868d1398a21c7a8baeff52c281978fc485f; parent_hash: 0x6e91…69fb; extrinsics (1): [0xc880…6020]]    
+2022-06-04 16:27:35 🔖 Pre-sealed block for proposal at 371. Hash now 0x6fff8737de59666bfbe57dc4bd9d525ecd9f9d6b244f36e73a2b7dc4cc5b5d9e, previously 0x43006b402bf33873c8ebdcd4e5e27868d1398a21c7a8baeff52c281978fc485f.    
+2022-06-04 16:27:35 ✨ Imported #371 (0x6fff…5d9e)    
+2022-06-04 16:27:36 ✨ Imported #372 (0x1c12…7f44)    
+2022-06-04 16:27:37 ✨ Imported #373 (0xd101…eabf)    
+2022-06-04 16:27:38 ✨ Imported #374 (0xd1b7…475c)    
+2022-06-04 16:27:38 💤 Idle (3 peers), best: #374 (0xd1b7…475c), finalized #372 (0x1c12…7f44), ⬇ 20.4kiB/s ⬆ 20.4kiB/s    
+2022-06-04 16:27:39 🙌 Starting consensus session on top of parent 0xd1b7de8eed05f9b93ded45f535430f646d8daf0d3ca344033cc544aff958475c    
+2022-06-04 16:27:39 🎁 Prepared block for proposing at 375 (0 ms) [hash: 0x3c324c6384b6ee82751bb8d5b31153af9fbf23424dde157a18af4915dde207f4; parent_hash: 0xd1b7…475c; extrinsics (1): [0xab75…ce5c]]    
+2022-06-04 16:27:39 🔖 Pre-sealed block for proposal at 375. Hash now 0x329cef76dc18b9b174a22d958f6c790e86468a8368a5acfcc7382fb8a6c2d218, previously 0x3c324c6384b6ee82751bb8d5b31153af9fbf23424dde157a18af4915dde207f4.    
+2022-06-04 16:27:39 ✨ Imported #375 (0x329c…d218)    
+2022-06-04 16:27:40 ✨ Imported #376 (0x107d…675e)    
+2022-06-04 16:27:41 ✨ Imported #377 (0x148f…e9ec)    
+2022-06-04 16:27:42 ✨ Imported #378 (0x40ca…3095)    
+2022-06-04 16:27:43 🙌 Starting consensus session on top of parent 0x40caaa7cf4ef438d4f47170fb670b54271037e116b363b9c4cb5a246fc413095    
+2022-06-04 16:27:43 🎁 Prepared block for proposing at 379 (0 ms) [hash: 0xd50e132caeec56cb5bf7ecbff21c99238f2e00b43a184f29585d4fb861ee0abf; parent_hash: 0x40ca…3095; extrinsics (1): [0xd8d4…74e8]]    
+2022-06-04 16:27:43 🔖 Pre-sealed block for proposal at 379. Hash now 0x0cbd2cfc5cf4ecdb308176530323fb993e5bc7e6263e826441bb1ce1e373d009, previously 0xd50e132caeec56cb5bf7ecbff21c99238f2e00b43a184f29585d4fb861ee0abf.    
+2022-06-04 16:27:43 ✨ Imported #379 (0x0cbd…d009)    
+2022-06-04 16:27:43 💤 Idle (3 peers), best: #379 (0x0cbd…d009), finalized #377 (0x148f…e9ec), ⬇ 20.5kiB/s ⬆ 21.0kiB/s    
+2022-06-04 16:27:44 ✨ Imported #380 (0x3ac8…afac)    
+2022-06-04 16:27:45 ✨ Imported #381 (0x0a4b…eab3)    
+2022-06-04 16:27:46 ✨ Imported #382 (0x6d41…a5aa)    
+2022-06-04 16:27:47 🙌 Starting consensus session on top of parent 0x6d413774bf2c00d665ffafe3636cd4fc4b124330974212302b1b57578e13a5aa    
+2022-06-04 16:27:47 🎁 Prepared block for proposing at 383 (0 ms) [hash: 0xf79b5ac045422836720da2e63759fe33f6b90420e6fbd1bfddcecc724f0901c9; parent_hash: 0x6d41…a5aa; extrinsics (1): [0xc554…a8ba]]    
+2022-06-04 16:27:47 🔖 Pre-sealed block for proposal at 383. Hash now 0x279d40fd61f891eae9c5b33da9d3ab3abcc386dc0f6ec556e13332fca57cde58, previously 0xf79b5ac045422836720da2e63759fe33f6b90420e6fbd1bfddcecc724f0901c9.    
+2022-06-04 16:27:47 ✨ Imported #383 (0x279d…de58)    
+2022-06-04 16:27:48 ✨ Imported #384 (0xedc6…24f6)    
+2022-06-04 16:27:48 💤 Idle (3 peers), best: #384 (0xedc6…24f6), finalized #382 (0x6d41…a5aa), ⬇ 22.6kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:27:49 ✨ Imported #385 (0x2cfc…4d6b)    
+2022-06-04 16:27:50 ✨ Imported #386 (0xe412…71ea)    
+2022-06-04 16:27:51 🙌 Starting consensus session on top of parent 0xe412bdc88af782d199d8e0fb3b6b1096cefbfef86e0db488c461993a7a5a71ea    
+2022-06-04 16:27:51 🎁 Prepared block for proposing at 387 (0 ms) [hash: 0x7db8095537e90be3ffd21cf58776384307a6c0b52fa544554ad31e320f1143d6; parent_hash: 0xe412…71ea; extrinsics (1): [0xc606…69e8]]    
+2022-06-04 16:27:51 🔖 Pre-sealed block for proposal at 387. Hash now 0x11831fcf54335491b2a44bea3ba7c0008c274dd8d657606cd6e83f577be2acd6, previously 0x7db8095537e90be3ffd21cf58776384307a6c0b52fa544554ad31e320f1143d6.    
+2022-06-04 16:27:51 ✨ Imported #387 (0x1183…acd6)    
+2022-06-04 16:27:52 ✨ Imported #388 (0xc4b3…acc6)    
+2022-06-04 16:27:53 ✨ Imported #389 (0x6666…56d6)    
+2022-06-04 16:27:53 💤 Idle (3 peers), best: #389 (0x6666…56d6), finalized #387 (0x1183…acd6), ⬇ 23.6kiB/s ⬆ 23.8kiB/s    
+2022-06-04 16:27:54 ✨ Imported #390 (0x2db2…2f69)    
+2022-06-04 16:27:55 🙌 Starting consensus session on top of parent 0x2db2346b992cc5033ac8f9dc41ce52f4fb0da95bd0b15a7ee86088a07f352f69    
+2022-06-04 16:27:55 🎁 Prepared block for proposing at 391 (0 ms) [hash: 0xc5f82f49bdf621dee6b19ee9ab1c38a86548fffc34190fa2d7f5d82725753256; parent_hash: 0x2db2…2f69; extrinsics (1): [0x8d3e…bd5c]]    
+2022-06-04 16:27:55 🔖 Pre-sealed block for proposal at 391. Hash now 0x5592247400d1ea969fac073ea7f025e160e88a9998501b5cefe4306c80632789, previously 0xc5f82f49bdf621dee6b19ee9ab1c38a86548fffc34190fa2d7f5d82725753256.    
+2022-06-04 16:27:55 ✨ Imported #391 (0x5592…2789)    
+2022-06-04 16:27:56 ✨ Imported #392 (0x4766…b427)    
+2022-06-04 16:27:57 ✨ Imported #393 (0x09b5…5a1d)    
+2022-06-04 16:27:58 ✨ Imported #394 (0x4628…f58d)    
+2022-06-04 16:27:58 💤 Idle (3 peers), best: #394 (0x4628…f58d), finalized #392 (0x4766…b427), ⬇ 21.9kiB/s ⬆ 22.0kiB/s    
+2022-06-04 16:27:59 🙌 Starting consensus session on top of parent 0x46285d976297eebc8f0709bd7d1d4ba2bbea9cc94490fca967effdfb986df58d    
+2022-06-04 16:27:59 🎁 Prepared block for proposing at 395 (0 ms) [hash: 0x945b516bc8ec1e161a5390cd7d12b3f70b9419fcd0124c411ed3efd4a31df672; parent_hash: 0x4628…f58d; extrinsics (1): [0xed1f…ddb4]]    
+2022-06-04 16:27:59 🔖 Pre-sealed block for proposal at 395. Hash now 0xbed93a5f2c30a8d57ce5d5c9a213eda7818853eef51f4969019aed2b3f61c264, previously 0x945b516bc8ec1e161a5390cd7d12b3f70b9419fcd0124c411ed3efd4a31df672.    
+2022-06-04 16:27:59 ✨ Imported #395 (0xbed9…c264)    
+2022-06-04 16:28:00 ✨ Imported #396 (0xce08…49ad)    
+2022-06-04 16:28:01 ✨ Imported #397 (0xc782…f52b)    
+2022-06-04 16:28:02 ✨ Imported #398 (0x94f8…1e53)    
+2022-06-04 16:28:03 🙌 Starting consensus session on top of parent 0x94f8ec8528828b3e525fcb8689b6ccba15aa1be5646fd0f852b19aa70d561e53    
+2022-06-04 16:28:03 🎁 Prepared block for proposing at 399 (0 ms) [hash: 0x1397728962665bb19cc2c223f92dd5dde0f87e8c3a01b7785b5560e330aba3dd; parent_hash: 0x94f8…1e53; extrinsics (1): [0x0df4…d6fe]]    
+2022-06-04 16:28:03 🔖 Pre-sealed block for proposal at 399. Hash now 0x137c9f8d63d8d4131fa999b7d3d250fde4359ac3818db84c83c503ed4fd18add, previously 0x1397728962665bb19cc2c223f92dd5dde0f87e8c3a01b7785b5560e330aba3dd.    
+2022-06-04 16:28:03 ✨ Imported #399 (0x137c…8add)    
+2022-06-04 16:28:03 💤 Idle (3 peers), best: #399 (0x137c…8add), finalized #397 (0xc782…f52b), ⬇ 22.8kiB/s ⬆ 23.4kiB/s    
+2022-06-04 16:28:04 ✨ Imported #400 (0x79ef…ea9e)    
+2022-06-04 16:28:05 ✨ Imported #401 (0x6b42…8ba3)    
+2022-06-04 16:28:06 ✨ Imported #402 (0x2329…9c88)    
+2022-06-04 16:28:07 🙌 Starting consensus session on top of parent 0x2329a2c23ce518c09485f7bbf31a70a65752c8e82f9db938f6fba28697189c88    
+2022-06-04 16:28:07 🎁 Prepared block for proposing at 403 (0 ms) [hash: 0x811ad21c9ee87d2a768b17befc9c96ce345b49bd16714f5c94c9b4f73c1e608f; parent_hash: 0x2329…9c88; extrinsics (1): [0xe8a1…ba4b]]    
+2022-06-04 16:28:07 🔖 Pre-sealed block for proposal at 403. Hash now 0xa76fa74d2f56e3e26b57a130d84f88b2081212efcb8cc201306a7a6be5c5c673, previously 0x811ad21c9ee87d2a768b17befc9c96ce345b49bd16714f5c94c9b4f73c1e608f.    
+2022-06-04 16:28:07 ✨ Imported #403 (0xa76f…c673)    
+2022-06-04 16:28:08 ✨ Imported #404 (0x8032…2f9f)    
+2022-06-04 16:28:08 💤 Idle (3 peers), best: #404 (0x8032…2f9f), finalized #402 (0x2329…9c88), ⬇ 22.8kiB/s ⬆ 23.0kiB/s    
+2022-06-04 16:28:09 ✨ Imported #405 (0xa848…120f)    
+2022-06-04 16:28:10 ✨ Imported #406 (0x855c…7309)    
+2022-06-04 16:28:11 🙌 Starting consensus session on top of parent 0x855c3ef1a19a904ee86c624327ca734f1c62d4b910af65d0f36e4c5c56e37309    
+2022-06-04 16:28:11 🎁 Prepared block for proposing at 407 (0 ms) [hash: 0x1e9fff13a1fd739cc75d24390e472cced2999f40c36ebfdfead033a8cc9a4d96; parent_hash: 0x855c…7309; extrinsics (1): [0x0e1f…5ae7]]    
+2022-06-04 16:28:11 🔖 Pre-sealed block for proposal at 407. Hash now 0x0c489855ad8fd4bacff2ef2e510e29784916c442e79d0fb39d174a987bddaffb, previously 0x1e9fff13a1fd739cc75d24390e472cced2999f40c36ebfdfead033a8cc9a4d96.    
+2022-06-04 16:28:11 ✨ Imported #407 (0x0c48…affb)    
+2022-06-04 16:28:12 ✨ Imported #408 (0xfa6c…fe1a)    
+2022-06-04 16:28:13 ✨ Imported #409 (0x4a4e…291a)    
+2022-06-04 16:28:13 💤 Idle (3 peers), best: #409 (0x4a4e…291a), finalized #407 (0x0c48…affb), ⬇ 22.6kiB/s ⬆ 22.9kiB/s    
+2022-06-04 16:28:14 ✨ Imported #410 (0x5965…dc58)    
+2022-06-04 16:28:15 🙌 Starting consensus session on top of parent 0x5965f4be38c3760bfbd4888736656c52ce38134f2675f72d2183820b4429dc58    
+2022-06-04 16:28:15 🎁 Prepared block for proposing at 411 (0 ms) [hash: 0xe7b5a490b7be1a51af151cdb7f887ce9a98e04977fd154855cfb8fcfd6438e5d; parent_hash: 0x5965…dc58; extrinsics (1): [0x7440…5d78]]    
+2022-06-04 16:28:15 🔖 Pre-sealed block for proposal at 411. Hash now 0xc384f9cab1fec00d8d97422406d327e6f0d4bd2136995da5d5f53c01b1d382e5, previously 0xe7b5a490b7be1a51af151cdb7f887ce9a98e04977fd154855cfb8fcfd6438e5d.    
+2022-06-04 16:28:15 ✨ Imported #411 (0xc384…82e5)    
+2022-06-04 16:28:16 ✨ Imported #412 (0x4a05…e099)    
+2022-06-04 16:28:17 ✨ Imported #413 (0x71ce…49bb)    
+2022-06-04 16:28:18 ✨ Imported #414 (0x6874…8354)    
+2022-06-04 16:28:18 💤 Idle (3 peers), best: #414 (0x6874…8354), finalized #412 (0x4a05…e099), ⬇ 23.4kiB/s ⬆ 23.5kiB/s    
+2022-06-04 16:28:19 🙌 Starting consensus session on top of parent 0x6874bc475de1ea5c15b667dd8a85b4594ed8f75ba304622cd9eb8974623d8354    
+2022-06-04 16:28:19 🎁 Prepared block for proposing at 415 (0 ms) [hash: 0x673dd031a238f164e54d13bc80421099da1de6ecbeefd155379bdd17e70e9a91; parent_hash: 0x6874…8354; extrinsics (1): [0x3934…da51]]    
+2022-06-04 16:28:19 🔖 Pre-sealed block for proposal at 415. Hash now 0x26a8eb695a93da337a1f61c38e0e3f6bd382087a2565b6f0d58747d0f800cfc8, previously 0x673dd031a238f164e54d13bc80421099da1de6ecbeefd155379bdd17e70e9a91.    
+2022-06-04 16:28:19 ✨ Imported #415 (0x26a8…cfc8)    
+2022-06-04 16:28:20 ✨ Imported #416 (0x0c6c…b7bd)    
+2022-06-04 16:28:21 ✨ Imported #417 (0x83a9…ec48)    
+2022-06-04 16:28:22 ✨ Imported #418 (0x3b47…1379)    
+2022-06-04 16:28:23 🙌 Starting consensus session on top of parent 0x3b47795018566ffe39f769f01256cfa51b8efcfc813408cf20d74fd520211379    
+2022-06-04 16:28:23 🎁 Prepared block for proposing at 419 (0 ms) [hash: 0x0a5c71bffb73fce12046449fe56d1f217f6edf635ec4e2e8608f073dd05d6224; parent_hash: 0x3b47…1379; extrinsics (1): [0x7ae4…f8bb]]    
+2022-06-04 16:28:23 🔖 Pre-sealed block for proposal at 419. Hash now 0x5f0d516fe2b1831613e8238b14a508c617d1ec091ab4826224cd133e7f122c07, previously 0x0a5c71bffb73fce12046449fe56d1f217f6edf635ec4e2e8608f073dd05d6224.    
+2022-06-04 16:28:23 ✨ Imported #419 (0x5f0d…2c07)    
+2022-06-04 16:28:23 💤 Idle (3 peers), best: #419 (0x5f0d…2c07), finalized #417 (0x83a9…ec48), ⬇ 23.6kiB/s ⬆ 23.8kiB/s    
+2022-06-04 16:28:24 ✨ Imported #420 (0x12d8…f285)    
+2022-06-04 16:28:25 ✨ Imported #421 (0xbe4e…1973)    
+2022-06-04 16:28:26 ✨ Imported #422 (0x8a82…7763)    
+2022-06-04 16:28:27 🙌 Starting consensus session on top of parent 0x8a826f1a167a31e94c39aa48e4491a051b760a2b1ed2c9cc11175f839cce7763    
+2022-06-04 16:28:27 🎁 Prepared block for proposing at 423 (1 ms) [hash: 0x0511c2b970ed58aabadfe28e98c3e2d9d27f9dd99f6a00e37e7e394efea393bc; parent_hash: 0x8a82…7763; extrinsics (1): [0xf884…5e39]]    
+2022-06-04 16:28:27 🔖 Pre-sealed block for proposal at 423. Hash now 0x64ec1138669273a9dcf17bd3fd8e089e1b54ab5aed84af61513ff81e3f746428, previously 0x0511c2b970ed58aabadfe28e98c3e2d9d27f9dd99f6a00e37e7e394efea393bc.    
+2022-06-04 16:28:27 ✨ Imported #423 (0x64ec…6428)    
+2022-06-04 16:28:28 ✨ Imported #424 (0xcb38…7d58)    
+2022-06-04 16:28:28 💤 Idle (3 peers), best: #424 (0xcb38…7d58), finalized #422 (0x8a82…7763), ⬇ 22.5kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:28:29 ✨ Imported #425 (0x9abe…ffbb)    
+2022-06-04 16:28:30 ✨ Imported #426 (0x1ae1…2691)    
+2022-06-04 16:28:31 🙌 Starting consensus session on top of parent 0x1ae176e07868cd9386d790af5079aaaf2db0fa46bbc2c53d122e2e234a002691    
+2022-06-04 16:28:31 🎁 Prepared block for proposing at 427 (0 ms) [hash: 0xda1e55ad73b179947a50ad60dc901ae98ceee39ca22edd0366996db55c13f2a1; parent_hash: 0x1ae1…2691; extrinsics (1): [0x4025…d8ea]]    
+2022-06-04 16:28:31 🔖 Pre-sealed block for proposal at 427. Hash now 0x5fceaac9f70862a28336db182db795c36a69bf331517459bf7e66e12253d7b67, previously 0xda1e55ad73b179947a50ad60dc901ae98ceee39ca22edd0366996db55c13f2a1.    
+2022-06-04 16:28:31 ✨ Imported #427 (0x5fce…7b67)    
+2022-06-04 16:28:32 ✨ Imported #428 (0x9b99…1fbd)    
+2022-06-04 16:28:33 ✨ Imported #429 (0xda08…81ab)    
+2022-06-04 16:28:33 💤 Idle (3 peers), best: #429 (0xda08…81ab), finalized #427 (0x5fce…7b67), ⬇ 22.9kiB/s ⬆ 23.0kiB/s    
+2022-06-04 16:28:34 ✨ Imported #430 (0x4911…684a)    
+2022-06-04 16:28:35 🙌 Starting consensus session on top of parent 0x49116fa0302a676366ae253ada1587442e05bc3f74180887de7017513e05684a    
+2022-06-04 16:28:35 🎁 Prepared block for proposing at 431 (0 ms) [hash: 0x20985ceabfb1ecdff2871d7f36e6bc45fdfced4e77fd8e03fba6065eabe55548; parent_hash: 0x4911…684a; extrinsics (1): [0x3aea…94fe]]    
+2022-06-04 16:28:35 🔖 Pre-sealed block for proposal at 431. Hash now 0x5a457528b3973a48c1c0dc31ad2b2e4f056365911ffdedfb83ed1643bf694c62, previously 0x20985ceabfb1ecdff2871d7f36e6bc45fdfced4e77fd8e03fba6065eabe55548.    
+2022-06-04 16:28:35 ✨ Imported #431 (0x5a45…4c62)    
+2022-06-04 16:28:36 ✨ Imported #432 (0x5413…e1cf)    
+2022-06-04 16:28:37 ✨ Imported #433 (0x7992…ddbf)    
+2022-06-04 16:28:38 ✨ Imported #434 (0x35e6…58b9)    
+2022-06-04 16:28:38 💤 Idle (3 peers), best: #434 (0x35e6…58b9), finalized #432 (0x5413…e1cf), ⬇ 23.3kiB/s ⬆ 23.2kiB/s    
+2022-06-04 16:28:39 🙌 Starting consensus session on top of parent 0x35e6fe54fbb9005ed78ff910c22a8f61fc9668bb4520e2896431d70be79958b9    
+2022-06-04 16:28:39 🎁 Prepared block for proposing at 435 (0 ms) [hash: 0xd9858b3b8fdd806e3dc88fc242205f266a458408a193777db9406ff7ad7cf4b8; parent_hash: 0x35e6…58b9; extrinsics (1): [0x9057…6c70]]    
+2022-06-04 16:28:39 🔖 Pre-sealed block for proposal at 435. Hash now 0x3e615c3e4f83e0b017ea64af978961e89efd130f5e359a438651a18c67d0055d, previously 0xd9858b3b8fdd806e3dc88fc242205f266a458408a193777db9406ff7ad7cf4b8.    
+2022-06-04 16:28:39 ✨ Imported #435 (0x3e61…055d)    
+2022-06-04 16:28:40 ✨ Imported #436 (0x95f1…9a22)    
+2022-06-04 16:28:41 ✨ Imported #437 (0x8f03…9d36)    
+2022-06-04 16:28:42 ✨ Imported #438 (0xce31…23c1)    
+2022-06-04 16:28:43 🙌 Starting consensus session on top of parent 0xce31a5aee533f950d8c2002e7f366c426f5611d925443809225f138c6b9723c1    
+2022-06-04 16:28:43 🎁 Prepared block for proposing at 439 (0 ms) [hash: 0xc1ef49e03bf8c8079d840aeb002a34e8f5be7470bde3a343e5076f2c51ce432c; parent_hash: 0xce31…23c1; extrinsics (1): [0xec41…3881]]    
+2022-06-04 16:28:43 🔖 Pre-sealed block for proposal at 439. Hash now 0xa1c93c71bbbd4b84f8c98cf4dd00c855012c5593b802ff82a2639273f8b3f90f, previously 0xc1ef49e03bf8c8079d840aeb002a34e8f5be7470bde3a343e5076f2c51ce432c.    
+2022-06-04 16:28:43 ✨ Imported #439 (0xa1c9…f90f)    
+2022-06-04 16:28:43 💤 Idle (3 peers), best: #439 (0xa1c9…f90f), finalized #437 (0x8f03…9d36), ⬇ 22.4kiB/s ⬆ 22.8kiB/s    
+2022-06-04 16:28:44 ✨ Imported #440 (0x7cc2…be28)    
+2022-06-04 16:28:45 ✨ Imported #441 (0x3fa3…b4ab)    
+2022-06-04 16:28:46 ✨ Imported #442 (0x48fd…cc68)    
+2022-06-04 16:28:47 🙌 Starting consensus session on top of parent 0x48fd4f1fe5d18645be0b0e2e2ea37d58ee9b9ee2e32ef8659dc73bb9a18bcc68    
+2022-06-04 16:28:47 🎁 Prepared block for proposing at 443 (0 ms) [hash: 0x9ad66d8722abab4fd3fade658632af2c932ffd1e36d8fac5b47c239f861766de; parent_hash: 0x48fd…cc68; extrinsics (1): [0x124d…4172]]    
+2022-06-04 16:28:47 🔖 Pre-sealed block for proposal at 443. Hash now 0x61896d404d3663ed947bd831e2b9ed005ed89bd925715af1198a01b2d016c2bd, previously 0x9ad66d8722abab4fd3fade658632af2c932ffd1e36d8fac5b47c239f861766de.    
+2022-06-04 16:28:47 ✨ Imported #443 (0x6189…c2bd)    
+2022-06-04 16:28:48 ✨ Imported #444 (0x6bf2…a575)    
+2022-06-04 16:28:48 💤 Idle (3 peers), best: #444 (0x6bf2…a575), finalized #442 (0x48fd…cc68), ⬇ 22.4kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:28:49 ✨ Imported #445 (0xe554…82b3)    
+2022-06-04 16:28:50 ✨ Imported #446 (0x588c…d3c3)    
+2022-06-04 16:28:51 🙌 Starting consensus session on top of parent 0x588c2b79719e20ebcecde9227128ed70e268df4aa3a565bce62de829e131d3c3    
+2022-06-04 16:28:51 🎁 Prepared block for proposing at 447 (0 ms) [hash: 0x7093794b63f2e306ea7ded5cee02f69622583e4bf5da04b2eb511cd6c4248dbc; parent_hash: 0x588c…d3c3; extrinsics (1): [0xdce2…c6db]]    
+2022-06-04 16:28:51 🔖 Pre-sealed block for proposal at 447. Hash now 0x7fe9e4d868ca58a56d9b02681a85a706f6673dc631231d83e0f6cf34e5a82afc, previously 0x7093794b63f2e306ea7ded5cee02f69622583e4bf5da04b2eb511cd6c4248dbc.    
+2022-06-04 16:28:51 ✨ Imported #447 (0x7fe9…2afc)    
+2022-06-04 16:28:52 ✨ Imported #448 (0x20a7…251c)    
+2022-06-04 16:28:53 ✨ Imported #449 (0x9caf…5891)    
+2022-06-04 16:28:53 💤 Idle (3 peers), best: #449 (0x9caf…5891), finalized #447 (0x7fe9…2afc), ⬇ 22.4kiB/s ⬆ 22.4kiB/s    
+2022-06-04 16:28:54 ✨ Imported #450 (0xc0cd…2e60)    
+2022-06-04 16:28:55 🙌 Starting consensus session on top of parent 0xc0cdbdae8e30a6fd981ce6d7b49d89cc9ec149f25e7b0b69e17d6db44f792e60    
+2022-06-04 16:28:55 🎁 Prepared block for proposing at 451 (0 ms) [hash: 0x0d402721b5c2c56c14261c105875b58304d44b199de8c74b3037f1eb1d4314ab; parent_hash: 0xc0cd…2e60; extrinsics (1): [0x4303…59b3]]    
+2022-06-04 16:28:55 🔖 Pre-sealed block for proposal at 451. Hash now 0xa58cdd9f55de6f5b54ace503b60486f76f1bb12e5a5130482c662da19d2bbaca, previously 0x0d402721b5c2c56c14261c105875b58304d44b199de8c74b3037f1eb1d4314ab.    
+2022-06-04 16:28:55 ✨ Imported #451 (0xa58c…baca)    
+2022-06-04 16:28:56 ✨ Imported #452 (0xf126…e2b5)    
+2022-06-04 16:28:57 ✨ Imported #453 (0x9fa0…d1d5)    
+2022-06-04 16:28:58 ✨ Imported #454 (0x2c61…560b)    
+2022-06-04 16:28:58 💤 Idle (3 peers), best: #454 (0x2c61…560b), finalized #452 (0xf126…e2b5), ⬇ 23.9kiB/s ⬆ 23.7kiB/s    
+2022-06-04 16:28:59 🙌 Starting consensus session on top of parent 0x2c61b3b9591f1fd7dc1348c9e6b4f2ebda8dbeb94bd4fc94df9431f825d2560b    
+2022-06-04 16:28:59 🎁 Prepared block for proposing at 455 (0 ms) [hash: 0x283ec40b4c00738f3f61ae4fce174815da3a1b98848fb95076af677c7901ad53; parent_hash: 0x2c61…560b; extrinsics (1): [0xece0…cb74]]    
+2022-06-04 16:28:59 🔖 Pre-sealed block for proposal at 455. Hash now 0xa9e740728d7fa9c5242c7a6ebbd8205f9ae7636dc89abf7e3720339f89ba2672, previously 0x283ec40b4c00738f3f61ae4fce174815da3a1b98848fb95076af677c7901ad53.    
+2022-06-04 16:28:59 ✨ Imported #455 (0xa9e7…2672)    
+2022-06-04 16:29:00 ✨ Imported #456 (0xc039…d6da)    
+2022-06-04 16:29:01 ✨ Imported #457 (0x7456…b9f6)    
+2022-06-04 16:29:02 ✨ Imported #458 (0xab07…36c3)    
+2022-06-04 16:29:03 🙌 Starting consensus session on top of parent 0xab0782c984dff592020bd03589cb39e4df91d099cb62586a4dcff0d7b29036c3    
+2022-06-04 16:29:03 🎁 Prepared block for proposing at 459 (0 ms) [hash: 0x121e1ed2e9108c98b1ff877a19001714589a19ea784608ab6c438b2255f2ab56; parent_hash: 0xab07…36c3; extrinsics (1): [0x89c0…c976]]    
+2022-06-04 16:29:03 🔖 Pre-sealed block for proposal at 459. Hash now 0x48b123144e456ac9c04ba4cdacc489d8ae8f58ea72a99ff32ace4617bbb4f8f2, previously 0x121e1ed2e9108c98b1ff877a19001714589a19ea784608ab6c438b2255f2ab56.    
+2022-06-04 16:29:03 ✨ Imported #459 (0x48b1…f8f2)    
+2022-06-04 16:29:03 💤 Idle (3 peers), best: #459 (0x48b1…f8f2), finalized #457 (0x7456…b9f6), ⬇ 22.7kiB/s ⬆ 23.3kiB/s    
+2022-06-04 16:29:04 ✨ Imported #460 (0x209a…8cd6)    
+2022-06-04 16:29:05 ✨ Imported #461 (0x2f7f…8bf0)    
+2022-06-04 16:29:06 ✨ Imported #462 (0xeef3…d643)    
+2022-06-04 16:29:07 🙌 Starting consensus session on top of parent 0xeef33defcd2a6ba6f691b263b4f14df182e7987b96b463d7fc4011dd1a44d643    
+2022-06-04 16:29:07 🎁 Prepared block for proposing at 463 (0 ms) [hash: 0x60196a9ecce1b919e10541f1ece63e204b836cd568f1ee1fd47f2ebd33a5a9e3; parent_hash: 0xeef3…d643; extrinsics (1): [0x19d4…efd9]]    
+2022-06-04 16:29:07 🔖 Pre-sealed block for proposal at 463. Hash now 0x04d90685f867e8573994e020da724d2795bddd1cde8357ccdd764e01d4967565, previously 0x60196a9ecce1b919e10541f1ece63e204b836cd568f1ee1fd47f2ebd33a5a9e3.    
+2022-06-04 16:29:07 ✨ Imported #463 (0x04d9…7565)    
+2022-06-04 16:29:08 ✨ Imported #464 (0xd71e…ca8c)    
+2022-06-04 16:29:08 💤 Idle (3 peers), best: #464 (0xd71e…ca8c), finalized #462 (0xeef3…d643), ⬇ 22.5kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:29:09 ✨ Imported #465 (0xe2f2…ead7)    
+2022-06-04 16:29:10 ✨ Imported #466 (0x8b49…d21b)    
+2022-06-04 16:29:11 🙌 Starting consensus session on top of parent 0x8b498bc73134fb640e0e176882a952e2015eb2d87c28db2f3b5bb4d0423bd21b    
+2022-06-04 16:29:11 🎁 Prepared block for proposing at 467 (0 ms) [hash: 0xb5d008af28a5739107fea33303e94af3fecc3fc5985b878163b8e3b76a4f3bb5; parent_hash: 0x8b49…d21b; extrinsics (1): [0x3a00…cd51]]    
+2022-06-04 16:29:11 🔖 Pre-sealed block for proposal at 467. Hash now 0xe2a6dd11841e3c12f999777f22d1a17129a9200347d9d0affb918e5ba86a7488, previously 0xb5d008af28a5739107fea33303e94af3fecc3fc5985b878163b8e3b76a4f3bb5.    
+2022-06-04 16:29:11 ✨ Imported #467 (0xe2a6…7488)    
+2022-06-04 16:29:12 ✨ Imported #468 (0xf92c…a156)    
+2022-06-04 16:29:13 ✨ Imported #469 (0x5611…f654)    
+2022-06-04 16:29:13 💤 Idle (3 peers), best: #469 (0x5611…f654), finalized #467 (0xe2a6…7488), ⬇ 22.4kiB/s ⬆ 22.2kiB/s    
+2022-06-04 16:29:14 ✨ Imported #470 (0x6055…e493)    
+2022-06-04 16:29:15 🙌 Starting consensus session on top of parent 0x6055b0bb3248043ca1e701b6a8d607af68678592340900b6e4c0b644e14be493    
+2022-06-04 16:29:15 🎁 Prepared block for proposing at 471 (0 ms) [hash: 0xb5899285529ab99d1e1c75c076767ea78085e35c13146ecc6fecbada793d88c1; parent_hash: 0x6055…e493; extrinsics (1): [0x9967…f601]]    
+2022-06-04 16:29:15 🔖 Pre-sealed block for proposal at 471. Hash now 0x63f1f60b371e917acfe5599618352d707213537e47119c6ea477e7a071427a0f, previously 0xb5899285529ab99d1e1c75c076767ea78085e35c13146ecc6fecbada793d88c1.    
+2022-06-04 16:29:15 ✨ Imported #471 (0x63f1…7a0f)    
+2022-06-04 16:29:16 ✨ Imported #472 (0x2b12…580e)    
+2022-06-04 16:29:17 ✨ Imported #473 (0xa3ba…ccfe)    
+2022-06-04 16:29:18 ✨ Imported #474 (0x4486…3a60)    
+2022-06-04 16:29:18 💤 Idle (3 peers), best: #474 (0x4486…3a60), finalized #472 (0x2b12…580e), ⬇ 22.8kiB/s ⬆ 22.8kiB/s    
+2022-06-04 16:29:19 🙌 Starting consensus session on top of parent 0x4486d6f922b7bceff818a346bca45e2f20d9ea5d0d59bbd6f7dc659667503a60    
+2022-06-04 16:29:19 🎁 Prepared block for proposing at 475 (0 ms) [hash: 0x2fdc95fdcc95ce90cc1433dbcb3ebab53520018c388f597783810c7d7e02d81b; parent_hash: 0x4486…3a60; extrinsics (1): [0x0919…9591]]    
+2022-06-04 16:29:19 🔖 Pre-sealed block for proposal at 475. Hash now 0xef050d5dabceb0e553fd45bd96a60bdb22fba4604f3a2fca28f1dba3338e9f70, previously 0x2fdc95fdcc95ce90cc1433dbcb3ebab53520018c388f597783810c7d7e02d81b.    
+2022-06-04 16:29:19 ✨ Imported #475 (0xef05…9f70)    
+2022-06-04 16:29:20 ✨ Imported #476 (0x0d48…9a68)    
+2022-06-04 16:29:21 ✨ Imported #477 (0x2b5a…5c29)    
+2022-06-04 16:29:22 ✨ Imported #478 (0xdeb2…54b2)    
+2022-06-04 16:29:23 🙌 Starting consensus session on top of parent 0xdeb21db7952c915911e02b5e2c1ad416ed11ef15818bb878493e17861e1054b2    
+2022-06-04 16:29:23 🎁 Prepared block for proposing at 479 (0 ms) [hash: 0xb8461bf40d71948f67b939f5e3804231c2f4a51782ae465b2c6ce2c6ec4166f3; parent_hash: 0xdeb2…54b2; extrinsics (1): [0x8dfb…e37a]]    
+2022-06-04 16:29:23 🔖 Pre-sealed block for proposal at 479. Hash now 0xd55780d46eb2218cb7bbabd308cbe2866836ab56fc16efb450724c214d7eaf5f, previously 0xb8461bf40d71948f67b939f5e3804231c2f4a51782ae465b2c6ce2c6ec4166f3.    
+2022-06-04 16:29:23 ✨ Imported #479 (0xd557…af5f)    
+2022-06-04 16:29:23 💤 Idle (3 peers), best: #479 (0xd557…af5f), finalized #477 (0x2b5a…5c29), ⬇ 23.1kiB/s ⬆ 23.3kiB/s    
+2022-06-04 16:29:24 ✨ Imported #480 (0x532f…8cac)    
+2022-06-04 16:29:25 ✨ Imported #481 (0x845b…fc64)    
+2022-06-04 16:29:26 ✨ Imported #482 (0x6968…5780)    
+2022-06-04 16:29:27 🙌 Starting consensus session on top of parent 0x6968cfc2fd3c90efcd90b95d3902fa823a6421588f0325cdc970c0c6bda35780    
+2022-06-04 16:29:27 🎁 Prepared block for proposing at 483 (0 ms) [hash: 0x0b79b4088efe718da615baf85defc032c04ad22cc5dccb74ef26cd525ce0ddc7; parent_hash: 0x6968…5780; extrinsics (1): [0x8414…414e]]    
+2022-06-04 16:29:27 🔖 Pre-sealed block for proposal at 483. Hash now 0x9a2a197c77cf639e7c9cc64a0be8cc2be4cc73d8bac1a6467e40d0976fcf3b95, previously 0x0b79b4088efe718da615baf85defc032c04ad22cc5dccb74ef26cd525ce0ddc7.    
+2022-06-04 16:29:27 ✨ Imported #483 (0x9a2a…3b95)    
+2022-06-04 16:29:28 ✨ Imported #484 (0xb833…3c6f)    
+2022-06-04 16:29:28 💤 Idle (3 peers), best: #484 (0xb833…3c6f), finalized #482 (0x6968…5780), ⬇ 23.6kiB/s ⬆ 23.6kiB/s    
+2022-06-04 16:29:29 ✨ Imported #485 (0x654a…62d5)    
+2022-06-04 16:29:30 ✨ Imported #486 (0x00df…2ce1)    
+2022-06-04 16:29:31 🙌 Starting consensus session on top of parent 0x00df2a6120ac6fa876c03600d02b2629fc0230e35c14a4ba85ed07b186da2ce1    
+2022-06-04 16:29:31 🎁 Prepared block for proposing at 487 (0 ms) [hash: 0xbbcd00aeff5a6283b5bf6c1a4c23fd7a83a4aac918562ad374f805724bb476ee; parent_hash: 0x00df…2ce1; extrinsics (1): [0x28e8…41a0]]    
+2022-06-04 16:29:31 🔖 Pre-sealed block for proposal at 487. Hash now 0x70943e6ba64fd56d766665072aa0ae51658b9adc5b4197c08383806b2fd25abc, previously 0xbbcd00aeff5a6283b5bf6c1a4c23fd7a83a4aac918562ad374f805724bb476ee.    
+2022-06-04 16:29:31 ✨ Imported #487 (0x7094…5abc)    
+2022-06-04 16:29:32 ✨ Imported #488 (0xe10f…2e78)    
+2022-06-04 16:29:33 ✨ Imported #489 (0x771b…8702)    
+2022-06-04 16:29:33 💤 Idle (3 peers), best: #489 (0x771b…8702), finalized #487 (0x7094…5abc), ⬇ 21.9kiB/s ⬆ 22.1kiB/s    
+2022-06-04 16:29:34 ✨ Imported #490 (0x3f9c…cea2)    
+2022-06-04 16:29:35 🙌 Starting consensus session on top of parent 0x3f9c3a04731c3182ad2b2a5a22c70920f6c5794b325151b05512d684cb41cea2    
+2022-06-04 16:29:35 🎁 Prepared block for proposing at 491 (0 ms) [hash: 0xad27cd42789cdc74d115edef09c84152c378fda9fa3871fa9628f9eecc06caff; parent_hash: 0x3f9c…cea2; extrinsics (1): [0x16ae…6a74]]    
+2022-06-04 16:29:35 🔖 Pre-sealed block for proposal at 491. Hash now 0xf75d7cdb43681ea94f230dbe13321bcc49e068e33f4fbba1b46f80a1e824c2d1, previously 0xad27cd42789cdc74d115edef09c84152c378fda9fa3871fa9628f9eecc06caff.    
+2022-06-04 16:29:35 ✨ Imported #491 (0xf75d…c2d1)    
+2022-06-04 16:29:36 ✨ Imported #492 (0x05c0…056d)    
+2022-06-04 16:29:37 ✨ Imported #493 (0x568d…dc29)    
+2022-06-04 16:29:38 ✨ Imported #494 (0xfbcc…3aed)    
+2022-06-04 16:29:38 💤 Idle (3 peers), best: #494 (0xfbcc…3aed), finalized #492 (0x05c0…056d), ⬇ 22.3kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:29:39 🙌 Starting consensus session on top of parent 0xfbcc4c8e7cc592dabedb2a58c7bc88b7da5053e075c92db2e7c7626721c83aed    
+2022-06-04 16:29:39 🎁 Prepared block for proposing at 495 (0 ms) [hash: 0xb380f36665c28853900d9e79371ca406b13132ae4e914db959671dcd76409d68; parent_hash: 0xfbcc…3aed; extrinsics (1): [0xf396…ab39]]    
+2022-06-04 16:29:39 🔖 Pre-sealed block for proposal at 495. Hash now 0x653f5a814dbbd3ad142f7925c85b1605663e73d7566129287da2c3df927a51c4, previously 0xb380f36665c28853900d9e79371ca406b13132ae4e914db959671dcd76409d68.    
+2022-06-04 16:29:39 ✨ Imported #495 (0x653f…51c4)    
+2022-06-04 16:29:40 ✨ Imported #496 (0xc700…8bce)    
+2022-06-04 16:29:41 ✨ Imported #497 (0x5292…a73c)    
+2022-06-04 16:29:42 ✨ Imported #498 (0xaaeb…1de7)    
+2022-06-04 16:29:43 🙌 Starting consensus session on top of parent 0xaaebe446ca71a730675388cb1ae80fd3652a7fe2ea0b863d31b265e675bb1de7    
+2022-06-04 16:29:43 🎁 Prepared block for proposing at 499 (0 ms) [hash: 0x63fc6700ba032b2b6728f4be4fe0d22ded7b4b19a40f066382fc8f94334456c2; parent_hash: 0xaaeb…1de7; extrinsics (1): [0x9d02…7f32]]    
+2022-06-04 16:29:43 🔖 Pre-sealed block for proposal at 499. Hash now 0x530c227d1433b6e277693414f500566de2a7cb54d5a120757bbf710993d6d757, previously 0x63fc6700ba032b2b6728f4be4fe0d22ded7b4b19a40f066382fc8f94334456c2.    
+2022-06-04 16:29:43 ✨ Imported #499 (0x530c…d757)    
+2022-06-04 16:29:43 💤 Idle (3 peers), best: #499 (0x530c…d757), finalized #497 (0x5292…a73c), ⬇ 23.4kiB/s ⬆ 24.0kiB/s    
+2022-06-04 16:29:44 ✨ Imported #500 (0xaf81…301e)    
+2022-06-04 16:29:45 ✨ Imported #501 (0xd213…a736)    
+2022-06-04 16:29:46 ✨ Imported #502 (0xe7a1…e7d4)    
+2022-06-04 16:29:47 🙌 Starting consensus session on top of parent 0xe7a1dbd042b3d5b10d9579ba9faaefa59fc4c32940bde71bdd75364c7a57e7d4    
+2022-06-04 16:29:47 🎁 Prepared block for proposing at 503 (1 ms) [hash: 0x46b8caf85a9d1b132d7e92f3e3cfb47327228a438b2bd3071795213e4ee89b97; parent_hash: 0xe7a1…e7d4; extrinsics (1): [0x89a7…bd2a]]    
+2022-06-04 16:29:47 🔖 Pre-sealed block for proposal at 503. Hash now 0xaea198ac2899fd9504b26ac0f29cb66fc171a62331f1c08026302fbd903aa2df, previously 0x46b8caf85a9d1b132d7e92f3e3cfb47327228a438b2bd3071795213e4ee89b97.    
+2022-06-04 16:29:47 ✨ Imported #503 (0xaea1…a2df)    
+2022-06-04 16:29:48 ✨ Imported #504 (0x690c…5fba)    
+2022-06-04 16:29:48 💤 Idle (3 peers), best: #504 (0x690c…5fba), finalized #502 (0xe7a1…e7d4), ⬇ 21.7kiB/s ⬆ 21.9kiB/s    
+2022-06-04 16:29:49 ✨ Imported #505 (0xd155…d4d6)    
+2022-06-04 16:29:50 ✨ Imported #506 (0xb894…db36)    
+2022-06-04 16:29:51 🙌 Starting consensus session on top of parent 0xb894234848694cf588c47adcd4c602ea7db41409cbbaa229f53cf96312cfdb36    
+2022-06-04 16:29:51 🎁 Prepared block for proposing at 507 (0 ms) [hash: 0x626cff4d3f52873bf0a4776ad527f97d4bdbd9df74c405002541871f84f5ee46; parent_hash: 0xb894…db36; extrinsics (1): [0x8506…2cdf]]    
+2022-06-04 16:29:51 🔖 Pre-sealed block for proposal at 507. Hash now 0x2dd8b2052dfd1a39bee998b2270358a97b4c712c0773fe4a6136b501e1dd55cc, previously 0x626cff4d3f52873bf0a4776ad527f97d4bdbd9df74c405002541871f84f5ee46.    
+2022-06-04 16:29:51 ✨ Imported #507 (0x2dd8…55cc)    
+2022-06-04 16:29:52 ✨ Imported #508 (0xa027…b7f1)    
+2022-06-04 16:29:53 ✨ Imported #509 (0xff6a…7fa8)    
+2022-06-04 16:29:53 💤 Idle (3 peers), best: #509 (0xff6a…7fa8), finalized #507 (0x2dd8…55cc), ⬇ 22.6kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:29:54 ✨ Imported #510 (0xa13c…6ced)    
+2022-06-04 16:29:55 🙌 Starting consensus session on top of parent 0xa13c0f324e99872c436fb1d6b6cae48cce52794c5acec8c405ee63ab7ea56ced    
+2022-06-04 16:29:55 🎁 Prepared block for proposing at 511 (0 ms) [hash: 0xc21af22318d92dc1212add0eb57ea9d472968f2751033ff892c7f79c9b0a25f0; parent_hash: 0xa13c…6ced; extrinsics (1): [0xc3b1…b05c]]    
+2022-06-04 16:29:55 🔖 Pre-sealed block for proposal at 511. Hash now 0xde07f537b069182e9d2dc34f8c1ffc774ea99bbd5fdf4010fd97090bfc751939, previously 0xc21af22318d92dc1212add0eb57ea9d472968f2751033ff892c7f79c9b0a25f0.    
+2022-06-04 16:29:55 ✨ Imported #511 (0xde07…1939)    
+2022-06-04 16:29:56 ✨ Imported #512 (0xca06…ca13)    
+2022-06-04 16:29:57 ✨ Imported #513 (0x9d38…f240)    
+2022-06-04 16:29:58 ✨ Imported #514 (0x1361…b64d)    
+2022-06-04 16:29:58 💤 Idle (3 peers), best: #514 (0x1361…b64d), finalized #512 (0xca06…ca13), ⬇ 22.8kiB/s ⬆ 22.9kiB/s    
+2022-06-04 16:29:59 🙌 Starting consensus session on top of parent 0x13612d13a78b16436705d51b133cfa2005fb494db4d48b730a945f6d599fb64d    
+2022-06-04 16:29:59 🎁 Prepared block for proposing at 515 (0 ms) [hash: 0x7c1f0e92116fe59df4d3e8e9537bbb4cbef9640dad1912cae7c41cc1a68d1c9c; parent_hash: 0x1361…b64d; extrinsics (1): [0xf68a…26e8]]    
+2022-06-04 16:29:59 🔖 Pre-sealed block for proposal at 515. Hash now 0xb04ca0f0e0379f7ad7988318b7c9cb582e662f3fc37ff1d7d1c38d4343d0ac96, previously 0x7c1f0e92116fe59df4d3e8e9537bbb4cbef9640dad1912cae7c41cc1a68d1c9c.    
+2022-06-04 16:29:59 ✨ Imported #515 (0xb04c…ac96)    
+2022-06-04 16:30:00 ✨ Imported #516 (0xb6f3…3f2f)    
+2022-06-04 16:30:01 ✨ Imported #517 (0x9923…560e)    
+2022-06-04 16:30:02 ✨ Imported #518 (0x64b7…6b89)    
+2022-06-04 16:30:03 🙌 Starting consensus session on top of parent 0x64b7f75ae5bce18db50a2ce44eaee360f743c996031fa635d04f7d6e2e6e6b89    
+2022-06-04 16:30:03 🎁 Prepared block for proposing at 519 (0 ms) [hash: 0x08896b692a35f49512a480b4ba3269d35aec8521ca13ba6a5452fe6d3fea97bc; parent_hash: 0x64b7…6b89; extrinsics (1): [0x1b6f…c557]]    
+2022-06-04 16:30:03 🔖 Pre-sealed block for proposal at 519. Hash now 0x7a675e6b66155cf86d336a6fdb76883ea89726b7215407348703057dc98cb0f7, previously 0x08896b692a35f49512a480b4ba3269d35aec8521ca13ba6a5452fe6d3fea97bc.    
+2022-06-04 16:30:03 ✨ Imported #519 (0x7a67…b0f7)    
+2022-06-04 16:30:03 💤 Idle (3 peers), best: #519 (0x7a67…b0f7), finalized #517 (0x9923…560e), ⬇ 22.5kiB/s ⬆ 22.8kiB/s    
+2022-06-04 16:30:04 ✨ Imported #520 (0xfb7a…a0d4)    
+2022-06-04 16:30:05 ✨ Imported #521 (0xa897…b714)    
+2022-06-04 16:30:06 ✨ Imported #522 (0xfd2c…7f92)    
+2022-06-04 16:30:07 🙌 Starting consensus session on top of parent 0xfd2c9a3a7ab1f08a7d98507b5c31fad7a37346bde0f3a1a51765d1e892397f92    
+2022-06-04 16:30:07 🎁 Prepared block for proposing at 523 (0 ms) [hash: 0x535b6a470ab84693b72e66679a0a8cc3a340afa87500dfd535bfe619eb72d328; parent_hash: 0xfd2c…7f92; extrinsics (1): [0xcc72…ee22]]    
+2022-06-04 16:30:07 🔖 Pre-sealed block for proposal at 523. Hash now 0xd9fab885b2fefcfb89c50125ea6e9e6c8fca20e9fdf0dadef4e2e4c8aee788f6, previously 0x535b6a470ab84693b72e66679a0a8cc3a340afa87500dfd535bfe619eb72d328.    
+2022-06-04 16:30:07 ✨ Imported #523 (0xd9fa…88f6)    
+2022-06-04 16:30:08 ✨ Imported #524 (0x10da…5bfb)    
+2022-06-04 16:30:08 💤 Idle (3 peers), best: #524 (0x10da…5bfb), finalized #522 (0xfd2c…7f92), ⬇ 22.2kiB/s ⬆ 22.3kiB/s    
+2022-06-04 16:30:09 ✨ Imported #525 (0x7f79…a9f8)    
+2022-06-04 16:30:10 ✨ Imported #526 (0x3f74…a403)    
+2022-06-04 16:30:11 🙌 Starting consensus session on top of parent 0x3f741694fed4f66e7bbbb35391e956a2258980f725a9a4b7fffbadab62cfa403    
+2022-06-04 16:30:11 🎁 Prepared block for proposing at 527 (1 ms) [hash: 0x21e0539ef4abb3d0ac567da8f9215344d958fb789b04373a7365b2ac7a1ea169; parent_hash: 0x3f74…a403; extrinsics (1): [0xd57c…3a2d]]    
+2022-06-04 16:30:11 🔖 Pre-sealed block for proposal at 527. Hash now 0x657ccdf0e607e4e6e0e81026a32de0e26b884133d46664802b918aac96071ab2, previously 0x21e0539ef4abb3d0ac567da8f9215344d958fb789b04373a7365b2ac7a1ea169.    
+2022-06-04 16:30:11 ✨ Imported #527 (0x657c…1ab2)    
+2022-06-04 16:30:12 ✨ Imported #528 (0x70a2…c232)    
+2022-06-04 16:30:13 ✨ Imported #529 (0x1f82…dffd)    
+2022-06-04 16:30:13 💤 Idle (3 peers), best: #529 (0x1f82…dffd), finalized #527 (0x657c…1ab2), ⬇ 22.8kiB/s ⬆ 22.8kiB/s    
+2022-06-04 16:30:14 ✨ Imported #530 (0x2c2d…886f)    
+2022-06-04 16:30:15 🙌 Starting consensus session on top of parent 0x2c2d86e4c6fb57ec57dfcfb1fe994441e06bfb761d1bd7a92e959642bd03886f    
+2022-06-04 16:30:15 🎁 Prepared block for proposing at 531 (0 ms) [hash: 0x42be91976c5bcb95e8a247921a5dd226be913ab4b1522ad7eea1ce40f217827d; parent_hash: 0x2c2d…886f; extrinsics (1): [0x7bb1…7833]]    
+2022-06-04 16:30:15 🔖 Pre-sealed block for proposal at 531. Hash now 0x21e30f4313d8b72f240496540a93482b871b3e8c83f350df4fc0326cea89600b, previously 0x42be91976c5bcb95e8a247921a5dd226be913ab4b1522ad7eea1ce40f217827d.    
+2022-06-04 16:30:15 ✨ Imported #531 (0x21e3…600b)    
+2022-06-04 16:30:16 ✨ Imported #532 (0xcf5e…320d)    
+2022-06-04 16:30:17 ✨ Imported #533 (0x2819…0115)    
+2022-06-04 16:30:18 ✨ Imported #534 (0x8bf1…98c7)    
+2022-06-04 16:30:18 💤 Idle (3 peers), best: #534 (0x8bf1…98c7), finalized #532 (0xcf5e…320d), ⬇ 23.1kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:30:19 🙌 Starting consensus session on top of parent 0x8bf173358582af755ee644d9ee418f0db952539cd6ee13b97bd6d109b8f698c7    
+2022-06-04 16:30:19 🎁 Prepared block for proposing at 535 (1 ms) [hash: 0x61ce5327fb0468ef6d3814ab720eee5a8e8bb21da81f3f4fe7eb7af73840b161; parent_hash: 0x8bf1…98c7; extrinsics (1): [0x9cce…b18e]]    
+2022-06-04 16:30:19 🔖 Pre-sealed block for proposal at 535. Hash now 0x649a8d07463b39dcbf32ce999d8a41d5c1f20993dbf5216a9d1e5e020cdcb07f, previously 0x61ce5327fb0468ef6d3814ab720eee5a8e8bb21da81f3f4fe7eb7af73840b161.    
+2022-06-04 16:30:19 ✨ Imported #535 (0x649a…b07f)    
+2022-06-04 16:30:20 ✨ Imported #536 (0x745b…8d9d)    
+2022-06-04 16:30:21 ✨ Imported #537 (0xbdea…918d)    
+2022-06-04 16:30:22 ✨ Imported #538 (0x02bc…7bf7)    
+2022-06-04 16:30:23 🙌 Starting consensus session on top of parent 0x02bc4ce35d73d744e642bd1a0aeef4559e83e8024e4349f59c5392deb1c47bf7    
+2022-06-04 16:30:23 🎁 Prepared block for proposing at 539 (0 ms) [hash: 0x2deaad9f85d57d6e3b4d6673197d22f6fbc252343d01648bdda76ef85ad79898; parent_hash: 0x02bc…7bf7; extrinsics (1): [0x3aae…4dbb]]    
+2022-06-04 16:30:23 🔖 Pre-sealed block for proposal at 539. Hash now 0x1e147b7f73450d18bc522e8b0fff5e61be6615c7217ec66efb77f56037bed646, previously 0x2deaad9f85d57d6e3b4d6673197d22f6fbc252343d01648bdda76ef85ad79898.    
+2022-06-04 16:30:23 ✨ Imported #539 (0x1e14…d646)    
+2022-06-04 16:30:23 💤 Idle (3 peers), best: #539 (0x1e14…d646), finalized #537 (0xbdea…918d), ⬇ 22.2kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:30:24 ✨ Imported #540 (0x2c3d…edb4)    
+2022-06-04 16:30:25 ✨ Imported #541 (0xeaed…a26e)    
+2022-06-04 16:30:26 ✨ Imported #542 (0xf7a7…1a49)    
+2022-06-04 16:30:27 🙌 Starting consensus session on top of parent 0xf7a70f458d15233dcd0759508f81413c2f5977fa3737579427d2b563cf1d1a49    
+2022-06-04 16:30:27 🎁 Prepared block for proposing at 543 (1 ms) [hash: 0xcfec3ac635bde9b103c6c0e65a6a1a08eac91bf371d92a4a52d8985d15fd5514; parent_hash: 0xf7a7…1a49; extrinsics (1): [0xc9ac…759a]]    
+2022-06-04 16:30:27 🔖 Pre-sealed block for proposal at 543. Hash now 0x7b3b3c3505cc6930d6118834d441c7de38e8de74fdc2cd172889e95500ada83b, previously 0xcfec3ac635bde9b103c6c0e65a6a1a08eac91bf371d92a4a52d8985d15fd5514.    
+2022-06-04 16:30:27 ✨ Imported #543 (0x7b3b…a83b)    
+2022-06-04 16:30:28 ✨ Imported #544 (0x35ce…6768)    
+2022-06-04 16:30:28 💤 Idle (3 peers), best: #544 (0x35ce…6768), finalized #542 (0xf7a7…1a49), ⬇ 23.3kiB/s ⬆ 23.9kiB/s    
+2022-06-04 16:30:29 ✨ Imported #545 (0xcb81…e4f7)    
+2022-06-04 16:30:30 ✨ Imported #546 (0x53da…2f9d)    
+2022-06-04 16:30:31 🙌 Starting consensus session on top of parent 0x53dadbb64de65352451381de5ca9735800487561a07f963dc75ee7e4e31a2f9d    
+2022-06-04 16:30:31 🎁 Prepared block for proposing at 547 (0 ms) [hash: 0xa455880c6886a14245d175248ad7125329fddcb147a40d7f80adfb13a6e09212; parent_hash: 0x53da…2f9d; extrinsics (1): [0x1c15…ae4a]]    
+2022-06-04 16:30:31 🔖 Pre-sealed block for proposal at 547. Hash now 0x80a288f25b10715cdc511fb9123e8c38a9079d3c1431d7962aaa8f745fd34119, previously 0xa455880c6886a14245d175248ad7125329fddcb147a40d7f80adfb13a6e09212.    
+2022-06-04 16:30:31 ✨ Imported #547 (0x80a2…4119)    
+2022-06-04 16:30:32 ✨ Imported #548 (0xdbf9…9c35)    
+2022-06-04 16:30:33 ✨ Imported #549 (0x74d5…7517)    
+2022-06-04 16:30:33 💤 Idle (3 peers), best: #549 (0x74d5…7517), finalized #547 (0x80a2…4119), ⬇ 22.8kiB/s ⬆ 22.9kiB/s    
+2022-06-04 16:30:34 ✨ Imported #550 (0x63ce…6a18)    
+2022-06-04 16:30:35 🙌 Starting consensus session on top of parent 0x63ce16d7e0ecf3242e8b553d24d4d6d305fffd94bc4d0340eafa2fbc8f796a18    
+2022-06-04 16:30:35 🎁 Prepared block for proposing at 551 (0 ms) [hash: 0xe4dba0c0cd4396f58730490abfcd40e534d43995097f2dc5b70664c053376217; parent_hash: 0x63ce…6a18; extrinsics (1): [0xaaa9…a31a]]    
+2022-06-04 16:30:35 🔖 Pre-sealed block for proposal at 551. Hash now 0xa3a7356dd9e2a36fc2513745c050eb2c8c6c9d17eaa9c528c717706d0f47ee2e, previously 0xe4dba0c0cd4396f58730490abfcd40e534d43995097f2dc5b70664c053376217.    
+2022-06-04 16:30:35 ✨ Imported #551 (0xa3a7…ee2e)    
+2022-06-04 16:30:36 ✨ Imported #552 (0x96b5…31c3)    
+2022-06-04 16:30:37 ✨ Imported #553 (0x1eb4…8a4d)    
+2022-06-04 16:30:38 ✨ Imported #554 (0x54c1…afa9)    
+2022-06-04 16:30:38 💤 Idle (3 peers), best: #554 (0x54c1…afa9), finalized #552 (0x96b5…31c3), ⬇ 22.7kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:30:39 🙌 Starting consensus session on top of parent 0x54c132f8362a285bc6629acd304a7c4a3977bf20920fc358ff0ab47196a9afa9    
+2022-06-04 16:30:39 🎁 Prepared block for proposing at 555 (0 ms) [hash: 0x8920adec0615688b56b1763e9d1bf5dfd826b52d8b229080391f3818b39b106d; parent_hash: 0x54c1…afa9; extrinsics (1): [0x1d01…b307]]    
+2022-06-04 16:30:39 🔖 Pre-sealed block for proposal at 555. Hash now 0x2ad20e79e671d5aabf7db54e051d417c2b0b53b207e0092013a4506407968d26, previously 0x8920adec0615688b56b1763e9d1bf5dfd826b52d8b229080391f3818b39b106d.    
+2022-06-04 16:30:39 ✨ Imported #555 (0x2ad2…8d26)    
+2022-06-04 16:30:40 ✨ Imported #556 (0xe222…263a)    
+2022-06-04 16:30:41 ✨ Imported #557 (0x1d49…a8e0)    
+2022-06-04 16:30:42 ✨ Imported #558 (0x99bf…f503)    
+2022-06-04 16:30:43 🙌 Starting consensus session on top of parent 0x99bf536cf9dc05bf33b8ba5a9a98c9146d230c5bb4481b7f11f905ccd557f503    
+2022-06-04 16:30:43 🎁 Prepared block for proposing at 559 (0 ms) [hash: 0xf36e2f604ac02c4433d688743e48c5fb6b153e534521b0d93692e98a0ec8718d; parent_hash: 0x99bf…f503; extrinsics (1): [0x7451…c10f]]    
+2022-06-04 16:30:43 🔖 Pre-sealed block for proposal at 559. Hash now 0x316d6ddae9e312816df829a0a0c4c1a39644fef35c982023b191d972f1d96272, previously 0xf36e2f604ac02c4433d688743e48c5fb6b153e534521b0d93692e98a0ec8718d.    
+2022-06-04 16:30:43 ✨ Imported #559 (0x316d…6272)    
+2022-06-04 16:30:43 💤 Idle (3 peers), best: #559 (0x316d…6272), finalized #557 (0x1d49…a8e0), ⬇ 22.4kiB/s ⬆ 22.6kiB/s    
+2022-06-04 16:30:44 ✨ Imported #560 (0xf860…bd00)    
+2022-06-04 16:30:45 ✨ Imported #561 (0x825d…fcc9)    
+2022-06-04 16:30:46 ✨ Imported #562 (0x00ed…7bf0)    
+2022-06-04 16:30:47 🙌 Starting consensus session on top of parent 0x00edebbfebdb8a84061f58dacc161cc165426b7b35bcc4bd0eb175692d227bf0    
+2022-06-04 16:30:47 🎁 Prepared block for proposing at 563 (1 ms) [hash: 0x85d39f6b6d2202b837099c666bc3cc7d651c17b915b7f33afce6a61bc34d016d; parent_hash: 0x00ed…7bf0; extrinsics (1): [0x8cb4…4ff2]]    
+2022-06-04 16:30:47 🔖 Pre-sealed block for proposal at 563. Hash now 0xb6fd669a439bca3314a56855586597bc3b05de443702552c9adf1bbe2ae891cc, previously 0x85d39f6b6d2202b837099c666bc3cc7d651c17b915b7f33afce6a61bc34d016d.    
+2022-06-04 16:30:47 ✨ Imported #563 (0xb6fd…91cc)    
+2022-06-04 16:30:48 ✨ Imported #564 (0x2276…3111)    
+2022-06-04 16:30:48 💤 Idle (3 peers), best: #564 (0x2276…3111), finalized #562 (0x00ed…7bf0), ⬇ 22.8kiB/s ⬆ 23.1kiB/s    
+2022-06-04 16:30:49 ✨ Imported #565 (0x929e…762a)    
+2022-06-04 16:30:50 ✨ Imported #566 (0xa684…cd70)    
+2022-06-04 16:30:51 🙌 Starting consensus session on top of parent 0xa6849cdc115456e6d5e11e3eec28c138aea076939953c7af88fa005f0587cd70    
+2022-06-04 16:30:51 🎁 Prepared block for proposing at 567 (1 ms) [hash: 0x67d887912415b6373f80e2815355d196fc1d01c1cd0075f96adeb900286f85cb; parent_hash: 0xa684…cd70; extrinsics (1): [0x62b2…fe20]]    
+2022-06-04 16:30:51 🔖 Pre-sealed block for proposal at 567. Hash now 0xf51110ecaaa556c418a52f69eefd323870f46e0184e2cd085d0fb5e4d09a22d8, previously 0x67d887912415b6373f80e2815355d196fc1d01c1cd0075f96adeb900286f85cb.    
+2022-06-04 16:30:51 ✨ Imported #567 (0xf511…22d8)    
+2022-06-04 16:30:52 ✨ Imported #568 (0x1bef…030e)    
+2022-06-04 16:30:53 ✨ Imported #569 (0x846b…53a8)    
+2022-06-04 16:30:53 💤 Idle (3 peers), best: #569 (0x846b…53a8), finalized #567 (0xf511…22d8), ⬇ 22.9kiB/s ⬆ 23.2kiB/s    
+2022-06-04 16:30:54 ✨ Imported #570 (0xcd27…0972)    
+2022-06-04 16:30:55 🙌 Starting consensus session on top of parent 0xcd27257b1dd2718e297908d64d5819dcfc5bd5b649aaf4c8f3b54fc62eed0972    
+2022-06-04 16:30:55 🎁 Prepared block for proposing at 571 (1 ms) [hash: 0xd8a53b578e2a7946fba301aae59ea39f3adbd5665983639e99abf989e54643d2; parent_hash: 0xcd27…0972; extrinsics (1): [0xa107…93f5]]    
+2022-06-04 16:30:55 🔖 Pre-sealed block for proposal at 571. Hash now 0xff62ae6689f8a40433a826dc918b3e62dc8c34abc31b6755f145a53f0b81abbb, previously 0xd8a53b578e2a7946fba301aae59ea39f3adbd5665983639e99abf989e54643d2.    
+2022-06-04 16:30:55 ✨ Imported #571 (0xff62…abbb)    
+2022-06-04 16:30:56 ✨ Imported #572 (0xb32f…ed11)    
+2022-06-04 16:30:57 ✨ Imported #573 (0x5596…6399)    
+2022-06-04 16:30:58 ✨ Imported #574 (0xda3a…0374)    
+2022-06-04 16:30:58 💤 Idle (3 peers), best: #574 (0xda3a…0374), finalized #572 (0xb32f…ed11), ⬇ 22.2kiB/s ⬆ 22.4kiB/s    
+2022-06-04 16:30:59 🙌 Starting consensus session on top of parent 0xda3a27089b8a9e4f1353faec8375b3e3cc5596b1cc05c77954f6082507440374    
+2022-06-04 16:30:59 🎁 Prepared block for proposing at 575 (1 ms) [hash: 0x88cacfe6bee85d65a101716382bbc06f4fb47aa4024db5d97de558c68dc6416a; parent_hash: 0xda3a…0374; extrinsics (1): [0x27f4…b223]]    
+2022-06-04 16:30:59 🔖 Pre-sealed block for proposal at 575. Hash now 0xd0942f93d92590b309599350a94604b099eebfad32cd1781649dd3467772836a, previously 0x88cacfe6bee85d65a101716382bbc06f4fb47aa4024db5d97de558c68dc6416a.    
+2022-06-04 16:30:59 ✨ Imported #575 (0xd094…836a)    
+2022-06-04 16:31:00 ✨ Imported #576 (0x1b1a…475e)    
+2022-06-04 16:31:01 ✨ Imported #577 (0x9a0a…fdfa)    
+2022-06-04 16:31:02 ✨ Imported #578 (0xcea3…d165)    
+2022-06-04 16:31:03 🙌 Starting consensus session on top of parent 0xcea347ac4cc2259b0d3d5918ad64fe18596ad65a9516f07dac66fe9f43bbd165    
+2022-06-04 16:31:03 🎁 Prepared block for proposing at 579 (0 ms) [hash: 0x2b366665f0aed4d3776d430a7f69b05096dfc62916143ce19b3bf64643f75d7b; parent_hash: 0xcea3…d165; extrinsics (1): [0xc5bf…ae25]]    
+2022-06-04 16:31:03 🔖 Pre-sealed block for proposal at 579. Hash now 0x0d726756c8db53a6b7df09543d16b34bc2d3370e3cf7213dddd2df656bc7b231, previously 0x2b366665f0aed4d3776d430a7f69b05096dfc62916143ce19b3bf64643f75d7b.    
+2022-06-04 16:31:03 ✨ Imported #579 (0x0d72…b231)    
+2022-06-04 16:31:03 💤 Idle (3 peers), best: #579 (0x0d72…b231), finalized #577 (0x9a0a…fdfa), ⬇ 22.2kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:31:04 ✨ Imported #580 (0xa589…6f5b)    
+2022-06-04 16:31:05 ✨ Imported #581 (0xc82d…d886)    
+2022-06-04 16:31:06 ✨ Imported #582 (0x77a7…8b1d)    
+2022-06-04 16:31:07 🙌 Starting consensus session on top of parent 0x77a7642fb77406c60e566cd41ed2aae45f0d02fb4349c341b6f48ce5724a8b1d    
+2022-06-04 16:31:07 🎁 Prepared block for proposing at 583 (0 ms) [hash: 0x81ec3ad822d3f4867cab9b11d86611da9c4aba564ac17edeebf098f291660e6a; parent_hash: 0x77a7…8b1d; extrinsics (1): [0x3c5c…f885]]    
+2022-06-04 16:31:07 🔖 Pre-sealed block for proposal at 583. Hash now 0x98606db72c8c24d98dc8cbfaead4c39a3fb798d4cb8f92c571ce2571e96a985e, previously 0x81ec3ad822d3f4867cab9b11d86611da9c4aba564ac17edeebf098f291660e6a.    
+2022-06-04 16:31:07 ✨ Imported #583 (0x9860…985e)    
+2022-06-04 16:31:08 ✨ Imported #584 (0x36eb…2bba)    
+2022-06-04 16:31:08 💤 Idle (3 peers), best: #584 (0x36eb…2bba), finalized #582 (0x77a7…8b1d), ⬇ 22.9kiB/s ⬆ 22.9kiB/s    
+2022-06-04 16:31:09 ✨ Imported #585 (0x395d…e3b8)    
+2022-06-04 16:31:10 ✨ Imported #586 (0x1f97…4b88)    
+2022-06-04 16:31:11 🙌 Starting consensus session on top of parent 0x1f97b992ae805fa6a955c360b14e45e7d9b8d8efaeda71800318939bc9034b88    
+2022-06-04 16:31:11 🎁 Prepared block for proposing at 587 (0 ms) [hash: 0xb13200c4a2180854f5d952c90bcdfbfa3ff6a645399ab19e4fd52d64bb05e30a; parent_hash: 0x1f97…4b88; extrinsics (1): [0x2133…6f68]]    
+2022-06-04 16:31:11 🔖 Pre-sealed block for proposal at 587. Hash now 0x56380e4052d737b46a21b3e20642817cb8f6bf7c45720d2bb3aa1df0b132b6b3, previously 0xb13200c4a2180854f5d952c90bcdfbfa3ff6a645399ab19e4fd52d64bb05e30a.    
+2022-06-04 16:31:11 ✨ Imported #587 (0x5638…b6b3)    
+2022-06-04 16:31:12 ✨ Imported #588 (0x85fc…05c1)    
+2022-06-04 16:31:13 ✨ Imported #589 (0x4907…074d)    
+2022-06-04 16:31:13 💤 Idle (3 peers), best: #589 (0x4907…074d), finalized #587 (0x5638…b6b3), ⬇ 23.0kiB/s ⬆ 23.1kiB/s    
+2022-06-04 16:31:14 ✨ Imported #590 (0x9981…fa7f)    
+2022-06-04 16:31:15 🙌 Starting consensus session on top of parent 0x998182ead03fa965242a139866a4bfe143f9941f65fbb42cc8d730a23e48fa7f    
+2022-06-04 16:31:15 🎁 Prepared block for proposing at 591 (0 ms) [hash: 0xd08200d11dda32449be91690cc21c91161a7ad858f49ff6dd839290af1e3d484; parent_hash: 0x9981…fa7f; extrinsics (1): [0x5f50…3417]]    
+2022-06-04 16:31:15 🔖 Pre-sealed block for proposal at 591. Hash now 0xe8463581e0fed0cb56dbebc4466b149d13ca4beb8dd430873802f9fe80da7522, previously 0xd08200d11dda32449be91690cc21c91161a7ad858f49ff6dd839290af1e3d484.    
+2022-06-04 16:31:15 ✨ Imported #591 (0xe846…7522)    
+2022-06-04 16:31:16 ✨ Imported #592 (0x963f…9fc5)    
+2022-06-04 16:31:17 ✨ Imported #593 (0x1f36…bfe1)    
+2022-06-04 16:31:18 ✨ Imported #594 (0xd5f2…1788)    
+2022-06-04 16:31:18 💤 Idle (3 peers), best: #594 (0xd5f2…1788), finalized #592 (0x963f…9fc5), ⬇ 21.9kiB/s ⬆ 22.0kiB/s    
+2022-06-04 16:31:19 🙌 Starting consensus session on top of parent 0xd5f27a3298c655d33d774e4dd5d6ecf3321416f7d740f26d42a2b19b2a211788    
+2022-06-04 16:31:19 🎁 Prepared block for proposing at 595 (0 ms) [hash: 0x2b7c8b889e418516f3d8d94accb547f59dad99c4567d9ca63265b0181e750bc8; parent_hash: 0xd5f2…1788; extrinsics (1): [0x1c24…85f7]]    
+2022-06-04 16:31:19 🔖 Pre-sealed block for proposal at 595. Hash now 0xe9a74c092d5b5ceb132afa27a7c30113341bf79efc991105bc6a69fe63d780ae, previously 0x2b7c8b889e418516f3d8d94accb547f59dad99c4567d9ca63265b0181e750bc8.    
+2022-06-04 16:31:19 ✨ Imported #595 (0xe9a7…80ae)    
+2022-06-04 16:31:20 ✨ Imported #596 (0x10ff…d31b)    
+2022-06-04 16:31:21 ✨ Imported #597 (0xf2f8…3c03)    
+2022-06-04 16:31:22 ✨ Imported #598 (0x4338…b6d2)    
+2022-06-04 16:31:23 🙌 Starting consensus session on top of parent 0x4338674a26a08ccb012ff03fd31a02be09bf2347b133fc626bd6edc2a91bb6d2    
+2022-06-04 16:31:23 🎁 Prepared block for proposing at 599 (1 ms) [hash: 0x49ad195823f56cd9deb7c735866fa8372d0f71d113c0e972e09431b29fcb8719; parent_hash: 0x4338…b6d2; extrinsics (1): [0xc0ab…e85f]]    
+2022-06-04 16:31:23 🔖 Pre-sealed block for proposal at 599. Hash now 0x02374e434b4ea2d439719cdbb73c3a2cdd0f174a136da7d5b62646fe56e198fc, previously 0x49ad195823f56cd9deb7c735866fa8372d0f71d113c0e972e09431b29fcb8719.    
+2022-06-04 16:31:23 ✨ Imported #599 (0x0237…98fc)    
+2022-06-04 16:31:23 💤 Idle (3 peers), best: #599 (0x0237…98fc), finalized #597 (0xf2f8…3c03), ⬇ 23.2kiB/s ⬆ 23.6kiB/s    
+2022-06-04 16:31:24 ✨ Imported #600 (0xd0f3…27f5)    
+2022-06-04 16:31:25 ✨ Imported #601 (0xc39d…afc6)    
+2022-06-04 16:31:26 ✨ Imported #602 (0x1996…840b)    
+2022-06-04 16:31:27 🙌 Starting consensus session on top of parent 0x19969fd6208accc845578f9bb86d51d83daa7219e983c6c92e9248a1cab3840b    
+2022-06-04 16:31:27 🎁 Prepared block for proposing at 603 (0 ms) [hash: 0xd7a3aa50d44805b9f59bf781df22bea96e6d00fafe75bcc5851b655e5f1339e2; parent_hash: 0x1996…840b; extrinsics (1): [0xe466…9027]]    
+2022-06-04 16:31:27 🔖 Pre-sealed block for proposal at 603. Hash now 0x0b8139fffce5b929685d9d1fa20b8ba927e32ca77054c4600c9545678110e093, previously 0xd7a3aa50d44805b9f59bf781df22bea96e6d00fafe75bcc5851b655e5f1339e2.    
+2022-06-04 16:31:27 ✨ Imported #603 (0x0b81…e093)    
+2022-06-04 16:31:28 ✨ Imported #604 (0x57c2…6143)    
+2022-06-04 16:31:28 💤 Idle (3 peers), best: #604 (0x57c2…6143), finalized #602 (0x1996…840b), ⬇ 23.1kiB/s ⬆ 22.7kiB/s    
+2022-06-04 16:31:29 ✨ Imported #605 (0xff25…5887)    
+2022-06-04 16:31:30 ✨ Imported #606 (0x6f97…4322)    
+2022-06-04 16:31:31 🙌 Starting consensus session on top of parent 0x6f97cd542648b520db4cb842025365dcd0666984114750bed3b24fac15114322    
+2022-06-04 16:31:31 🎁 Prepared block for proposing at 607 (0 ms) [hash: 0x5975dcb825b36a28a303b2c14978eb44ac3b18a825d931b5a60b5c6362c8151c; parent_hash: 0x6f97…4322; extrinsics (1): [0xa8c6…7506]]    
+2022-06-04 16:31:31 🔖 Pre-sealed block for proposal at 607. Hash now 0x0e2043e0f069fe4e6d88c85cf99976fa39bb6a47978d58998aee274b5c6eedb2, previously 0x5975dcb825b36a28a303b2c14978eb44ac3b18a825d931b5a60b5c6362c8151c.    
+2022-06-04 16:31:31 ✨ Imported #607 (0x0e20…edb2)    
+2022-06-04 16:31:32 ✨ Imported #608 (0x6366…b58a)    
+2022-06-04 16:31:33 ✨ Imported #609 (0x86c2…9c95)    
+2022-06-04 16:31:33 💤 Idle (3 peers), best: #609 (0x86c2…9c95), finalized #606 (0x6f97…4322), ⬇ 22.4kiB/s ⬆ 22.5kiB/s    
+2022-06-04 16:31:34 ✨ Imported #610 (0x330c…b43b)    
+2022-06-04 16:31:35 🙌 Starting consensus session on top of parent 0x330c5892902e679915918950ccbe8b37fc75a5b11729c90c7b95239c0461b43b    
+2022-06-04 16:31:35 🎁 Prepared block for proposing at 611 (0 ms) [hash: 0x1609b444a6b600b17b0c3dbd9f9f3916900cca61b375f6f482924aa48658cef5; parent_hash: 0x330c…b43b; extrinsics (1): [0xbeb0…898c]]    
+2022-06-04 16:31:35 🔖 Pre-sealed block for proposal at 611. Hash now 0x56f1653c499483f3e51882f503d93844b3e449d3da17f0418c61e8dfe0c7f64d, previously 0x1609b444a6b600b17b0c3dbd9f9f3916900cca61b375f6f482924aa48658cef5.    
+2022-06-04 16:31:35 ✨ Imported #611 (0x56f1…f64d)    
+2022-06-04 16:31:36 ✨ Imported #612 (0x0fa1…7934)    
+2022-06-04 16:31:37 ✨ Imported #613 (0xede5…7aad)    
+2022-06-04 16:31:38 ✨ Imported #614 (0xcc73…b2a4)    
+2022-06-04 16:31:38 💤 Idle (3 peers), best: #614 (0xcc73…b2a4), finalized #611 (0x56f1…f64d), ⬇ 21.9kiB/s ⬆ 22.3kiB/s    
+2022-06-04 16:31:39 🙌 Starting consensus session on top of parent 0xcc73a1bf110d2d162ecb61b4b65f86226ef55958441f4951228c8145735eb2a4    
+2022-06-04 16:31:39 🎁 Prepared block for proposing at 615 (0 ms) [hash: 0xbbffd28ba305d808468a2c0d3ebc25adc7009ee2cd3a381972692084b8692afb; parent_hash: 0xcc73…b2a4; extrinsics (1): [0x0a31…899a]]    
+2022-06-04 16:31:39 🔖 Pre-sealed block for proposal at 615. Hash now 0x12361bcb853a7e9291aa987c7300005b84d0e8b29f420cfd989b6c7a7042c93b, previously 0xbbffd28ba305d808468a2c0d3ebc25adc7009ee2cd3a381972692084b8692afb.    
+2022-06-04 16:31:39 ✨ Imported #615 (0x1236…c93b)    
+2022-06-04 16:31:40 ✨ Imported #616 (0x33b9…1869)    
+2022-06-04 16:31:41 ✨ Imported #617 (0x9968…59c3)    
+2022-06-04 16:31:42 ✨ Imported #618 (0x264e…7fcf)    
+2022-06-04 16:31:43 🙌 Starting consensus session on top of parent 0x264e342f3dd384f6b813fb6f9a867dab5f12706beeff356a75413abb183c7fcf    
+2022-06-04 16:31:43 🎁 Prepared block for proposing at 619 (0 ms) [hash: 0xdb2c9cc1e973b3abcb46bc434ffaf621a92f815a6953ba28a2b4e0c8ff0b3c22; parent_hash: 0x264e…7fcf; extrinsics (1): [0x0fd8…5b8a]]    
+2022-06-04 16:31:43 🔖 Pre-sealed block for proposal at 619. Hash now 0xe6595aef215951f292a2eac0c7f49ebce606329a7b1e5ccce87819a7455fc79e, previously 0xdb2c9cc1e973b3abcb46bc434ffaf621a92f815a6953ba28a2b4e0c8ff0b3c22.    
+2022-06-04 16:31:43 ✨ Imported #619 (0xe659…c79e)    
+2022-06-04 16:31:43 💤 Idle (3 peers), best: #619 (0xe659…c79e), finalized #617 (0x9968…59c3), ⬇ 22.6kiB/s ⬆ 23.3kiB/s    
+2022-06-04 16:31:44 ✨ Imported #620 (0x1136…15ef)    
+2022-06-04 16:31:45 ✨ Imported #621 (0xfd9f…b5c3)    
+2022-06-04 16:31:46 ✨ Imported #622 (0x7a30…6d20)    
+2022-06-04 16:31:47 🙌 Starting consensus session on top of parent 0x7a30b12583fcc8bab5a1fdbb123e8ef251bbd9169d1f89509ddc4d6d7ed06d20    
+2022-06-04 16:31:47 🎁 Prepared block for proposing at 623 (0 ms) [hash: 0x43162c1077276c886d48537235c831c72115d954528cf47a4e6bf72f4744a513; parent_hash: 0x7a30…6d20; extrinsics (1): [0x6870…5cc6]]    
+2022-06-04 16:31:47 🔖 Pre-sealed block for proposal at 623. Hash now 0x1ef37284c1741777dcdbb7cc1d3854c390683da1b0a97d450b5b56451e67aa7a, previously 0x43162c1077276c886d48537235c831c72115d954528cf47a4e6bf72f4744a513.    
+2022-06-04 16:31:47 ✨ Imported #623 (0x1ef3…aa7a)    
+2022-06-04 16:31:48 ✨ Imported #624 (0x5b4a…18ca)    
+2022-06-04 16:31:48 💤 Idle (3 peers), best: #624 (0x5b4a…18ca), finalized #622 (0x7a30…6d20), ⬇ 23.0kiB/s ⬆ 23.2kiB/s    
+2022-06-04 16:31:49 ✨ Imported #625 (0x8239…0d76)    
+2022-06-04 16:31:50 ✨ Imported #626 (0xb00b…c767)    
+2022-06-04 16:31:51 🙌 Starting consensus session on top of parent 0xb00b4a7819fd9df6e0247e9ebcb066c29d6c3f403ab34f3a43132470b49ec767    
+2022-06-04 16:31:51 🎁 Prepared block for proposing at 627 (0 ms) [hash: 0x9e32d5811267235184adf9c4001be3d7c90cf2292dc9217e75f70e185dab54a5; parent_hash: 0xb00b…c767; extrinsics (1): [0xed63…d1da]]    
+2022-06-04 16:31:51 🔖 Pre-sealed block for proposal at 627. Hash now 0x75be2a72f3926cbe927ff4594125b5ad8195ecff7e4e91ae28f5b78725e716a4, previously 0x9e32d5811267235184adf9c4001be3d7c90cf2292dc9217e75f70e185dab54a5.    
+2022-06-04 16:31:51 ✨ Imported #627 (0x75be…16a4)    
+2022-06-04 16:31:52 ✨ Imported #628 (0x95d0…7dcc)    
+2022-06-04 16:31:53 ✨ Imported #629 (0xfdb1…835a)    
+2022-06-04 16:31:53 💤 Idle (3 peers), best: #629 (0xfdb1…835a), finalized #627 (0x75be…16a4), ⬇ 23.0kiB/s ⬆ 22.8kiB/s    
+2022-06-04 16:31:54 ✨ Imported #630 (0x7edc…57b4)    
+2022-06-04 16:31:55 🙌 Starting consensus session on top of parent 0x7edcb8c142d0d40bcea2f037d053103bb4ae657df8712e0b3351f6b2eea057b4    
+2022-06-04 16:31:55 🎁 Prepared block for proposing at 631 (0 ms) [hash: 0xa356742c61088d1a3c597a35859a081ce4cd8c29e3286d1a58d09ef084652b5f; parent_hash: 0x7edc…57b4; extrinsics (1): [0x4679…fd06]]    
+2022-06-04 16:31:55 🔖 Pre-sealed block for proposal at 631. Hash now 0xd249f9f99c6feedb60ed59c378e50fbe4575e343a541242718bf3f2950a9ce7e, previously 0xa356742c61088d1a3c597a35859a081ce4cd8c29e3286d1a58d09ef084652b5f.    
+2022-06-04 16:31:55 ✨ Imported #631 (0xd249…ce7e)    
+2022-06-04 16:31:56 ✨ Imported #632 (0x79e8…7bcc)    
+2022-06-04 16:31:57 ✨ Imported #633 (0xf5d8…5474)    
+2022-06-04 16:31:58 ✨ Imported #634 (0x650b…ccff)    
+2022-06-04 16:31:58 💤 Idle (3 peers), best: #634 (0x650b…ccff), finalized #632 (0x79e8…7bcc), ⬇ 23.5kiB/s ⬆ 23.9kiB/s    
+2022-06-04 16:31:59 🙌 Starting consensus session on top of parent 0x650bfb4b7f48b82a02dbf6aeec45600c10cd114f60c4418c4fabb297783eccff    
+2022-06-04 16:31:59 🎁 Prepared block for proposing at 635 (0 ms) [hash: 0x71c38886495ae03892b4be276860cee3bc543d05ae8046222926d33b820014d8; parent_hash: 0x650b…ccff; extrinsics (1): [0x6338…c3a3]]    
+2022-06-04 16:31:59 🔖 Pre-sealed block for proposal at 635. Hash now 0x6646b4d322452ac9dea565a6a4d1b80866d8931d8bf09384f6bbf8d0d533a242, previously 0x71c38886495ae03892b4be276860cee3bc543d05ae8046222926d33b820014d8.    
+2022-06-04 16:31:59 ✨ Imported #635 (0x6646…a242)    
+2022-06-04 16:32:00 ✨ Imported #636 (0x270b…dc79)    
+2022-06-04 16:32:01 ✨ Imported #637 (0xa5ce…0446)    
+2022-06-04 16:32:02 ✨ Imported #638 (0xf2da…4812)    
+2022-06-04 16:32:03 🙌 Starting consensus session on top of parent 0xf2da235dacc8031eec785b5237c136a5907e30d6915d64cda1cdb6166a844812    
+2022-06-04 16:32:03 🎁 Prepared block for proposing at 639 (0 ms) [hash: 0xb41e487be071fa0eca7239a6ab426562f68be0cf63731e0123ad6bfbd159b1a5; parent_hash: 0xf2da…4812; extrinsics (1): [0x0839…166f]]    
+2022-06-04 16:32:03 🔖 Pre-sealed block for proposal at 639. Hash now 0x9292ee8f38fa90552977a864347bbfaef526b9f6c28068b867199093ae822ac1, previously 0xb41e487be071fa0eca7239a6ab426562f68be0cf63731e0123ad6bfbd159b1a5.    
+2022-06-04 16:32:03 ✨ Imported #639 (0x9292…2ac1)    
+2022-06-04 16:32:03 💤 Idle (3 peers), best: #639 (0x9292…2ac1), finalized #637 (0xa5ce…0446), ⬇ 25.5kiB/s ⬆ 26.2kiB/s    
+2022-06-04 16:32:04 ✨ Imported #640 (0xaede…882c)    
+2022-06-04 16:32:05 ✨ Imported #641 (0x27cb…1adb)    
+2022-06-04 16:32:06 ✨ Imported #642 (0x6062…c592)    
+2022-06-04 16:32:07 🙌 Starting consensus session on top of parent 0x6062cd94fe831c7064815f16f563623a8bae2bdfe85cfe1c7d9c0dcb1d42c592    
+2022-06-04 16:32:07 🎁 Prepared block for proposing at 643 (0 ms) [hash: 0xaff6c9361354a627b1cda7ef506d233dcd6cf58525d297854dce6d4d8beccfe4; parent_hash: 0x6062…c592; extrinsics (1): [0x89b9…0b14]]    
+2022-06-04 16:32:07 🔖 Pre-sealed block for proposal at 643. Hash now 0xddddf1be496bb4f971e31cb9b932a0ed4e42f1a85cc1324345104c65ca3bf3a9, previously 0xaff6c9361354a627b1cda7ef506d233dcd6cf58525d297854dce6d4d8beccfe4.    
+2022-06-04 16:32:07 ✨ Imported #643 (0xdddd…f3a9)    
+2022-06-04 16:32:08 ✨ Imported #644 (0x20b5…d28d)    
+2022-06-04 16:32:08 💤 Idle (3 peers), best: #644 (0x20b5…d28d), finalized #642 (0x6062…c592), ⬇ 24.8kiB/s ⬆ 25.2kiB/s    
+2022-06-04 16:32:09 ✨ Imported #645 (0xb923…de16)    
+2022-06-04 16:32:10 ✨ Imported #646 (0xce68…d727)    
+2022-06-04 16:32:11 🙌 Starting consensus session on top of parent 0xce68441d32d5d623afe90ffc28514356119d9d4003c45c1fbe26e53d6b95d727    
+2022-06-04 16:32:11 🎁 Prepared block for proposing at 647 (1 ms) [hash: 0xf696716e7b8d28bb91ee90e42659ab2f9d7f7fc9abdf96aef766c72ee0d67616; parent_hash: 0xce68…d727; extrinsics (1): [0xcd58…971f]]    
+2022-06-04 16:32:11 🔖 Pre-sealed block for proposal at 647. Hash now 0x5306aa69b3d4dd3c3747670d2e0d58cb1b5e34a3e9d0a59ae233fa2e7d3eb5c0, previously 0xf696716e7b8d28bb91ee90e42659ab2f9d7f7fc9abdf96aef766c72ee0d67616.    
+2022-06-04 16:32:11 ✨ Imported #647 (0x5306…b5c0)    
+2022-06-04 16:32:12 ✨ Imported #648 (0x31df…0862)    
+2022-06-04 16:32:13 ✨ Imported #649 (0xddd9…0810)    
+2022-06-04 16:32:13 💤 Idle (3 peers), best: #649 (0xddd9…0810), finalized #647 (0x5306…b5c0), ⬇ 25.4kiB/s ⬆ 24.9kiB/s    
+2022-06-04 16:32:14 ✨ Imported #650 (0xc9ac…b169)    
+2022-06-04 16:32:15 🙌 Starting consensus session on top of parent 0xc9ac9f8cd428dbabd8647c28c285ac7f296611cb5d7ccf701c0b20608953b169    
+2022-06-04 16:32:15 🎁 Prepared block for proposing at 651 (0 ms) [hash: 0x2c1398d06b757dda21e0669376e1a0cd65e0ee9be3c1ea9742c3a085f0b69db9; parent_hash: 0xc9ac…b169; extrinsics (1): [0x6dc1…fa59]]    
+2022-06-04 16:32:15 🔖 Pre-sealed block for proposal at 651. Hash now 0xb39f820326e85e49edaaa8f1ddc22cb6447469ba5511100d067b885f17903bcd, previously 0x2c1398d06b757dda21e0669376e1a0cd65e0ee9be3c1ea9742c3a085f0b69db9.    
+2022-06-04 16:32:15 ✨ Imported #651 (0xb39f…3bcd)    
+2022-06-04 16:32:16 ✨ Imported #652 (0x18b1…091c)    
+2022-06-04 16:32:17 ✨ Imported #653 (0x3768…ba63)    
+2022-06-04 16:32:18 ✨ Imported #654 (0xcaba…888f)    
+2022-06-04 16:32:18 💤 Idle (3 peers), best: #654 (0xcaba…888f), finalized #651 (0xb39f…3bcd), ⬇ 24.2kiB/s ⬆ 24.7kiB/s    
+2022-06-04 16:32:19 🙌 Starting consensus session on top of parent 0xcaba6522d1493b6856fbc4397eb6fb0b354123b89774919f77169226a685888f    
+2022-06-04 16:32:19 🎁 Prepared block for proposing at 655 (1 ms) [hash: 0x50df7df53d2c2be2f7591cdd8aefa1d86c8824d3b7926a318bd4e63d95fcd665; parent_hash: 0xcaba…888f; extrinsics (1): [0x2f0c…b181]]    
+2022-06-04 16:32:19 🔖 Pre-sealed block for proposal at 655. Hash now 0xb075e03212aa66e404fa723efbb3deb72740b9c14fb0df66e46c822745fbd461, previously 0x50df7df53d2c2be2f7591cdd8aefa1d86c8824d3b7926a318bd4e63d95fcd665.    
+2022-06-04 16:32:19 ✨ Imported #655 (0xb075…d461)    
+2022-06-04 16:32:20 ✨ Imported #656 (0x95bc…c0e9)    
+2022-06-04 16:32:21 ✨ Imported #657 (0xb824…75cb)    
+2022-06-04 16:32:22 ✨ Imported #658 (0x58e2…17bd)    
+2022-06-04 16:32:23 🙌 Starting consensus session on top of parent 0x58e2b247941256cdbeb09ccc79b6046f073882a5c5a1ddfc078bf3ff61fc17bd    
+2022-06-04 16:32:23 🎁 Prepared block for proposing at 659 (1 ms) [hash: 0x3a93ef57fa5cb8eac771bcd2c6995fa9b5573ac8c3820da6f23aba294165cb97; parent_hash: 0x58e2…17bd; extrinsics (1): [0xb659…f250]]    
+2022-06-04 16:32:23 🔖 Pre-sealed block for proposal at 659. Hash now 0x300eed296fc048ed9f3452739a4155cdaca127ae3cd3ce68a1245397d593094e, previously 0x3a93ef57fa5cb8eac771bcd2c6995fa9b5573ac8c3820da6f23aba294165cb97.    
+2022-06-04 16:32:23 ✨ Imported #659 (0x300e…094e)    
+2022-06-04 16:32:23 💤 Idle (3 peers), best: #659 (0x300e…094e), finalized #657 (0xb824…75cb), ⬇ 24.9kiB/s ⬆ 25.2kiB/s    
+2022-06-04 16:32:24 ✨ Imported #660 (0x1a54…9530)    
+2022-06-04 16:32:25 ✨ Imported #661 (0x9821…e46e)    
+2022-06-04 16:32:26 ✨ Imported #662 (0xa6a6…8dbc)    
+2022-06-04 16:32:27 🙌 Starting consensus session on top of parent 0xa6a6519346cc586696578c5f695212cfdc4d769ec58911b7662531f356ac8dbc    
+2022-06-04 16:32:27 🎁 Prepared block for proposing at 663 (0 ms) [hash: 0x0d9d0eab0e329dc3a7cbb42371e45b9274ecd79d2c1d501d2581dd91cba35470; parent_hash: 0xa6a6…8dbc; extrinsics (1): [0x55af…2e50]]    
+2022-06-04 16:32:27 🔖 Pre-sealed block for proposal at 663. Hash now 0x7e84aa73f2dcd97ab020c486443bd200bd78a8482e2663beeae094139dcce507, previously 0x0d9d0eab0e329dc3a7cbb42371e45b9274ecd79d2c1d501d2581dd91cba35470.    
+2022-06-04 16:32:27 ✨ Imported #663 (0x7e84…e507)    
+2022-06-04 16:32:28 ✨ Imported #664 (0x847a…fd90)    
+2022-06-04 16:32:28 💤 Idle (3 peers), best: #664 (0x847a…fd90), finalized #662 (0xa6a6…8dbc), ⬇ 26.3kiB/s ⬆ 26.7kiB/s    
+2022-06-04 16:32:29 ✨ Imported #665 (0x6648…fa0a)    
+2022-06-04 16:32:30 ✨ Imported #666 (0x395f…bcb7)    
+2022-06-04 16:32:31 🙌 Starting consensus session on top of parent 0x395f9b6dc29f896d1c2e81fb5e1d6b783fa03e7c45d45b05e53c7ce7877abcb7    
+2022-06-04 16:32:31 🎁 Prepared block for proposing at 667 (0 ms) [hash: 0xaa0e12cfc639185c692c310f2d7e39fe838dd253eaf61d2700aa5edd6525cf53; parent_hash: 0x395f…bcb7; extrinsics (1): [0x90b1…69e1]]    
+2022-06-04 16:32:31 🔖 Pre-sealed block for proposal at 667. Hash now 0x31ec3030c5bd7720389d33a10c9376f0a7960f1dfe63eeaad376ed276f534f94, previously 0xaa0e12cfc639185c692c310f2d7e39fe838dd253eaf61d2700aa5edd6525cf53.    
+2022-06-04 16:32:31 ✨ Imported #667 (0x31ec…4f94)    
+2022-06-04 16:32:32 ✨ Imported #668 (0xe458…7d24)    
+2022-06-04 16:32:33 ✨ Imported #669 (0x9487…6192)    
+2022-06-04 16:32:33 💤 Idle (3 peers), best: #669 (0x9487…6192), finalized #666 (0x395f…bcb7), ⬇ 24.8kiB/s ⬆ 25.0kiB/s    
+2022-06-04 16:32:34 ✨ Imported #670 (0x76aa…580a)    
+2022-06-04 16:32:35 🙌 Starting consensus session on top of parent 0x76aaaf2b2a5a070450256a262e02b4d0eaf97d10f9f305150f0f30790c2e580a    
+2022-06-04 16:32:35 🎁 Prepared block for proposing at 671 (0 ms) [hash: 0xee20228b2b83e07ae6f17a0048c64bae92df29b5e6c6be7a230d774d95f04716; parent_hash: 0x76aa…580a; extrinsics (1): [0x4729…e5d0]]    
+2022-06-04 16:32:35 🔖 Pre-sealed block for proposal at 671. Hash now 0x6519d8887d95a2edc922657702f20fc9ccabbd5ae4eeb8ebb515ae047964b482, previously 0xee20228b2b83e07ae6f17a0048c64bae92df29b5e6c6be7a230d774d95f04716.    
+2022-06-04 16:32:35 ✨ Imported #671 (0x6519…b482)    
+2022-06-04 16:32:36 ✨ Imported #672 (0xfd6d…34c6)    
+2022-06-04 16:32:37 ✨ Imported #673 (0x65ba…6b4b)    
+2022-06-04 16:32:38 ✨ Imported #674 (0xff1e…fc78)    
+2022-06-04 16:32:38 💤 Idle (3 peers), best: #674 (0xff1e…fc78), finalized #672 (0xfd6d…34c6), ⬇ 26.3kiB/s ⬆ 26.9kiB/s    
+2022-06-04 16:32:39 🙌 Starting consensus session on top of parent 0xff1eec3e4067a4fcc2bd24da255241cc31767836283c443d23cbe270aed8fc78    
+2022-06-04 16:32:39 🎁 Prepared block for proposing at 675 (1 ms) [hash: 0xee1ff3a33b433096aaf3dc9a5d1fc70c75d34755665de3019feb8f6af6730c34; parent_hash: 0xff1e…fc78; extrinsics (1): [0x0a0a…3f14]]    
+2022-06-04 16:32:39 🔖 Pre-sealed block for proposal at 675. Hash now 0x641e0d3825453dd229ce0aaf384a650757c141abcad2162bd124fffb4ec7e7cc, previously 0xee1ff3a33b433096aaf3dc9a5d1fc70c75d34755665de3019feb8f6af6730c34.    
+2022-06-04 16:32:39 ✨ Imported #675 (0x641e…e7cc)    
+2022-06-04 16:32:40 ✨ Imported #676 (0xdabf…14b8)    
+2022-06-04 16:32:41 ✨ Imported #677 (0x0cb7…a68a)    
+2022-06-04 16:32:42 ✨ Imported #678 (0x02c2…50d3)    
+2022-06-04 16:32:43 🙌 Starting consensus session on top of parent 0x02c25ffb6e1d1243a8a58228e5954d7df5cc51ca79c4b1bad686da6270fb50d3    
+2022-06-04 16:32:43 🎁 Prepared block for proposing at 679 (1 ms) [hash: 0x58ae59d3594a3aa60077ca40ffd72c1730affe05f031289ef12a43e338d9f11e; parent_hash: 0x02c2…50d3; extrinsics (1): [0xb3ba…0664]]    
+2022-06-04 16:32:43 🔖 Pre-sealed block for proposal at 679. Hash now 0xf43c9ff02b350fbf3cdcd99fc281196fb280d2b36c317f4bf15c47196af17eaa, previously 0x58ae59d3594a3aa60077ca40ffd72c1730affe05f031289ef12a43e338d9f11e.    
+2022-06-04 16:32:43 ✨ Imported #679 (0xf43c…7eaa)    
+2022-06-04 16:32:43 💤 Idle (3 peers), best: #679 (0xf43c…7eaa), finalized #677 (0x0cb7…a68a), ⬇ 25.5kiB/s ⬆ 25.8kiB/s    
+2022-06-04 16:32:44 ✨ Imported #680 (0x0a2e…8e07)    
+2022-06-04 16:32:45 ✨ Imported #681 (0xd376…3576)    
+2022-06-04 16:32:46 ✨ Imported #682 (0x125d…423f)    
+2022-06-04 16:32:47 🙌 Starting consensus session on top of parent 0x125d1a089f122bd6c89be9b59ae7b1e370ea4107c968c0645d3fcaaa8bd0423f    
+2022-06-04 16:32:47 🎁 Prepared block for proposing at 683 (1 ms) [hash: 0x8d74d458798fa96fa40d129da038d46a7296c829e1ab25175daa4751f94f0c5f; parent_hash: 0x125d…423f; extrinsics (1): [0xc972…a95a]]    
+2022-06-04 16:32:47 🔖 Pre-sealed block for proposal at 683. Hash now 0x3bda6e9f1f5c3e380e6b2dd1f00563ddc6dffcc53937c56c9adb89ae39d3fd9c, previously 0x8d74d458798fa96fa40d129da038d46a7296c829e1ab25175daa4751f94f0c5f.    
+2022-06-04 16:32:47 ✨ Imported #683 (0x3bda…fd9c)    
+2022-06-04 16:32:48 ✨ Imported #684 (0x4e36…5bc6)    
+2022-06-04 16:32:48 💤 Idle (3 peers), best: #684 (0x4e36…5bc6), finalized #682 (0x125d…423f), ⬇ 26.1kiB/s ⬆ 26.0kiB/s    
+2022-06-04 16:32:49 ✨ Imported #685 (0x879f…1f0b)    
+2022-06-04 16:32:50 ✨ Imported #686 (0x9cba…4ae6)    
+2022-06-04 16:32:51 🙌 Starting consensus session on top of parent 0x9cba7d4da003906986f6f6829a04a37346ab7ff9de7df77b8c7b2806cabe4ae6    
+2022-06-04 16:32:51 🎁 Prepared block for proposing at 687 (0 ms) [hash: 0x72a250bed6e1e4aff83960625f0a8a4a2318ff8b049e38a881405dd46f8f0beb; parent_hash: 0x9cba…4ae6; extrinsics (1): [0x232e…4aaf]]    
+2022-06-04 16:32:51 🔖 Pre-sealed block for proposal at 687. Hash now 0xfea518d75f48da8edf08252a47b91d2e60e9700f55e6ad06fdecde833ca3329d, previously 0x72a250bed6e1e4aff83960625f0a8a4a2318ff8b049e38a881405dd46f8f0beb.    
+2022-06-04 16:32:51 ✨ Imported #687 (0xfea5…329d)    
+2022-06-04 16:32:52 ✨ Imported #688 (0xc805…62db)    
+2022-06-04 16:32:53 ✨ Imported #689 (0x3b95…3b45)    
+2022-06-04 16:32:53 💤 Idle (3 peers), best: #689 (0x3b95…3b45), finalized #687 (0xfea5…329d), ⬇ 24.9kiB/s ⬆ 25.0kiB/s    
+2022-06-04 16:32:54 ✨ Imported #690 (0xd810…204f)    
+2022-06-04 16:32:55 🙌 Starting consensus session on top of parent 0xd8103587412e8d2057c40dab579ff201979bb526d97f98c648fd9f2578db204f    
+2022-06-04 16:32:55 🎁 Prepared block for proposing at 691 (0 ms) [hash: 0x12d8e61545fc51ad6a7b4c31720da4bb1f4f82c3c0f9494cfab5fc69efc70cff; parent_hash: 0xd810…204f; extrinsics (1): [0xf785…5b92]]    
+2022-06-04 16:32:55 🔖 Pre-sealed block for proposal at 691. Hash now 0x8f764e3f80f70b468a288ed3cf05e8ab7099765ac0d22a7969629030b1a81cf0, previously 0x12d8e61545fc51ad6a7b4c31720da4bb1f4f82c3c0f9494cfab5fc69efc70cff.    
+2022-06-04 16:32:55 ✨ Imported #691 (0x8f76…1cf0)    
+2022-06-04 16:32:56 ✨ Imported #692 (0x10c6…8af4)    
+2022-06-04 16:32:57 ✨ Imported #693 (0xfed0…f088)    
+2022-06-04 16:32:58 ✨ Imported #694 (0x4d88…bd2f)    
+2022-06-04 16:32:58 💤 Idle (3 peers), best: #694 (0x4d88…bd2f), finalized #692 (0x10c6…8af4), ⬇ 24.9kiB/s ⬆ 24.7kiB/s    
+2022-06-04 16:32:59 🙌 Starting consensus session on top of parent 0x4d88b31c1bfd6199107329fa31453f6980c8b68a7a7b7597d4a01a1892a3bd2f    
+2022-06-04 16:32:59 🎁 Prepared block for proposing at 695 (0 ms) [hash: 0x50dd3b05615229e4db2186ee4ebcba9b360002c44ecfc180b94bbe730bc050dc; parent_hash: 0x4d88…bd2f; extrinsics (1): [0x11f6…1512]]    
+2022-06-04 16:32:59 🔖 Pre-sealed block for proposal at 695. Hash now 0x995db10dd3ffea52fbc241898c4b15eb4cfe99685c5a075a7db4512631d36ea9, previously 0x50dd3b05615229e4db2186ee4ebcba9b360002c44ecfc180b94bbe730bc050dc.    
+2022-06-04 16:32:59 ✨ Imported #695 (0x995d…6ea9)    
+2022-06-04 16:33:00 ✨ Imported #696 (0xdf72…4eae)    
+2022-06-04 16:33:01 ✨ Imported #697 (0x7291…fb7e)    
+2022-06-04 16:33:02 ✨ Imported #698 (0x73d9…9d6e)    
+2022-06-04 16:33:03 🙌 Starting consensus session on top of parent 0x73d9fbae09634e857b7f68d788436d79811cd0b8171708fb4919d9a533729d6e    
+2022-06-04 16:33:03 🎁 Prepared block for proposing at 699 (0 ms) [hash: 0xeb57c40adcf9754ec597e457071d82552ce7acd3e3ee842539b080caa481a82d; parent_hash: 0x73d9…9d6e; extrinsics (1): [0xaf98…d41b]]    
+2022-06-04 16:33:03 🔖 Pre-sealed block for proposal at 699. Hash now 0xd5ca2222a5d0005a6ca10443cfcc41a153e1e6cd6a3b95b2f0f93fef8f3d3227, previously 0xeb57c40adcf9754ec597e457071d82552ce7acd3e3ee842539b080caa481a82d.    
+2022-06-04 16:33:03 ✨ Imported #699 (0xd5ca…3227)    
+2022-06-04 16:33:03 💤 Idle (3 peers), best: #699 (0xd5ca…3227), finalized #697 (0x7291…fb7e), ⬇ 24.6kiB/s ⬆ 25.2kiB/s    
+2022-06-04 16:33:04 ✨ Imported #700 (0x84ec…f346)    
+2022-06-04 16:33:05 ✨ Imported #701 (0xbde5…39a4)    
+2022-06-04 16:33:06 ✨ Imported #702 (0x02d8…50e1)    
+2022-06-04 16:33:07 🙌 Starting consensus session on top of parent 0x02d8b89d45544a1e55dd9c248ac9fe1da687fdaae0f733960a9c8d95765a50e1    
+2022-06-04 16:33:07 🎁 Prepared block for proposing at 703 (0 ms) [hash: 0xa8641e8a6d20a52fb9b130598014432d3d423289b7f4ffb16e500050a24bba11; parent_hash: 0x02d8…50e1; extrinsics (1): [0xc28f…e146]]    
+2022-06-04 16:33:07 🔖 Pre-sealed block for proposal at 703. Hash now 0xeeb34ac02989021354edb18ec30078df508abd1f706e67b8b7cb5469b1221bd4, previously 0xa8641e8a6d20a52fb9b130598014432d3d423289b7f4ffb16e500050a24bba11.    
+2022-06-04 16:33:07 ✨ Imported #703 (0xeeb3…1bd4)    
+2022-06-04 16:33:08 ✨ Imported #704 (0x6891…0a66)    
+2022-06-04 16:33:08 💤 Idle (3 peers), best: #704 (0x6891…0a66), finalized #701 (0xbde5…39a4), ⬇ 24.6kiB/s ⬆ 25.2kiB/s    
+2022-06-04 16:33:09 ✨ Imported #705 (0x766c…8743)    
+2022-06-04 16:33:10 ✨ Imported #706 (0xc061…48e1)    
+2022-06-04 16:33:11 🙌 Starting consensus session on top of parent 0xc06187b767be89caf9aa048913af526ffc71e3308752c9c0e6011a78d70c48e1    
+2022-06-04 16:33:11 🎁 Prepared block for proposing at 707 (0 ms) [hash: 0xfa70852b96aed970df89a533d906874854aa67d9300cacf103e8bc71a0cf8d39; parent_hash: 0xc061…48e1; extrinsics (1): [0x2212…1491]]    
+2022-06-04 16:33:11 🔖 Pre-sealed block for proposal at 707. Hash now 0xd6027112c7f366bc3ae008a43eaa5b189e79ffaa409c9cab666088864e2f5a06, previously 0xfa70852b96aed970df89a533d906874854aa67d9300cacf103e8bc71a0cf8d39.    
+2022-06-04 16:33:11 ✨ Imported #707 (0xd602…5a06)    
+2022-06-04 16:33:12 ✨ Imported #708 (0x7925…081e)    
+2022-06-04 16:33:13 ✨ Imported #709 (0x67f3…fec1)    
+2022-06-04 16:33:13 💤 Idle (3 peers), best: #709 (0x67f3…fec1), finalized #707 (0xd602…5a06), ⬇ 25.8kiB/s ⬆ 26.1kiB/s    
+2022-06-04 16:33:14 ✨ Imported #710 (0xf38c…139b)    
+2022-06-04 16:33:15 🙌 Starting consensus session on top of parent 0xf38c6fe67f9b9b988daea9b1ceeac0b8be244982cee8d8589f87f5b150ca139b    
+2022-06-04 16:33:15 🎁 Prepared block for proposing at 711 (0 ms) [hash: 0x7b44c61d8863ad6a94447845b3b398d70da393bfb108cecf3033736a3f822cbb; parent_hash: 0xf38c…139b; extrinsics (1): [0x7436…7854]]    
+2022-06-04 16:33:15 🔖 Pre-sealed block for proposal at 711. Hash now 0x324ecf916b190899a524223e481f92918242f5ecc49f6eef10fd52a13297e969, previously 0x7b44c61d8863ad6a94447845b3b398d70da393bfb108cecf3033736a3f822cbb.    
+2022-06-04 16:33:15 ✨ Imported #711 (0x324e…e969)    
+2022-06-04 16:33:16 ✨ Imported #712 (0x0176…1c4d)    
+2022-06-04 16:33:17 ✨ Imported #713 (0x0892…c00b)    
+2022-06-04 16:33:18 ✨ Imported #714 (0x7fbb…3078)    
+2022-06-04 16:33:18 💤 Idle (3 peers), best: #714 (0x7fbb…3078), finalized #712 (0x0176…1c4d), ⬇ 24.8kiB/s ⬆ 25.0kiB/s    
+2022-06-04 16:33:19 🙌 Starting consensus session on top of parent 0x7fbb63d13fdcabbcc9b4715c3c92d95bdba39b33f3cb61b0a52261f7ba433078    
+2022-06-04 16:33:19 🎁 Prepared block for proposing at 715 (0 ms) [hash: 0x92911d93d21dcf24fb41240578a1ed427d2f2c10464513374ad17bab873b5ee9; parent_hash: 0x7fbb…3078; extrinsics (1): [0xfcff…ca36]]    
+2022-06-04 16:33:19 🔖 Pre-sealed block for proposal at 715. Hash now 0xf9a26fb56911ba0fbc9245e5219b5f3dc112edcf3c5a55b15bc2449c8461a76f, previously 0x92911d93d21dcf24fb41240578a1ed427d2f2c10464513374ad17bab873b5ee9.    
+2022-06-04 16:33:19 ✨ Imported #715 (0xf9a2…a76f)    
+2022-06-04 16:33:20 ✨ Imported #716 (0xbdab…573f)    
+2022-06-04 16:33:21 ✨ Imported #717 (0x27cd…00d2)    
+2022-06-04 16:33:22 ✨ Imported #718 (0x29d5…ffef)    
+2022-06-04 16:33:23 🙌 Starting consensus session on top of parent 0x29d50494013af789fd512782e036c28197eb008b7781c03b7700803aa123ffef    
+2022-06-04 16:33:23 🎁 Prepared block for proposing at 719 (1 ms) [hash: 0x958e51ffd575d41a2ebb9bd662438ef1a164bf5e2eacb6f0213bdbe1df27b349; parent_hash: 0x29d5…ffef; extrinsics (1): [0x8436…7428]]    
+2022-06-04 16:33:23 🔖 Pre-sealed block for proposal at 719. Hash now 0x32ac16a1e9dfee43edec604ba1ac51cad07f3a2e1bce989f4b1fa18dab64b81c, previously 0x958e51ffd575d41a2ebb9bd662438ef1a164bf5e2eacb6f0213bdbe1df27b349.    
+2022-06-04 16:33:23 ✨ Imported #719 (0x32ac…b81c)    
+2022-06-04 16:33:23 💤 Idle (3 peers), best: #719 (0x32ac…b81c), finalized #717 (0x27cd…00d2), ⬇ 25.2kiB/s ⬆ 25.8kiB/s    
+2022-06-04 16:33:24 ✨ Imported #720 (0xf9c3…d1ca)    
+2022-06-04 16:33:25 ✨ Imported #721 (0xaa00…26d1)    
+2022-06-04 16:33:26 ✨ Imported #722 (0xc49d…90ee)    
+2022-06-04 16:33:27 🙌 Starting consensus session on top of parent 0xc49dc38073ee05a81ef061c9d6d09062e5610473e90cfa6472a620f6000390ee    
+2022-06-04 16:33:27 🎁 Prepared block for proposing at 723 (0 ms) [hash: 0x4e465f517b6dd9605b8f50f47ccdc1f52a988e7f0804f83cfc51e6417f1bfced; parent_hash: 0xc49d…90ee; extrinsics (1): [0xd8f8…b31c]]    
+2022-06-04 16:33:27 🔖 Pre-sealed block for proposal at 723. Hash now 0xf3853f4b07981806e17875b879515350bfa440b24fdbe03f67fdb039cbb8abb5, previously 0x4e465f517b6dd9605b8f50f47ccdc1f52a988e7f0804f83cfc51e6417f1bfced.    
+2022-06-04 16:33:27 ✨ Imported #723 (0xf385…abb5)    
+2022-06-04 16:33:28 ✨ Imported #724 (0xd799…6f84)    
+2022-06-04 16:33:28 💤 Idle (3 peers), best: #724 (0xd799…6f84), finalized #722 (0xc49d…90ee), ⬇ 26.4kiB/s ⬆ 26.3kiB/s    
+2022-06-04 16:33:29 ✨ Imported #725 (0xac8d…b4d0)    
+2022-06-04 16:33:30 ✨ Imported #726 (0x169b…db28)    
+2022-06-04 16:33:31 🙌 Starting consensus session on top of parent 0x169b74864b3ef63697c85382b844aa7cb60e3f56b9bbf287e847774a6848db28    
+2022-06-04 16:33:31 🎁 Prepared block for proposing at 727 (0 ms) [hash: 0x71d0df252d0ad11f42b6972704e40a7a6a2a6158a70ae2525f09d0e99f4ff44a; parent_hash: 0x169b…db28; extrinsics (1): [0x64e2…b6b8]]    
+2022-06-04 16:33:31 🔖 Pre-sealed block for proposal at 727. Hash now 0x90170c29e27a6ff2836e85e8f03b390aee917ae9ab3e8c54ec2bb7788e0e3cef, previously 0x71d0df252d0ad11f42b6972704e40a7a6a2a6158a70ae2525f09d0e99f4ff44a.    
+2022-06-04 16:33:31 ✨ Imported #727 (0x9017…3cef)    
+2022-06-04 16:33:32 ✨ Imported #728 (0xd2f9…d1f8)    
+2022-06-04 16:33:33 ✨ Imported #729 (0xbe6c…1eac)    
+2022-06-04 16:33:33 💤 Idle (3 peers), best: #729 (0xbe6c…1eac), finalized #727 (0x9017…3cef), ⬇ 25.5kiB/s ⬆ 25.9kiB/s    
+2022-06-04 16:33:34 ✨ Imported #730 (0x1406…1a0e)    
+2022-06-04 16:33:35 🙌 Starting consensus session on top of parent 0x14067b21825049444210a028fa507251870f9d99a0442a22a9c425ddf3201a0e    
+2022-06-04 16:33:35 🎁 Prepared block for proposing at 731 (0 ms) [hash: 0xa15f8576c105379f5ac859c783c630571b6d7786821801a3937553045d305d85; parent_hash: 0x1406…1a0e; extrinsics (1): [0xd512…3049]]    
+2022-06-04 16:33:35 🔖 Pre-sealed block for proposal at 731. Hash now 0x2303b4feac7ffa9d7a9f56467f140701aefcd5f8bb37c5ab223e9479f90581cf, previously 0xa15f8576c105379f5ac859c783c630571b6d7786821801a3937553045d305d85.    
+2022-06-04 16:33:35 ✨ Imported #731 (0x2303…81cf)    
