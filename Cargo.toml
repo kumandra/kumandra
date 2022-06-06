@@ -8,10 +8,12 @@ members = [
     "pallets/elections",
     "primitives",
     "dragon",
+    "flooder",
+    "clients",
 
 ]
 
-exclude = [
-  "clients",
- # "dragon",
-]
+# exclude = [
+#   "clients",
+#  # "dragon",
+# ]
