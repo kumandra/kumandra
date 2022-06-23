@@ -634,14 +634,13 @@ where
             match data {
                 Empty => {}
                 HeadProposal(unvalidated_proposal) => {
-                    if let Some(proposal) =
-                        unvalidated_proposal.validate_bounds(&self.session_boundaries)
-                    {
-                        proposals.push(proposal);
-                    } else {
-                        warn!(target: "kumandra-data-store", "Message {:?} dropped as it contains \
-                            proposal {:?} not within bounds.", message, unvalidated_proposal);
-                        return;
+                    match unvalidated_proposal.validate_bounds(&self.session_boundaries) {
+                        Ok(proposal) => proposals.push(proposal),
+                        Err(error) => {
+                            warn!(target: "kumandra-data-store", "Message {:?} dropped as it contains \
+                            proposal {:?} not within bounds ({:?}).", message, unvalidated_proposal, error);
+                            return;
+                        }
                     }
                 }
             }

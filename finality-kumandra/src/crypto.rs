@@ -1,5 +1,5 @@
 use kumandra_bft::{
-    KeyBox as KumandraKeyBox, MultiKeychain, NodeCount, NodeIndex, PartialMultisignature, SignatureSet,
+    KeyBox as KumandraBoxBox, MultiKeychain, NodeCount, NodeIndex, PartialMultisignature, SignatureSet,
 };
 use kumandra_primitives::{AuthorityId, AuthoritySignature, KEY_TYPE};
 use codec::{Decode, Encode};
@@ -88,7 +88,7 @@ impl AuthorityVerifier {
     /// node of the given index.
     pub fn verify(&self, msg: &[u8], sgn: &Signature, index: NodeIndex) -> bool {
         match self.authorities.get(index.0) {
-            Some(authority) => authority.verify(&msg.to_vec(), &sgn.0),
+            Some(authority) => authority.verify(&msg, &sgn.0),
             None => false,
         }
     }
@@ -144,7 +144,7 @@ impl kumandra_bft::Index for KeyBox {
 }
 
 #[async_trait::async_trait]
-impl KumandraKeyBox for KeyBox {
+impl KumandraBoxBox for KeyBox {
     type Signature = Signature;
 
     fn node_count(&self) -> NodeCount {
@@ -165,7 +165,7 @@ impl MultiKeychain for KeyBox {
     // We probably should do this for them at some point.
     type PartialMultisignature = SignatureSet<Signature>;
 
-    fn from_signature(
+    fn bootstrap_multi(
         &self,
         signature: &Signature,
         index: NodeIndex,
