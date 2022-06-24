@@ -1,7 +1,8 @@
 use crate::{
     traits::{EraInfoProvider, SessionInfoProvider, ValidatorRewardsHandler},
-    Config, ErasReserved, MembersPerSession, Pallet, ReservedMembers, SessionValidatorBlockCount,
-    ValidatorEraTotalReward, ValidatorTotalRewards,
+    CommitteeSize, Config, CurrentEraValidators, EraValidators, NextEraNonReservedValidators,
+    NextEraReservedValidators, Pallet, SessionValidatorBlockCount, ValidatorEraTotalReward,
+    ValidatorTotalRewards,
 };
 use frame_election_provider_support::sp_arithmetic::Perquintill;
 use frame_support::pallet_prelude::Get;
@@ -10,6 +11,18 @@ use sp_std::{collections::btree_map::BTreeMap, vec::Vec};
 
 const MAX_REWARD: u32 = 1_000_000_000;
 const LENIENT_THRESHOLD: Perquintill = Perquintill::from_percent(90);
+
+/// We assume that block `B` ends session nr `S`, and current era index is `E`.
+///
+/// 1. Block `B` initialized
+/// 2. `end_session(S)` is called
+/// -  We update rewards and clear block count for the session `S`.
+/// 3. `start_session(S + 1)` is called.
+/// -  if session `S+1` starts new era we populate totals.
+/// 4. `new_session(S + 2)` is called.
+/// -  If session `S+2` starts new era then we update the reserved and non_reserved validators.
+/// -  We rotate the validators for session `S + 2` using the information about reserved and non_reserved validators.
+///
 
 fn calculate_adjusted_session_points(
     sessions_per_era: EraIndex,
@@ -32,8 +45,14 @@ fn calculate_adjusted_session_points(
     ) * total_possible_reward as u64) as u32
 }
 
-fn compute_validator_scaled_total_rewards<V>(validator_totals: Vec<(V, u128)>) -> Vec<(V, u32)> {
+pub fn compute_validator_scaled_total_rewards<V>(
+    validator_totals: Vec<(V, u128)>,
+) -> Vec<(V, u32)> {
     let sum_totals: u128 = validator_totals.iter().map(|(_, t)| t).sum();
+
+    if sum_totals == 0 {
+        return validator_totals.into_iter().map(|(v, _)| (v, 0)).collect();
+    }
 
     // scaled_total = total * (MAX_REWARD / sum_totals)
     // for maximum possible value of the total sum_totals the scaled_total is equal to MAX_REWARD
@@ -49,21 +68,14 @@ fn compute_validator_scaled_total_rewards<V>(validator_totals: Vec<(V, u128)>) -
 }
 
 fn rotate<T: Clone + PartialEq>(
-    current_era: EraIndex,
     current_session: SessionIndex,
     n_validators: usize,
-    all_validators: Vec<T>,
     reserved: Vec<T>,
+    non_reserved: Vec<T>,
 ) -> Option<Vec<T>> {
-    if current_era == 0 {
-        return None;
+    if non_reserved.is_empty() {
+        return Some(reserved);
     }
-
-    let validators_without_reserved: Vec<_> = all_validators
-        .into_iter()
-        .filter(|v| !reserved.contains(v))
-        .collect();
-    let n_all_validators_without_reserved = validators_without_reserved.len();
 
     // The validators for the committee at the session `n` are chosen as follow:
     // 1. Reserved validators are always chosen.
@@ -71,15 +83,17 @@ fn rotate<T: Clone + PartialEq>(
     // `n * free_seats` to `(n + 1) * free_seats` where free_seats is equal to free number of free
     // seats in the committee after reserved nodes are added.
     let free_seats = n_validators.saturating_sub(reserved.len());
-    let first_validator = current_session as usize * free_seats;
 
-    let committee =
-        reserved
-            .into_iter()
-            .chain((first_validator..first_validator + free_seats).map(|i| {
-                validators_without_reserved[i % n_all_validators_without_reserved].clone()
-            }))
-            .collect();
+    let non_reserved_len = non_reserved.len();
+    let first_validator = (current_session as usize).saturating_mul(free_seats) % non_reserved_len;
+
+    let committee = reserved
+        .into_iter()
+        .chain(
+            (first_validator..first_validator + free_seats)
+                .map(|i| non_reserved[i % non_reserved_len].clone()),
+        )
+        .collect();
 
     Some(committee)
 }
@@ -95,20 +109,19 @@ where
         ValidatorEraTotalReward::<T>::put(ValidatorTotalRewards(scaled_totals.collect()));
     }
 
-    fn get_committee_and_non_committee(
-        current_era: EraIndex,
-    ) -> (Vec<T::AccountId>, Vec<T::AccountId>) {
-        let committee: Vec<T::AccountId> = T::SessionInfoProvider::current_committee();
-        let non_committee = T::ValidatorRewardsHandler::all_era_validators(current_era)
+    fn get_committee_and_non_committee() -> (Vec<T::AccountId>, Vec<T::AccountId>) {
+        let committee = T::SessionInfoProvider::current_committee();
+        let non_committee = CurrentEraValidators::<T>::get()
+            .non_reserved
             .into_iter()
             .filter(|a| !committee.contains(a))
             .collect();
 
-        (committee, non_committee)
+        (committee.into_iter().collect(), non_committee)
     }
 
     fn blocks_to_produce_per_session() -> u32 {
-        T::SessionPeriod::get() / MembersPerSession::<T>::get()
+        T::SessionPeriod::get() / CommitteeSize::<T>::get()
     }
 
     fn reward_for_session_non_committee(
@@ -154,24 +167,18 @@ where
 
     // Choose a subset of all the validators for current era that contains all the
     // reserved nodes. Non reserved ones are chosen in consecutive batches for every session
-    fn rotate_committee() -> Option<Vec<T::AccountId>> {
-        let current_era = match T::EraInfoProvider::active_era() {
-            Some(ae) if ae > 0 => ae,
-            _ => return None,
-        };
+    fn rotate_committee(current_session: SessionIndex) -> Option<Vec<T::AccountId>> {
+        if T::EraInfoProvider::active_era().unwrap_or(0) == 0 {
+            return None;
+        }
 
-        let all_validators = T::ValidatorRewardsHandler::all_era_validators(current_era);
-        let reserved = ErasReserved::<T>::get();
-        let n_validators = MembersPerSession::<T>::get() as usize;
-        let current_session = T::SessionInfoProvider::current_session_index();
-
-        rotate(
-            current_era,
-            current_session,
-            n_validators,
-            all_validators,
+        let EraValidators {
             reserved,
-        )
+            non_reserved,
+        } = CurrentEraValidators::<T>::get();
+        let n_validators = CommitteeSize::<T>::get() as usize;
+
+        rotate(current_session, n_validators, reserved, non_reserved)
     }
 
     fn if_era_starts_do<F: Fn()>(era: EraIndex, start_index: SessionIndex, on_era_start: F) {
@@ -182,7 +189,7 @@ where
         }
     }
 
-    fn populate_reserved_on_next_era_start(session: SessionIndex) {
+    fn populate_next_era_validators_on_next_era_start(session: SessionIndex) {
         let active_era = match T::EraInfoProvider::active_era() {
             Some(ae) => ae,
             _ => return,
@@ -191,8 +198,12 @@ where
         // this will be populated once for the session `n+1` on the start of the session `n` where session
         // `n+1` starts a new era.
         Self::if_era_starts_do(active_era + 1, session, || {
-            let reserved_validators = ReservedMembers::<T>::get();
-            ErasReserved::<T>::put(reserved_validators)
+            let reserved_validators = NextEraReservedValidators::<T>::get();
+            let non_reserved_validators = NextEraNonReservedValidators::<T>::get();
+            CurrentEraValidators::<T>::put(EraValidators {
+                reserved: reserved_validators,
+                non_reserved: non_reserved_validators,
+            });
         });
     }
 
@@ -208,12 +219,11 @@ where
     }
 
     fn adjust_rewards_for_session() {
-        let active_era = match T::EraInfoProvider::active_era() {
-            Some(ae) if ae > 0 => ae,
-            _ => return,
-        };
+        if T::EraInfoProvider::active_era().unwrap_or(0) == 0 {
+            return;
+        }
 
-        let (committee, non_committee) = Self::get_committee_and_non_committee(active_era);
+        let (committee, non_committee) = Self::get_committee_and_non_committee();
         let nr_of_sessions = T::EraInfoProvider::sessions_per_era();
         let blocks_per_session = Self::blocks_to_produce_per_session();
         let validator_total_rewards = ValidatorEraTotalReward::<T>::get()
@@ -262,10 +272,8 @@ where
         <T as Config>::SessionManager::new_session(new_index);
         // new session is always called before the end_session of the previous session
         // so we need to populate reserved set here not on start_session nor end_session
-        let committee = Self::rotate_committee();
-        Self::populate_reserved_on_next_era_start(new_index);
-
-        committee
+        Self::populate_next_era_validators_on_next_era_start(new_index);
+        Self::rotate_committee(new_index)
     }
 
     fn new_session_genesis(new_index: SessionIndex) -> Option<Vec<T::AccountId>> {
@@ -293,11 +301,6 @@ mod tests {
         MAX_REWARD,
     };
     use std::collections::VecDeque;
-
-    #[test]
-    fn given_era_zero_when_rotating_committee_then_committee_is_empty() {
-        assert_eq!(None, rotate(0, 0, 4, (0..10).collect(), vec![1, 2, 3, 4]));
-    }
 
     #[test]
     fn adjusted_session_points_all_blocks_created_are_calculated_correctly() {
@@ -396,8 +399,8 @@ mod tests {
     #[test]
     fn given_non_zero_era_and_prime_number_of_validators_when_rotating_committee_then_rotate_is_correct(
     ) {
-        let all_validators: Vec<_> = (0..101).collect();
         let reserved: Vec<_> = (0..11).collect();
+        let non_reserved: Vec<_> = (11..101).collect();
         let total_validators = 53;
         let mut rotated_free_seats_validators: VecDeque<_> = (11..101).collect();
 
@@ -413,11 +416,10 @@ mod tests {
             assert_eq!(
                 expected_rotated_committee,
                 rotate(
-                    1,
                     session_index,
                     total_validators,
-                    all_validators.clone(),
                     reserved.clone(),
+                    non_reserved.clone(),
                 )
                 .expect("Expected non-empty rotated committee!")
             );

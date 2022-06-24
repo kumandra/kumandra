@@ -4,10 +4,10 @@ function usage(){
   echo "Usage:
       ./run_nodes.sh [-v N_VALIDATORS] [-n N_NON_VALIDATORS] [-b false] [-p BASE_PATH] [-l N_LISTENERES] [KUMANDRA_NODE_ARG]...
   where 2 <= N_VALIDATORS <= N_VALIDATORS + N_NON_VALIDATORS + N_LISTENERES <= 10
-  (by default, N_VALIDATORS=4, N_NON_VALIDATORS=0, N_LISTENERES=0 and BASE_PATH=/tmp)"
+  (by default, N_VALIDATORS=2, N_NON_VALIDATORS=0, N_LISTENERES=0 and BASE_PATH=/tmp)"
 }
 
-N_VALIDATORS=4
+N_VALIDATORS=2
 N_NON_VALIDATORS=0
 N_LISTENERES=0
 BUILD_KUMANDRA_NODE='true'
@@ -82,6 +82,7 @@ run_node() {
   ./target/release/kumandra-node purge-chain --base-path $BASE_PATH/$account_id --chain $BASE_PATH/chainspec.json -y
   ./target/release/kumandra-node \
     $validator \
+    --pruning=archive \
     --chain $BASE_PATH/chainspec.json \
     --base-path $BASE_PATH/$account_id \
     --name $auth \

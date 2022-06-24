@@ -2,26 +2,25 @@
 
 use std::collections::HashMap;
 
-use crate::{migrations, mock::*, pallet, Config};
+use crate::{migrations, mock::*, pallet};
 use frame_support::{
-    generate_storage_alias,
     storage::migration::{get_storage_value, put_storage_value},
+    storage_alias,
     traits::{GetStorageVersion, OneSessionHandler, StorageVersion},
 };
 
-generate_storage_alias!(
-    Kumandra, SessionForValidatorsChange => Value<u32>
-);
-generate_storage_alias!(
-    Kumandra, Validators<T: Config> => Value<Vec<T::AccountId>>
-);
+#[storage_alias]
+type SessionForValidatorsChange = StorageValue<Kumandra, u32>;
+
+#[storage_alias]
+type Validators<T> = StorageValue<Kumandra, Vec<<T as frame_system::Config>::AccountId>>;
 
 #[test]
 fn migration_from_v0_to_v1_works() {
     new_test_ext(&[(1u64, 1u64), (2u64, 2u64)]).execute_with(|| {
-        put_storage_value(b"Kumandra", b"SessionForValidatorsChange", &[], Some(7u32));
+        put_storage_value(b"Aleph", b"SessionForValidatorsChange", &[], Some(7u32));
 
-        let before = get_storage_value::<Option<u32>>(b"Kumandra", b"SessionForValidatorsChange", &[]);
+        let before = get_storage_value::<Option<u32>>(b"Aleph", b"SessionForValidatorsChange", &[]);
 
         assert_eq!(
             before,
@@ -30,7 +29,7 @@ fn migration_from_v0_to_v1_works() {
         );
 
         put_storage_value(
-            b"Kumandra",
+            b"Aleph",
             b"Validators",
             &[],
             Some(vec![AccountId::default()]),
@@ -44,7 +43,7 @@ fn migration_from_v0_to_v1_works() {
             "Storage version before applying migration should be default",
         );
 
-        let _weight = migrations::v0_to_v1::migrate::<Test, Kumandra>();
+        let _weight = migrations::v0_to_v1::migrate::<Test, Aleph>();
 
         let v1 = <pallet::Pallet<Test> as GetStorageVersion>::on_chain_storage_version();
 
@@ -82,10 +81,10 @@ fn migration_from_v1_to_v2_works() {
         .collect::<HashMap<_, _>>();
 
         map.iter().for_each(|(item, value)| {
-            put_storage_value(b"Kumandra", item.as_bytes(), &[], value);
+            put_storage_value(b"Aleph", item.as_bytes(), &[], value);
         });
 
-        let _weight = migrations::v1_to_v2::migrate::<Test, Kumandra>();
+        let _weight = migrations::v1_to_v2::migrate::<Test, Aleph>();
 
         let v2 = <pallet::Pallet<Test> as GetStorageVersion>::on_chain_storage_version();
 
@@ -97,7 +96,7 @@ fn migration_from_v1_to_v2_works() {
 
         for item in map.keys() {
             assert!(
-                get_storage_value::<i32>(b"Kumandra", item.as_bytes(), &[]).is_none(),
+                get_storage_value::<i32>(b"Aleph", item.as_bytes(), &[]).is_none(),
                 "Storage item {} should be killed",
                 item
             );
@@ -111,16 +110,16 @@ fn test_update_authorities() {
         initialize_session();
         run_session(1);
 
-        Kumandra::update_authorities(to_authorities(&[2, 3, 4]).as_slice());
+        Aleph::update_authorities(to_authorities(&[2, 3, 4]).as_slice());
 
-        assert_eq!(Kumandra::authorities(), to_authorities(&[2, 3, 4]));
+        assert_eq!(Aleph::authorities(), to_authorities(&[2, 3, 4]));
     });
 }
 
 #[test]
 fn test_initialize_authorities() {
     new_test_ext(&[(1u64, 1u64), (2u64, 2u64)]).execute_with(|| {
-        assert_eq!(Kumandra::authorities(), to_authorities(&[1, 2]));
+        assert_eq!(Aleph::authorities(), to_authorities(&[1, 2]));
     });
 }
 
@@ -128,7 +127,7 @@ fn test_initialize_authorities() {
 #[should_panic]
 fn fails_to_initialize_again_authorities() {
     new_test_ext(&[(1u64, 1u64), (2u64, 2u64)]).execute_with(|| {
-        Kumandra::initialize_authorities(&to_authorities(&[1, 2, 3]));
+        Aleph::initialize_authorities(&to_authorities(&[1, 2, 3]));
     });
 }
 
@@ -139,15 +138,15 @@ fn test_current_authorities() {
 
         run_session(1);
 
-        Kumandra::update_authorities(to_authorities(&[2, 3, 4]).as_slice());
+        Aleph::update_authorities(to_authorities(&[2, 3, 4]).as_slice());
 
-        assert_eq!(Kumandra::authorities(), to_authorities(&[2, 3, 4]));
+        assert_eq!(Aleph::authorities(), to_authorities(&[2, 3, 4]));
 
         run_session(2);
 
-        Kumandra::update_authorities(to_authorities(&[1, 2, 3]).as_slice());
+        Aleph::update_authorities(to_authorities(&[1, 2, 3]).as_slice());
 
-        assert_eq!(Kumandra::authorities(), to_authorities(&[1, 2, 3]));
+        assert_eq!(Aleph::authorities(), to_authorities(&[1, 2, 3]));
     })
 }
 
@@ -159,7 +158,7 @@ fn test_session_rotation() {
 
         let new_validators = new_session_validators(&[3u64, 4u64]);
         let queued_validators = new_session_validators(&[]);
-        Kumandra::on_new_session(true, new_validators, queued_validators);
-        assert_eq!(Kumandra::authorities(), to_authorities(&[3, 4]));
+        Aleph::on_new_session(true, new_validators, queued_validators);
+        assert_eq!(Aleph::authorities(), to_authorities(&[3, 4]));
     })
 }

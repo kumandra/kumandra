@@ -161,7 +161,7 @@ where
 
     async fn update_data(&mut self, best_block_in_session: &BlockHashNum<B>) {
         // We use best_block_in_session argument and the highest_finalized block from the client and compute
-        // the corresponding `KumandraData<B>` in `data_to_propose` for KumandraBFT. To not recompute this many
+        // the corresponding `KumandraData<B>` in `data_to_propose` for AlephBFT. To not recompute this many
         // times we remember these "inputs" in `prev_chain_info` and upon match we leave the old value
         // of `data_to_propose` unaffected.
 
@@ -288,7 +288,7 @@ where
     }
 }
 
-/// Provides data to KumandraBFT for ordering.
+/// Provides data to AlephBFT for ordering.
 #[derive(Clone)]
 struct DataProvider<B: BlockT> {
     data_to_propose: Arc<Mutex<KumandraData<B>>>,

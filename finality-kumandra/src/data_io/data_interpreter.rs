@@ -16,7 +16,7 @@ use std::{default::Default, sync::Arc};
 type InterpretersChainInfoProvider<B, C> =
     CachedChainInfoProvider<B, AuxFinalizationChainInfoProvider<B, Arc<C>>>;
 
-/// Takes as input ordered `KumandraData` from `KumandraBFT` and pushes blocks that should be finalized
+/// Takes as input ordered `KumandraData` from `AlephBFT` and pushes blocks that should be finalized
 /// to an output channel. The other end of the channel is held by the aggregator whose goal is to
 /// create multisignatures under the finalized blocks.
 pub struct OrderedDataInterpreter<B: BlockT, C: HeaderBackend<B>> {

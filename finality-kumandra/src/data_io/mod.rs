@@ -18,10 +18,10 @@ pub use data_provider::ChainTracker;
 pub use data_store::{DataStore, DataStoreConfig};
 pub use proposal::UnvalidatedKumandraProposal;
 
-// Maximum number of blocks above the last finalized allowed in an KumandraBFT proposal.
+// Maximum number of blocks above the last finalized allowed in an AlephBFT proposal.
 pub const MAX_DATA_BRANCH_LEN: usize = 7;
 
-/// The data ordered by the Kumandra consensus.
+/// The data ordered by the Aleph consensus.
 #[derive(Clone, Debug, Encode, Decode)]
 pub enum KumandraData<B: BlockT> {
     Empty,
@@ -56,7 +56,7 @@ impl<B: BlockT> PartialEq for KumandraData<B> {
 
 impl<B: BlockT> Eq for KumandraData<B> {}
 
-/// A trait allowing to check the data contained in an KumandraBFT network message, for the purpose of
+/// A trait allowing to check the data contained in an AlephBFT network message, for the purpose of
 /// data availability checks.
 pub trait KumandraNetworkMessage<B: BlockT>: Clone + Debug {
     fn included_data(&self) -> Vec<KumandraData<B>>;

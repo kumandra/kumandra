@@ -1,6 +1,6 @@
 use kumandra_primitives::{
     staking::{MIN_NOMINATOR_BOND, MIN_VALIDATOR_BOND},
-    AuthorityId as KumandraId, ADDRESSES_ENCODING, DEFAULT_MEMBERS_PER_SESSION, TOKEN, TOKEN_DECIMALS,
+    AuthorityId as KumandraId, ADDRESSES_ENCODING, DEFAULT_COMMITTEE_SIZE, TOKEN, TOKEN_DECIMALS,
 };
 use kumandra_runtime::{
     AccountId, AuraConfig, BalancesConfig, ElectionsConfig, GenesisConfig, Perbill, SessionConfig,
@@ -120,7 +120,7 @@ pub struct ChainParams {
     #[clap(long, default_value = "Kumandra Development")]
     chain_name: String,
 
-    /// Token symbol. Default is DKMD
+    /// Token symbol. Default is DZERO
     #[clap(long, default_value = "DKMD")]
     token_symbol: String,
 
@@ -378,9 +378,9 @@ fn generate_genesis_config(
             key: Some(sudo_account),
         },
         elections: ElectionsConfig {
-            members: accounts_config.members.clone(),
-            members_per_session: DEFAULT_MEMBERS_PER_SESSION,
-            reserved_members: vec![],
+            non_reserved_validators: accounts_config.members.clone(),
+            committee_size: DEFAULT_COMMITTEE_SIZE,
+            reserved_validators: vec![],
         },
         session: SessionConfig {
             keys: accounts_config.keys,
@@ -398,6 +398,8 @@ fn generate_genesis_config(
         },
         treasury: Default::default(),
         vesting: VestingConfig { vesting: vec![] },
+        nomination_pools: Default::default(),
+        transaction_payment: Default::default(),
     }
 }
 

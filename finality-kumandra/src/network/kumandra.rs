@@ -37,7 +37,7 @@ impl<D: Data, DN: DataNetwork<D>> From<DN> for NetworkWrapper<D, DN> {
 impl<D: Data, DN: DataNetwork<D>> KumandraNetwork<D> for NetworkWrapper<D, DN> {
     fn send(&self, data: D, recipient: kumandra_bft::Recipient) {
         if self.inner.send(data, recipient).is_err() {
-            warn!(target: "kumandra-network", "Error sending an KumandraBFT message to the network.");
+            warn!(target: "kumandra-network", "Error sending an AlephBFT message to the network.");
         }
     }
 

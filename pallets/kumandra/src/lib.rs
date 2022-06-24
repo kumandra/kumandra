@@ -1,7 +1,7 @@
-//! This pallet is a runtime companion of Kumandra finality gadget.
+//! This pallet is a runtime companion of Aleph finality gadget.
 //!
 //! Currently, it only provides support for changing sessions but in the future
-//! it will allow reporting equivocation in KumandraBFT.
+//! it will allow reporting equivocation in AlephBFT.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 

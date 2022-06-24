@@ -118,7 +118,7 @@ where
 
 type Hasher = hash::Wrapper<BlakeTwo256>;
 
-/// A wrapper for spawning tasks in a way compatible with KumandraBFT.
+/// A wrapper for spawning tasks in a way compatible with AlephBFT.
 #[derive(Clone)]
 pub struct SpawnHandle(SpawnTaskHandle);
 

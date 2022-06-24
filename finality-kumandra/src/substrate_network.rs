@@ -172,7 +172,7 @@ impl MultiaddressT for Multiaddress {
 /// own network.
 const KUMANDRA_PROTOCOL_NAME: &str = "/koompi/kumandra/2";
 
-/// Name of the network protocol used by Kumandra. Similar to
+/// Name of the network protocol used by Kumandra validators. Similar to
 /// KUMANDRA_PROTOCOL_NAME, but only used by validators that authenticated to each other.
 const KUMANDRA_VALIDATOR_PROTOCOL_NAME: &str = "/koompi/kumandra_validator/1";
 

@@ -1,5 +1,5 @@
 use kumandra_bft::{
-    KeyBox as KumandraBoxBox, MultiKeychain, NodeCount, NodeIndex, PartialMultisignature, SignatureSet,
+    KeyBox as KumandraKeyBox, MultiKeychain, NodeCount, NodeIndex, PartialMultisignature, SignatureSet,
 };
 use kumandra_primitives::{AuthorityId, AuthoritySignature, KEY_TYPE};
 use codec::{Decode, Encode};
@@ -112,7 +112,7 @@ impl AuthorityVerifier {
     }
 }
 
-/// KeyBox combines an AuthorityPen and AuthorityVerifier into one object implementing the KumandraBFT
+/// KeyBox combines an AuthorityPen and AuthorityVerifier into one object implementing the AlephBFT
 /// MultiKeychain trait.
 #[derive(Clone)]
 pub struct KeyBox {
@@ -144,7 +144,7 @@ impl kumandra_bft::Index for KeyBox {
 }
 
 #[async_trait::async_trait]
-impl KumandraBoxBox for KeyBox {
+impl KumandraKeyBox for KeyBox {
     type Signature = Signature;
 
     fn node_count(&self) -> NodeCount {
@@ -160,22 +160,25 @@ impl KumandraBoxBox for KeyBox {
     }
 }
 
+
 impl MultiKeychain for KeyBox {
     // Using `SignatureSet` is slow, but Substrate has not yet implemented aggregation.
     // We probably should do this for them at some point.
     type PartialMultisignature = SignatureSet<Signature>;
 
-    fn bootstrap_multi(
-        &self,
-        signature: &Signature,
-        index: NodeIndex,
-    ) -> Self::PartialMultisignature {
-        SignatureSet::add_signature(SignatureSet::with_size(self.node_count()), signature, index)
-    }
+    // fn bootstrap_multi(
+    //     &self,
+    //     signature: &Signature,
+    //     index: NodeIndex,
+    // ) -> Self::PartialMultisignature {
+    //     SignatureSet::add_signature(SignatureSet::with_size(self.node_count()), signature, index)
+    // }
 
     fn is_complete(&self, msg: &[u8], partial: &Self::PartialMultisignature) -> bool {
         self.authority_verifier.is_complete(msg, partial)
     }
+
+    fn from_signature(&self, _: &<Self as kumandra_bft::KeyBox>::Signature, _: NodeIndex) -> <Self as MultiKeychain>::PartialMultisignature { todo!() }
 }
 
 /// Old format of signatures, needed for backwards compatibility.

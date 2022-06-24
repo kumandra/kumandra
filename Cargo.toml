@@ -1,0 +1,19 @@
+[workspace]
+
+members = [
+    "runtime",
+    "node",
+    "finality-kumandra",
+    "pallets/kumandra",
+    "pallets/elections",
+    "primitives",
+    "dragon",
+    # "flooder",
+    "clients",
+
+]
+
+# exclude = [
+#   "clients",
+#  # "dragon",
+# ]

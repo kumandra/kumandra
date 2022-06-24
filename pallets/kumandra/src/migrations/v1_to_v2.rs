@@ -1,14 +1,21 @@
 use crate::Config;
 use frame_support::{
-    generate_storage_alias, log,
+    log, storage_alias,
     traits::{Get, PalletInfoAccess, StorageVersion},
     weights::Weight,
 };
 
-generate_storage_alias!(Kumandra, SessionForValidatorsChange => Value<()>);
-generate_storage_alias!(Kumandra, MillisecsPerBlock => Value<()>);
-generate_storage_alias!(Kumandra, SessionPeriod => Value<()>);
-generate_storage_alias!(Kumandra, Validators => Value<()>);
+#[storage_alias]
+type SessionForValidatorsChange = StorageValue<Kumandra, ()>;
+
+#[storage_alias]
+type MillisecsPerBlock = StorageValue<Kumandra, ()>;
+
+#[storage_alias]
+type SessionPeriod = StorageValue<Kumandra, ()>;
+
+#[storage_alias]
+type Validators = StorageValue<Kumandra, ()>;
 
 pub fn migrate<T: Config, P: PalletInfoAccess>() -> Weight {
     let mut writes = 0;

@@ -125,8 +125,8 @@ impl Default for DataStoreConfig {
     }
 }
 
-// DataStore is the data availability proxy for the KumandraBFT protocol, meaning that whenever we receive
-// a message `m` we must check whether the data `m.included_data()` is available to pass it to KumandraBFT.
+// DataStore is the data availability proxy for the AlephBFT protocol, meaning that whenever we receive
+// a message `m` we must check whether the data `m.included_data()` is available to pass it to AlephBFT.
 // Data is represented by the `KumandraData<B>` type -- we refer to the docs of this type to learn what
 // it represents and how honest nodes form `KumandraData<B>` instances.
 // An `KumandraData<B>` is considered available if it is either `Empty` or it is `HeadProposal(p)` where
@@ -164,7 +164,7 @@ impl Default for DataStoreConfig {
 //       were missed by the block import subscription.
 //    b) To explicitly request blocks that are the cause of some proposals pending for a long time.
 
-/// This component is used for filtering available data for Kumandra Network.
+/// This component is used for filtering available data for Aleph Network.
 /// It needs to be started by calling the run method.
 pub struct DataStore<B, C, RB, Message, R>
 where

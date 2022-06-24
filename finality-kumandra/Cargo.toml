@@ -5,10 +5,9 @@ authors = ["KOOMPI"]
 edition = "2021"
 
 [dependencies]
-kumandra-bft = { package = "aleph-bft", version = "0.14.0" }
+kumandra-bft = { package = "aleph-bft", version = "0.13.0" }
 kumandra-bft-rmc = { package = "aleph-bft-rmc", version = "0.3.0" }
 kumandra-primitives = { package = "primitives", path = "../primitives" }
-
 
 async-trait = "0.1"
 bytes = "1.0"
