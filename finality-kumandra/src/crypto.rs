@@ -166,19 +166,19 @@ impl MultiKeychain for KeyBox {
     // We probably should do this for them at some point.
     type PartialMultisignature = SignatureSet<Signature>;
 
-    // fn bootstrap_multi(
-    //     &self,
-    //     signature: &Signature,
-    //     index: NodeIndex,
-    // ) -> Self::PartialMultisignature {
-    //     SignatureSet::add_signature(SignatureSet::with_size(self.node_count()), signature, index)
-    // }
+    fn bootstrap_multi(
+        &self,
+        signature: &Signature,
+        index: NodeIndex,
+    ) -> Self::PartialMultisignature {
+        SignatureSet::add_signature(SignatureSet::with_size(self.node_count()), signature, index)
+    }
 
     fn is_complete(&self, msg: &[u8], partial: &Self::PartialMultisignature) -> bool {
         self.authority_verifier.is_complete(msg, partial)
     }
 
-    fn from_signature(&self, _: &<Self as kumandra_bft::KeyBox>::Signature, _: NodeIndex) -> <Self as MultiKeychain>::PartialMultisignature { todo!() }
+    // fn from_signature(&self, _: &<Self as kumandra_bft::KeyBox>::Signature, _: NodeIndex) -> <Self as MultiKeychain>::PartialMultisignature { todo!() }
 }
 
 /// Old format of signatures, needed for backwards compatibility.
