@@ -1,2 +1,10 @@
-1. User upload file and the file information store in to our decentralized database.
-2. KumandraD, in a group of 5 out of 10(example total node) will replicate the file got uploaded by the client by distance. do computation the distance between them. node that nearest(3) to the file will replicate the file.
+delegated-proof-of-replicate(pin)
+
+I.
+End User can become a validator by joinning IPFS node and participate in pinning CID hash.
+Every validator start replicating the CID but only one validator get choosen to produce a new block.
+
+
+II.
+Farming option
+TODO!
