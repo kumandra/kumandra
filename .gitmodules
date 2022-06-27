@@ -1,3 +1,6 @@
 [submodule "krml"]
 	path = krml
 	url = https://github.com/kumandra/krml
+[submodule "k-pallets"]
+	path = k-pallets
+	url = https://github.com/kumandra/k-pallets
