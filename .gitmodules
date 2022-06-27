@@ -1,0 +1,3 @@
+[submodule "krml"]
+	path = krml
+	url = https://github.com/kumandra/krml
