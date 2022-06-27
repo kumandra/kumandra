@@ -4,3 +4,6 @@
 [submodule "k-pallets"]
 	path = k-pallets
 	url = https://github.com/kumandra/k-pallets
+[submodule "orml"]
+	path = orml
+	url = https://github.com/subspace/open-runtime-module-library
