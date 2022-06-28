@@ -53,7 +53,7 @@ use kp_consensus::{
 };
 use sp_core::crypto::{ByteArray, KeyTypeId};
 use sp_core::OpaqueMetadata;
-use sp_executor::{FraudProof, OpaqueBundle};
+use kp_executor::{FraudProof, OpaqueBundle};
 use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, NumberFor, Zero};
 use sp_runtime::transaction_validity::{TransactionSource, TransactionValidity};
 use sp_runtime::{
@@ -68,8 +68,8 @@ use kumandra_core_primitives::objects::BlockObjectMapping;
 use kumandra_core_primitives::{Randomness, RootBlock, Sha256Hash, PIECE_SIZE};
 use kumandra_runtime_primitives::{
     opaque, AccountId, Balance, BlockNumber, Hash, Index, Moment, Signature, CONFIRMATION_DEPTH_K,
-    MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE, SHANNON,
-    SSC, STORAGE_FEES_ESCROW_BLOCK_REWARD, STORAGE_FEES_ESCROW_BLOCK_TAX,
+    MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE, KTIC,
+    KMD, STORAGE_FEES_ESCROW_BLOCK_REWARD, STORAGE_FEES_ESCROW_BLOCK_TAX,
 };
 
 sp_runtime::impl_opaque_keys! {
@@ -248,7 +248,7 @@ parameter_types! {
     pub const ShouldAdjustSolutionRange: bool = false;
 }
 
-impl kumandra::Config for Runtime {
+impl pallet_kumandra::Config for Runtime {
     type Event = Event;
     type GlobalRandomnessUpdateInterval = ConstU32<GLOBAL_RANDOMNESS_UPDATE_INTERVAL>;
     type EraDuration = ConstU32<ERA_DURATION_IN_BLOCKS>;
@@ -293,7 +293,7 @@ impl pallet_balances::Config for Runtime {
     type Event = Event;
     type DustRemoval = ();
     // TODO: Correct value
-    type ExistentialDeposit = ConstU128<{ 500 * SHANNON }>;
+    type ExistentialDeposit = ConstU128<{ 500 * KTIC }>;
     type AccountStore = System;
     type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 }
@@ -395,8 +395,8 @@ impl pallet_executor::Config for Runtime {
 }
 
 parameter_types! {
-    pub const BlockReward: Balance = SSC / (ExpectedVotesPerBlock::get() as Balance + 1);
-    pub const VoteReward: Balance = SSC / (ExpectedVotesPerBlock::get() as Balance + 1);
+    pub const BlockReward: Balance = KMD / (ExpectedVotesPerBlock::get() as Balance + 1);
+    pub const VoteReward: Balance = KMD / (ExpectedVotesPerBlock::get() as Balance + 1);
 }
 
 impl pallet_rewards::Config for Runtime {
@@ -546,7 +546,7 @@ fn extract_bundles(extrinsics: Vec<OpaqueExtrinsic>) -> Vec<OpaqueBundle> {
         .collect()
 }
 
-fn extract_fraud_proof(ext: &UncheckedExtrinsic) -> Option<sp_executor::FraudProof> {
+fn extract_fraud_proof(ext: &UncheckedExtrinsic) -> Option<kp_executor::FraudProof> {
     match &ext.function {
         Call::Executor(pallet_executor::Call::submit_fraud_proof { fraud_proof }) => {
             Some(fraud_proof.clone())
@@ -665,7 +665,7 @@ impl_runtime_apis! {
         }
     }
 
-    impl sp_objects::ObjectsApi<Block> for Runtime {
+    impl kp_objects::ObjectsApi<Block> for Runtime {
         fn extract_block_object_mapping(block: Block, successful_calls: Vec<Hash>) -> BlockObjectMapping {
             extract_block_object_mapping(block, successful_calls)
         }
@@ -759,14 +759,14 @@ impl_runtime_apis! {
         }
     }
 
-    impl sp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
+    impl kp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
         fn submit_execution_receipt_unsigned(
-            execution_receipt: sp_executor::SignedExecutionReceipt<NumberFor<Block>, <Block as BlockT>::Hash, cirrus_primitives::Hash>,
+            execution_receipt: kp_executor::SignedExecutionReceipt<NumberFor<Block>, <Block as BlockT>::Hash, cirrus_primitives::Hash>,
         ) {
             Executor::submit_execution_receipt_unsigned(execution_receipt)
         }
 
-        fn submit_transaction_bundle_unsigned(opaque_bundle: sp_executor::SignedOpaqueBundle) {
+        fn submit_transaction_bundle_unsigned(opaque_bundle: kp_executor::SignedOpaqueBundle) {
             Executor::submit_transaction_bundle_unsigned(opaque_bundle)
         }
 
@@ -775,13 +775,13 @@ impl_runtime_apis! {
         }
 
         fn submit_bundle_equivocation_proof_unsigned(
-            bundle_equivocation_proof: sp_executor::BundleEquivocationProof,
+            bundle_equivocation_proof: kp_executor::BundleEquivocationProof,
         ) {
             Executor::submit_bundle_equivocation_proof_unsigned(bundle_equivocation_proof)
         }
 
         fn submit_invalid_transaction_proof_unsigned(
-            invalid_transaction_proof: sp_executor::InvalidTransactionProof,
+            invalid_transaction_proof: kp_executor::InvalidTransactionProof,
         ) {
             Executor::submit_invalid_transaction_proof_unsigned(invalid_transaction_proof)
         }
@@ -794,7 +794,7 @@ impl_runtime_apis! {
             extrinsics_shuffling_seed::<Block>(header)
         }
 
-        fn extract_fraud_proof(ext: &<Block as BlockT>::Extrinsic) -> Option<sp_executor::FraudProof> {
+        fn extract_fraud_proof(ext: &<Block as BlockT>::Extrinsic) -> Option<kp_executor::FraudProof> {
             extract_fraud_proof(ext)
         }
 
@@ -802,7 +802,7 @@ impl_runtime_apis! {
             EXECUTION_WASM_BUNDLE.into()
         }
 
-        fn executor_id() -> sp_executor::ExecutorId {
+        fn executor_id() -> kp_executor::ExecutorId {
             Executor::executor()
                 .map(|(_account_id, executor_id)| executor_id)
                 .expect("Executor must be provided; qed")

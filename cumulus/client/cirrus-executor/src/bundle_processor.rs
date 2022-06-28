@@ -14,7 +14,7 @@ use sp_api::{NumberFor, ProvideRuntimeApi, TransactionFor};
 use sp_blockchain::HeaderBackend;
 use sp_consensus::BlockOrigin;
 use sp_core::ByteArray;
-use sp_executor::{
+use kp_executor::{
 	ExecutionReceipt, ExecutorApi, ExecutorId, ExecutorSignature, OpaqueBundle,
 	SignedExecutionReceipt,
 };

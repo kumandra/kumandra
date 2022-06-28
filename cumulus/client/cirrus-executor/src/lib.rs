@@ -81,7 +81,7 @@ use sp_core::{
 	traits::{CodeExecutor, SpawnEssentialNamed, SpawnNamed},
 	H256,
 };
-use sp_executor::{
+use kp_executor::{
 	Bundle, BundleEquivocationProof, ExecutionPhase, ExecutionReceipt, ExecutorApi, ExecutorId,
 	FraudProof, InvalidTransactionProof, OpaqueBundle, SignedBundle, SignedExecutionReceipt,
 };

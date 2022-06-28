@@ -21,7 +21,7 @@ use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
-use kumandra_runtime_primitives::SHANNON;
+use kumandra_runtime_primitives::KTIC;
 
 #[cfg(any(feature = "std", test))]
 pub use sp_runtime::BuildStorage;
@@ -86,7 +86,7 @@ pub mod opaque {
 impl_opaque_keys! {
 	pub struct SessionKeys {
 		/// Primarily used for adding the executor authority key into the keystore in the dev mode.
-		pub executor: sp_executor::ExecutorKey,
+		pub executor: kp_executor::ExecutorKey,
 	}
 }
 
@@ -103,7 +103,7 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 };
 
 /// The existential deposit. Same with the one on primary chain.
-pub const EXISTENTIAL_DEPOSIT: Balance = 500 * SHANNON;
+pub const EXISTENTIAL_DEPOSIT: Balance = 500 * KTIC;
 
 /// We assume that ~5% of the block weight is consumed by `on_initialize` handlers. This is
 /// used to limit the maximal weight of a single extrinsic.

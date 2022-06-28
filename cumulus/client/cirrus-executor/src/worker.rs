@@ -24,7 +24,7 @@ use sp_api::{ApiError, BlockT, ProvideRuntimeApi, TransactionFor};
 use sp_block_builder::BlockBuilder;
 use sp_blockchain::HeaderBackend;
 use sp_consensus_slots::Slot;
-use sp_executor::{ExecutorApi, OpaqueBundle, SignedOpaqueBundle};
+use kp_executor::{ExecutorApi, OpaqueBundle, SignedOpaqueBundle};
 use sp_runtime::{
 	generic::{BlockId, DigestItem},
 	traits::{Header as HeaderT, NumberFor, One, Saturating},

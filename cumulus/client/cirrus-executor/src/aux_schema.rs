@@ -3,7 +3,7 @@
 use codec::{Decode, Encode};
 use sc_client_api::backend::AuxStore;
 use sp_blockchain::{Error as ClientError, Result as ClientResult};
-use sp_executor::ExecutionReceipt;
+use kp_executor::ExecutionReceipt;
 use sp_runtime::traits::{Block as BlockT, NumberFor, One, SaturatedConversion};
 use kumandra_core_primitives::BlockNumber;
 
@@ -111,7 +111,7 @@ mod tests {
 	use kumandra_runtime_primitives::{BlockNumber, Hash};
 	use kumandra_test_runtime::Block as PBlock;
 
-	type ExecutionReceipt = sp_executor::ExecutionReceipt<BlockNumber, Hash, Hash>;
+	type ExecutionReceipt = kp_executor::ExecutionReceipt<BlockNumber, Hash, Hash>;
 
 	fn create_execution_receipt(primary_number: BlockNumber) -> ExecutionReceipt {
 		ExecutionReceipt {

@@ -4,7 +4,7 @@ use parity_scale_codec::{Decode, Encode};
 use parking_lot::Mutex;
 use sc_network_gossip::GossipEngine;
 use sc_utils::mpsc::TracingUnboundedReceiver;
-use sp_executor::{SignedBundle, SignedExecutionReceipt};
+use kp_executor::{SignedBundle, SignedExecutionReceipt};
 use sp_runtime::traits::{Block as BlockT, NumberFor};
 use std::sync::Arc;
 
