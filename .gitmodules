@@ -4,6 +4,3 @@
 [submodule "kpallets"]
 	path = kpallets
 	url = https://github.com/kumandra/kpallets
-[submodule "orml"]
-	path = orml
-	url = https://github.com/subspace/open-runtime-module-library
