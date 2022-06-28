@@ -1,8 +1,11 @@
 [workspace]
 resolver = "2"
 members = [
-    "k-pallets/*",
+    "kpallets/*",
+    "kprimitives/*",
     "krml/*",
+    "orml/vesting",
+    "runtime",
 ]
 
 # The list of dependencies below (which can be both direct and indirect dependencies) are crates

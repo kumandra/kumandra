@@ -1,9 +1,9 @@
 [submodule "krml"]
 	path = krml
 	url = https://github.com/kumandra/krml
-[submodule "k-pallets"]
-	path = k-pallets
-	url = https://github.com/kumandra/k-pallets
+[submodule "kpallets"]
+	path = kpallets
+	url = https://github.com/kumandra/kpallets
 [submodule "orml"]
 	path = orml
 	url = https://github.com/subspace/open-runtime-module-library
