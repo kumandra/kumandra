@@ -1,5 +1,4 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2021 Subspace Labs, Inc.
 // Copyright (C) 2022 KOOMPI.
 // SPDX-License-Identifier: GPL-3.0-or-later WITH Classpath-exception-2.0
 

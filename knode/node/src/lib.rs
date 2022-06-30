@@ -27,7 +27,7 @@ use clap::Parser;
 use sc_cli::{RunCmd, SubstrateCli};
 use sc_executor::{NativeExecutionDispatch, RuntimeVersion};
 use sc_service::ChainSpec;
-use kc_kumandra_chain_spces::ConsensusChainSpec;
+use kc_chain_specs::ConsensusChainSpec;
 use sc_telemetry::serde_json;
 use serde_json::Value;
 use std::io::Write;
@@ -237,7 +237,7 @@ impl SubstrateCli for Cli {
                 }
             }
             // Such mess because native serialization of the chain spec serializes it twice, see
-            // docs on `kc_kumandra_chain_spces::utils::SerializableChainSpec`.
+            // docs on `kc_chain_specs::utils::SerializableChainSpec`.
             chain_spec = serde_json::to_string(&chain_spec_value.to_string())
                 .and_then(|chain_spec_string| serde_json::from_str(&chain_spec_string))
                 .map_err(|error| error.to_string())?;

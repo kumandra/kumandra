@@ -19,7 +19,7 @@
 use crate::chain_spec_utils::{chain_spec_properties, get_account_id_from_seed};
 use cirrus_runtime::{AccountId, BalancesConfig, GenesisConfig, SystemConfig, WASM_BINARY};
 use sc_service::ChainType;
-use kc_kumandra_chain_spces::ExecutionChainSpec;
+use kc_chain_specs::ExecutionChainSpec;
 use sp_core::crypto::Ss58Codec;
 use kumandra_runtime_primitives::KMD;
 

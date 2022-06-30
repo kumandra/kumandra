@@ -51,8 +51,8 @@ sp-runtime = { version = "6.0.0", git = "https://github.com/kumandra/substrate",
 sp-timestamp = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 sp-transaction-pool = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 sp-trie = { version = "6.0.0", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-kumandra-fraud-proof = { version = "0.1.0", path = "../kumandra-fraud-proof" }
-kumandra-runtime-primitives = { version = "0.1.0", path = "../kumandra-runtime-primitives" }
+kumandra-fraud-proof = { version = "0.1.0", path = "../../kutils/fraud-proof" }
+kumandra-runtime-primitives = { version = "0.1.0", path = "../../kprimitives/runtime" }
 substrate-frame-rpc-system = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 substrate-prometheus-endpoint = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 thiserror = "1.0.31"

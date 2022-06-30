@@ -217,7 +217,7 @@ where
     );
 
     let fraud_proof_block_import =
-        sc_consensus_fraud_proof::block_import(client.clone(), client.clone(), proof_verifier);
+        kc_consensus_fraud_proof::block_import(client.clone(), client.clone(), proof_verifier);
 
     let (block_import, kumandra_link) = kc_consensus::block_import(
         kc_consensus::Config::get(&*client)?,

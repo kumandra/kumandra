@@ -22,7 +22,7 @@ use crate::chain_spec_utils::{
 use crate::secondary_chain;
 use cirrus_runtime::GenesisConfig as ExecutionGenesisConfig;
 use sc_service::ChainType;
-use kc_kumandra_chain_spces::{ChainSpecExtensions, ConsensusChainSpec};
+use kc_chain_specs::{ChainSpecExtensions, ConsensusChainSpec};
 use sc_telemetry::TelemetryEndpoints;
 use sp_core::crypto::Ss58Codec;
 use kp_executor::ExecutorId;
@@ -169,7 +169,7 @@ pub fn ktestnet_config_compiled(
 }
 
 pub fn ktic_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String> {
-    ConsensusChainSpec::from_json_bytes(ktic_1_CHAIN_SPEC)
+    ConsensusChainSpec::from_json_bytes(KTIC_1_CHAIN_SPEC)
 }
 
 pub fn ktic_config_compiled(

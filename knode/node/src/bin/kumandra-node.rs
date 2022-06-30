@@ -24,7 +24,7 @@ use sc_cli::{ChainSpec, CliConfiguration, SubstrateCli};
 use sc_client_api::HeaderBackend;
 use sc_executor::NativeExecutionDispatch;
 use sc_service::PartialComponents;
-use kc_kumandra_chain_spces::ExecutionChainSpec;
+use kc_chain_specs::ExecutionChainSpec;
 use sp_core::crypto::Ss58AddressFormat;
 use std::any::TypeId;
 use kumandra_node::{Cli, ExecutorDispatch, SecondaryChainCli, Subcommand};

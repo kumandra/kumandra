@@ -113,7 +113,7 @@ async fn run_executor(
 		);
 		let _enter = span.enter();
 
-		let primary_chain_config = kumandra_service::SubspaceConfiguration {
+		let primary_chain_config = kumandra_service::KumandraConfiguration {
 			base: primary_chain_config,
 			// Always enable the slot notification.
 			force_new_slot_notifications: true,

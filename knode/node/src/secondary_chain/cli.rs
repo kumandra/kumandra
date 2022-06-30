@@ -22,7 +22,7 @@ use sc_cli::{
 };
 use sc_service::config::PrometheusConfig;
 use sc_service::BasePath;
-use kc_kumandra_chain_spces::ExecutionChainSpec;
+use kc_chain_specs::ExecutionChainSpec;
 use serde_json::Value;
 use std::net::SocketAddr;
 use std::path::PathBuf;
@@ -114,7 +114,7 @@ impl SubstrateCli for SecondaryChainCli {
                 }
             }
             // Such mess because native serialization of the chain spec serializes it twice, see
-            // docs on `kc_kumandra_chain_spces::utils::SerializableChainSpec`.
+            // docs on `kc_chain_specs::utils::SerializableChainSpec`.
             chain_spec = serde_json::to_string(&chain_spec_value.to_string())
                 .and_then(|chain_spec_string| serde_json::from_str(&chain_spec_string))
                 .map_err(|error| error.to_string())?;

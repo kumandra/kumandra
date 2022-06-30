@@ -48,7 +48,7 @@ pallet-transaction-payment-rpc-runtime-api = { default-features = false, git = "
 
 cirrus-pallet-executive = { path = "../../pallets/executive", default-features = false }
 cirrus-primitives = { path = "../../primitives", default-features = false }
-kp-executor = { path = "../../../kpallets/executor", default-features = false }
+kp-executor = { path = "../../../kprimitives/executor", default-features = false }
 kumandra-runtime-primitives = { path = "../../../kprimitives/runtime", default-features = false }
 
 [features]

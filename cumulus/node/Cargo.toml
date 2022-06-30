@@ -69,7 +69,7 @@ cirrus-client-executor-gossip = { path = "../client/executor-gossip" }
 cirrus-primitives = { path = "../primitives" }
 
 # Kumandra dependencies
-kp-executor = { path = "../../kpallets/executor" }
+kp-executor = { path = "../../kprimitives/executor" }
 kumandra-core-primitives = { path = "../../kprimitives/core" }
 kumandra-runtime-primitives = { path = "../../kprimitives/runtime" }
 
