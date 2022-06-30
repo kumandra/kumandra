@@ -4,3 +4,6 @@
 [submodule "kpallets"]
 	path = kpallets
 	url = https://github.com/kumandra/kpallets
+[submodule "kfarmer"]
+	path = kfarmer
+	url = https://github.com/kumandra/kumandra-farmer.git
