@@ -16,7 +16,7 @@ If the farmer finds a valid solution it will reply, and the node will produce a 
 
 ```bash
 # Get source code
-git clone https://github.com/kumandra/kumandra.git
+git clone --recurse-submodules http://github.com/kumandra/kumandra
 cd kumandra
 
 # Build and run Node (first terminal)
