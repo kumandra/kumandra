@@ -1,0 +1,42 @@
+[package]
+name = "pallet-offences-kumandra"
+version = "0.1.0"
+authors = ["Parity Technologies <admin@parity.io>", "Subspace Labs <admin@subspace.network>", "Kumandrain <kumandrain@koompi.com>"]
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://koompi.com"
+repository = "https://github.com/kumandra/kumandra"
+description = "offences-kumandra pallet"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
+frame-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+frame-system = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+log = { version = "0.4.17", default-features = false }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+kp-consensus = { version = "0.1.0", default-features = false, path = "../../kprimitives/consensus" }
+sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+
+[dev-dependencies]
+sp-io = { version = "6.0.0", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-core = { version = "6.0.0", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+schnorrkel = "0.9.1"
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+	"frame-support/std",
+	"frame-system/std",
+	"log/std",
+	"scale-info/std",
+	"kp-consensus/std",
+	"sp-runtime/std",
+	"sp-std/std",
+]
+try-runtime = ["frame-support/try-runtime"]

@@ -1,0 +1,132 @@
+[package]
+name = "kumandra-runtime"
+version = "0.1.0"
+authors = ["Kumandrain <kumandrian@koompi.com"]
+edition = "2021"
+license = "GPL-3.0-or-later"
+homepage = "https://koompi.com"
+repository = "https://github.com/kumandra/kumandra"
+include = [
+	"/src",
+	"/build.rs",
+	"/Cargo.toml",
+]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+cirrus-primitives = { version = "0.1.0", default-features = false, path = "../cumulus/primitives" }
+cirrus-runtime = { version = "0.1.0", default-features = false, path = "../cumulus/runtime" }
+codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false, features = ["derive"] }
+frame-executive = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+frame-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+frame-system = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+hex-literal = { version = "0.3.3", optional = true }
+orml-vesting = { version = "0.4.1-dev", default-features = false, path = "../orml/vesting" }
+pallet-balances = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+pallet-executor = { version = "0.1.0", default-features = false, path = "../pallets/executor" }
+pallet-feeds = { version = "0.1.0", default-features = false, path = "../pallets/feeds" }
+pallet-grandpa-finality-verifier = { version = "0.1.0", default-features = false, path = "../pallets/grandpa-finality-verifier" }
+pallet-object-store = { version = "0.1.0", default-features = false, path = "../pallets/object-store" }
+pallet-offences-kumandra = { version = "0.1.0", default-features = false, path = "../pallets/offences-kumandra" }
+pallet-rewards = { version = "0.1.0", default-features = false, path = "../pallets/rewards" }
+pallet-runtime-configs = { version = "0.1.0", default-features = false, path = "../pallets/runtime-configs" }
+pallet-kumandra = { version = "0.1.0", default-features = false, path = "../pallets/kumandra" }
+pallet-sudo = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+pallet-timestamp = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+pallet-transaction-fees = { version = "0.1.0", default-features = false, path = "../pallets/transaction-fees" }
+pallet-transaction-payment = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+pallet-utility = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+sp-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-block-builder = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false, version = "4.0.0-dev"}
+kp-consensus = { version = "0.1.0", default-features = false, path = "../primitives/consensus" }
+sp-consensus-slots = { version = "0.10.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-core = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+kp-executor = { version = "0.1.0", default-features = false, path = "../primitives/executor" }
+sp-inherents = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false, version = "4.0.0-dev"}
+kp-objects = { version = "0.1.0", default-features = false, path = "../primitives/objects" }
+sp-offchain = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-session = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-transaction-pool = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-version = { version = "5.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+kumandra-core-primitives = { version = "0.1.0", default-features = false, path = "../primitives/core" }
+kumandra-runtime-primitives = { version = "0.1.0", default-features = false, path = "../primitives/runtime" }
+
+# Used for the node template's RPCs
+frame-system-rpc-runtime-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+pallet-transaction-payment-rpc-runtime-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+
+# Used for runtime benchmarking
+frame-benchmarking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", optional = true }
+frame-system-benchmarking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", optional = true }
+
+[build-dependencies]
+cirrus-runtime = { version = "0.1.0", path = "../cumulus/runtime" }
+kumandra-wasm-tools = { version = "0.1.0", default-features = false, path = "../utils/wasm-tools" }
+substrate-wasm-builder = { version = "5.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+
+[dev-dependencies]
+hex-literal = { version = "0.3.3" }
+
+[features]
+default = ["std"]
+std = [
+	"cirrus-primitives/std",
+	"cirrus-runtime/std",
+	"codec/std",
+	"frame-executive/std",
+	"frame-support/std",
+	"frame-system/std",
+	"frame-system-rpc-runtime-api/std",
+	"orml-vesting/std",
+	"pallet-balances/std",
+	"pallet-executor/std",
+	"pallet-feeds/std",
+	"pallet-grandpa-finality-verifier/std",
+	"pallet-object-store/std",
+	"pallet-offences-kumandra/std",
+	"pallet-rewards/std",
+	"pallet-runtime-configs/std",
+	"pallet-kumandra/std",
+	"pallet-sudo/std",
+	"pallet-timestamp/std",
+	"pallet-transaction-fees/std",
+	"pallet-transaction-payment-rpc-runtime-api/std",
+	"pallet-transaction-payment/std",
+	"pallet-utility/std",
+	"scale-info/std",
+	"sp-api/std",
+	"sp-block-builder/std",
+	"kp-consensus/std",
+	"sp-consensus-slots/std",
+	"sp-core/std",
+	"kp-executor/std",
+	"sp-inherents/std",
+	"kp-objects/std",
+	"sp-offchain/std",
+	"sp-runtime/std",
+	"sp-session/std",
+	"sp-std/std",
+	"sp-transaction-pool/std",
+	"sp-version/std",
+	"kumandra-core-primitives/std",
+	"kumandra-runtime-primitives/std",
+]
+runtime-benchmarks = [
+	"cirrus-runtime/runtime-benchmarks",
+	"frame-benchmarking/runtime-benchmarks",
+	"frame-support/runtime-benchmarks",
+	"frame-system-benchmarking",
+	"frame-system/runtime-benchmarks",
+	"hex-literal",
+	"orml-vesting/runtime-benchmarks",
+	"pallet-balances/runtime-benchmarks",
+	"pallet-timestamp/runtime-benchmarks",
+	"pallet-utility/runtime-benchmarks",
+	"sp-runtime/runtime-benchmarks",
+]
+do-not-enforce-cost-of-storage = []

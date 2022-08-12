@@ -1,0 +1,20 @@
+[package]
+name = "cirrus-client-executor-gossip"
+version = "0.1.0"
+authors = ["Liu-Cheng Xu <xuliuchengxlc@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+# Substrate dependencies
+sc-network = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sc-network-gossip = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sc-utils = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-core = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+sp-runtime = { git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
+
+futures = "0.3.21"
+parity-scale-codec = { version = "3.1.2", features = ["derive"] }
+parking_lot = "0.12.0"
+tracing = "0.1.34"
+
+kp-executor = { path = "../../../primitives/executor" }
