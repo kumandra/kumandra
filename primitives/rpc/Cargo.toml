@@ -1,0 +1,18 @@
+[package]
+name = "kumandra-rpc-primitives"
+version = "0.1.0"
+authors = ["Kumandrian <kumandrian@koompi.com"]
+description = "RPC primitives for Kumandra Protocol"
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://koompi.com"
+repository = "https://github.com/kumandra/kumandra"
+include = [
+    "/src",
+    "/Cargo.toml",
+]
+
+[dependencies]
+hex-buffer-serde = "0.3.0"
+serde = { version = "1.0.137", features = ["derive"] }
+kumandra-core-primitives = { version = "0.1.0", path = "../core" }

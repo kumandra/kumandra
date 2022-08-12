@@ -17,8 +17,8 @@ include = [
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-cirrus-node = { version = "0.1.0", path = "../../cumulus/node" }
-cirrus-runtime = { version = "0.1.0", path = "../../cumulus/runtime" }
+cirrus-node = { version = "0.1.0", path = "../cumulus/node" }
+cirrus-runtime = { version = "0.1.0", path = "../cumulus/runtime" }
 clap = { version = "3.1.18", features = ["derive"] }
 dirs = "4.0.0"
 frame-benchmarking-cli = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false, features = ["runtime-benchmarks"] }
@@ -29,7 +29,7 @@ parity-scale-codec = "3.1.2"
 sc-cli = { version = "0.10.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false, features = ["wasmtime"] }
 sc-client-api = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 sc-consensus = { version = "0.10.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-kc-chain-specs = { version = "0.1.0", path = "../../kclients/chain-specs" }
+kc-chain-specs = { version = "0.1.0", path = "../clients/chain-specs" }
 sc-executor = { version = "0.10.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", features = ["wasmtime"] }
 sc-service = { version = "0.10.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false, features = ["wasmtime"] }
 sc-telemetry = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
@@ -38,14 +38,14 @@ serde = "1.0.137"
 serde_json = "1.0.81"
 sp-consensus = { version = "0.10.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 sp-core = { version = "6.0.0", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-kp-executor = { version = "0.1.0", path = "../../primitives/executor" }
+kp-executor = { version = "0.1.0", path = "../primitives/executor" }
 sp-runtime = { version = "6.0.0", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving" }
-kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core" }
-kumandra-networking = { version = "0.1.0", path = "../../modules/network" }
-kumandra-runtime = { version = "0.1.0", path = "../../runtime" }
-kumandra-runtime-primitives = { version = "0.1.0", path = "../../primitives/runtime" }
-kumandra-service = { version = "0.1.0", path = "../../node/service" }
+kumandra-archiving = { version = "0.1.0", path = "../modules/archiving" }
+kumandra-core-primitives = { version = "0.1.0", path = "../primitives/core" }
+kumandra-networking = { version = "0.1.0", path = "../modules/network" }
+kumandra-runtime = { version = "0.1.0", path = "../runtime" }
+kumandra-runtime-primitives = { version = "0.1.0", path = "../primitives/runtime" }
+kumandra-service = { version = "0.1.0", path = "./service" }
 thiserror = "1.0.31"
 tokio = { version = "1.18.2" }
 

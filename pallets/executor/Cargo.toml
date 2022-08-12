@@ -18,7 +18,7 @@ frame-system = { version = "4.0.0-dev", default-features = false, git = "https:/
 log = { version = "0.4.17", default-features = false }
 scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
 sp-core = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-kp-executor = { version = "0.1.0", default-features = false, path = "../../kprimitives/executor" }
+kp-executor = { version = "0.1.0", default-features = false, path = "../../primitives/executor" }
 sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
 
