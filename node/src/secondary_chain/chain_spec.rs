@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 use crate::chain_spec_utils::{chain_spec_properties, get_account_id_from_seed};
 use cirrus_runtime::{AccountId, BalancesConfig, GenesisConfig, SystemConfig, WASM_BINARY};
 use sc_service::ChainType;
-use kc_chain_specs::ExecutionChainSpec;
+use kc_kumandra_chain_specs::ExecutionChainSpec;
 use sp_core::crypto::Ss58Codec;
-use kumandra_runtime_primitives::KMD;
+use kumandra_runtime_primitives::SSC;
 
 pub fn development_config() -> ExecutionChainSpec<GenesisConfig> {
     ExecutionChainSpec::from_genesis(
@@ -84,12 +84,12 @@ pub fn local_testnet_config() -> ExecutionChainSpec<GenesisConfig> {
     )
 }
 
-pub fn ktestnet_config() -> ExecutionChainSpec<GenesisConfig> {
+pub fn gemini_config() -> ExecutionChainSpec<GenesisConfig> {
     ExecutionChainSpec::from_genesis(
         // Name
-        "Kumandra Testnet 1 Execution",
+        "Kumandra Gemini 1 Execution",
         // ID
-        "kumandra_testnet_1b_execution",
+        "kumandra_gemini_1b_execution",
         ChainType::Local,
         move || {
             testnet_genesis(vec![
@@ -103,7 +103,7 @@ pub fn ktestnet_config() -> ExecutionChainSpec<GenesisConfig> {
         // Telemetry
         None,
         // Protocol ID
-        Some("kumandra-testnet-1b-execution"),
+        Some("kumandra-gemini-1b-execution"),
         None,
         // Properties
         Some(chain_spec_properties()),
@@ -112,12 +112,12 @@ pub fn ktestnet_config() -> ExecutionChainSpec<GenesisConfig> {
     )
 }
 
-pub fn ktic_config() -> ExecutionChainSpec<GenesisConfig> {
+pub fn x_net_config() -> ExecutionChainSpec<GenesisConfig> {
     ExecutionChainSpec::from_genesis(
         // Name
-        "Kumandra Ktic 1 Execution",
+        "Kumandra X-Net 1 Execution",
         // ID
-        "kumandra_ktic_1a_execution",
+        "kumandra_x_net_1a_execution",
         ChainType::Local,
         move || {
             testnet_genesis(vec![
@@ -131,7 +131,7 @@ pub fn ktic_config() -> ExecutionChainSpec<GenesisConfig> {
         // Telemetry
         None,
         // Protocol ID
-        Some("kumandra-ktic-1a-execution"),
+        Some("kumandra-x-net-1a-execution"),
         None,
         // Properties
         Some(chain_spec_properties()),
@@ -152,7 +152,7 @@ fn testnet_genesis(endowed_accounts: Vec<AccountId>) -> GenesisConfig {
             balances: endowed_accounts
                 .iter()
                 .cloned()
-                .map(|k| (k, 1_000 * KMD))
+                .map(|k| (k, 1_000 * SSC))
                 .collect(),
         },
     }

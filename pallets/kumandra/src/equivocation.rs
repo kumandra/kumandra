@@ -1,4 +1,5 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2020-2021 Parity Technologies (UK) Ltd.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,8 +136,7 @@ where
 
         match SubmitTransaction::<T, Call<T>>::submit_unsigned_transaction(call.into()) {
             Ok(()) => log::info!(
-                target: "runtime::kumandra",
-                "Submitted Kumandra equivocation report.",
+                target: "runtime::kumandra", "Submitted Kumandra equivocation report.",
             ),
             Err(()) => log::error!(
                 target: "runtime::kumandra",

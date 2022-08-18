@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-//! Kumandra node library.
+//! Kumandra Node library.
 
 mod chain_spec;
 mod chain_spec_utils;
@@ -27,11 +27,12 @@ use clap::Parser;
 use sc_cli::{RunCmd, SubstrateCli};
 use sc_executor::{NativeExecutionDispatch, RuntimeVersion};
 use sc_service::ChainSpec;
-use kc_chain_specs::ConsensusChainSpec;
+use kc_kumandra_chain_specs::ConsensusChainSpec;
 use sc_telemetry::serde_json;
 use serde_json::Value;
 use std::io::Write;
 use std::{fs, io};
+use kumandra_networking::libp2p::Multiaddr;
 
 /// Executor dispatch for kumandra runtime
 pub struct ExecutorDispatch;
@@ -174,6 +175,11 @@ pub struct Cli {
     #[clap(flatten)]
     pub run: RunCmd,
 
+    /// DSN configuration arguments: DSN 'listen-on' multi-address
+    // TODO: Add more DSN-related parameters
+    #[clap(long)]
+    pub dsn_listen_on: Vec<Multiaddr>,
+
     /// Secondary chain arguments
     ///
     /// The command-line arguments provided first will be passed to the embedded primary node,
@@ -212,15 +218,15 @@ impl SubstrateCli for Cli {
     }
 
     fn copyright_start_year() -> i32 {
-        2022
+        2021
     }
 
     fn load_spec(&self, id: &str) -> Result<Box<dyn ChainSpec>, String> {
         let mut chain_spec = match id {
-            "ktestnet-1" => chain_spec::ktestnet_config()?,
-            "ktetnet-1-compiled" => chain_spec::ktestnet_config_compiled()?,
-            "ktic-1" => chain_spec::ktic_config()?,
-            "ktic-1-compiled" => chain_spec::ktic_config_compiled()?,
+            "gemini-1" => chain_spec::gemini_config()?,
+            "gemini-1-compiled" => chain_spec::gemini_config_compiled()?,
+            "x-net-1" => chain_spec::x_net_config()?,
+            "x-net-1-compiled" => chain_spec::x_net_config_compiled()?,
             "dev" => chain_spec::dev_config()?,
             "" | "local" => chain_spec::local_config()?,
             path => ConsensusChainSpec::from_json_file(std::path::PathBuf::from(path))?,
@@ -237,7 +243,7 @@ impl SubstrateCli for Cli {
                 }
             }
             // Such mess because native serialization of the chain spec serializes it twice, see
-            // docs on `kc_chain_specs::utils::SerializableChainSpec`.
+            // docs on `kc_kumandra_chain_specs::utils::SerializableChainSpec`.
             chain_spec = serde_json::to_string(&chain_spec_value.to_string())
                 .and_then(|chain_spec_string| serde_json::from_str(&chain_spec_string))
                 .map_err(|error| error.to_string())?;

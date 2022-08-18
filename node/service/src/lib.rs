@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -16,12 +16,14 @@
 
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 
+mod dsn;
 mod pool;
 pub mod rpc;
 
 pub use crate::pool::FullPool;
 use cirrus_primitives::Hash as SecondaryHash;
 use derive_more::{Deref, DerefMut, Into};
+use dsn::start_dsn_node;
 use frame_system_rpc_runtime_api::AccountNonceApi;
 use jsonrpsee::RpcModule;
 use pallet_transaction_payment_rpc_runtime_api::TransactionPaymentApi;
@@ -84,6 +86,10 @@ pub enum Error {
     /// Prometheus error.
     #[error(transparent)]
     Prometheus(#[from] substrate_prometheus_endpoint::PrometheusError),
+
+    /// Kumandra networking (DSN) error.
+    #[error(transparent)]
+    KumandraDsn(#[from] kumandra_networking::CreationError),
 }
 
 /// Kumandra-like full client.
@@ -113,6 +119,8 @@ pub struct KumandraConfiguration {
     /// Whether slot notifications need to be present even if node is not responsible for block
     /// authoring.
     pub force_new_slot_notifications: bool,
+    /// Kumandra networking configuration (for DSN). Will not be started if set to `None`.
+    pub dsn_config: Option<kumandra_networking::Config>,
 }
 
 impl From<Configuration> for KumandraConfiguration {
@@ -120,6 +128,7 @@ impl From<Configuration> for KumandraConfiguration {
         Self {
             base,
             force_new_slot_notifications: false,
+            dsn_config: None,
         }
     }
 }
@@ -335,9 +344,10 @@ type FullNode<RuntimeApi, ExecutorDispatch> = NewFull<
 >;
 
 /// Builds a new service for a full client.
-pub fn new_full<RuntimeApi, ExecutorDispatch>(
+pub async fn new_full<RuntimeApi, ExecutorDispatch>(
     config: KumandraConfiguration,
     enable_rpc_extensions: bool,
+    block_proposal_slot_portion: SlotProportion,
 ) -> Result<FullNode<RuntimeApi, ExecutorDispatch>, Error>
 where
     RuntimeApi: ConstructRuntimeApi<Block, FullClient<RuntimeApi, ExecutorDispatch>>
@@ -367,6 +377,15 @@ where
         transaction_pool,
         other: (block_import, kumandra_link, mut telemetry),
     } = new_partial::<RuntimeApi, ExecutorDispatch>(&config)?;
+
+    if let Some(dsn_config) = config.dsn_config.clone() {
+        start_dsn_node(
+            &kumandra_link,
+            dsn_config,
+            task_manager.spawn_essential_handle(),
+        )
+        .await?;
+    }
 
     let (network, system_rpc_tx, network_starter) =
         sc_service::build_network(sc_service::BuildNetworkParams {
@@ -445,7 +464,7 @@ where
             backoff_authoring_blocks,
             kumandra_link,
             can_author_with: CanAuthorWithNativeVersion::new(client.executor().clone()),
-            block_proposal_slot_portion: SlotProportion::new(2f32 / 3f32),
+            block_proposal_slot_portion,
             max_block_proposal_slot_portion: None,
             telemetry: None,
         };

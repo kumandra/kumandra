@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +14,7 @@
 // limitations under the License.
 
 //! Set of modules that implement utilities for solving and verifying of solutions in
+//! [Kumandra Network Blockchain](https://kumandra.org).
 
 #![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, missing_debug_implementations, missing_docs)]

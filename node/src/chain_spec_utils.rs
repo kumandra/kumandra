@@ -13,7 +13,7 @@ pub(crate) fn chain_spec_properties() -> Properties {
 
     properties.insert("ss58Format".into(), <SS58Prefix as Get<u16>>::get().into());
     properties.insert("tokenDecimals".into(), DECIMAL_PLACES.into());
-    properties.insert("tokenSymbol".into(), "tKMD".into());
+    properties.insert("tokenSymbol".into(), "tSSC".into());
 
     properties
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -29,10 +29,9 @@ use sp_runtime::traits::{Block as BlockT, Header, NumberFor};
 use std::sync::Arc;
 use std::task::Poll;
 use kumandra_archiving::reconstructor::Reconstructor;
-use kumandra_core_primitives::Piece;
+use kumandra_core_primitives::{Piece, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE};
 use kumandra_networking::libp2p::Multiaddr;
-use kumandra_networking::{multimess, Config};
-use kumandra_runtime_primitives::{RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE};
+use kumandra_networking::{multimess, BootstrappedNetworkingParameters, Config};
 
 type PieceIndex = u64;
 
@@ -135,8 +134,9 @@ where
     B: BlockT + for<'de> serde::Deserialize<'de>,
     IQ: ImportQueue<B> + 'static,
 {
-    let (node, node_runner) = kumandra_networking::create(Config {
-        bootstrap_nodes,
+    let (node, mut node_runner) = kumandra_networking::create(Config {
+        networking_parameters_registry: BootstrappedNetworkingParameters::new(bootstrap_nodes)
+            .boxed(),
         allow_non_globals_in_dht: true,
         ..Config::with_generated_keypair()
     })

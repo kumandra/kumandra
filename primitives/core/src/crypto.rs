@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Various cryptographic utilities used across Kumandra Protocol.
+//! Various cryptographic utilities used across Kumandra Network.
 
 use crate::Sha256Hash;
 use hmac::{Hmac, Mac};

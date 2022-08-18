@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Core primitives for Kumandra Protocol.
+//! Core primitives for Kumandra Network.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![forbid(unsafe_code)]
 #![warn(rust_2018_idioms, missing_docs)]
 #![cfg_attr(feature = "std", warn(missing_debug_implementations))]
+#![feature(int_log)]
 
 #[cfg(test)]
 mod tests;
@@ -30,9 +31,10 @@ extern crate alloc;
 
 use alloc::vec;
 use alloc::vec::Vec;
-pub use construct_uint::U256;
 use core::convert::AsRef;
 use core::ops::{Deref, DerefMut};
+use derive_more::{Add, Display, Div, Mul, Sub};
+use num_traits::{WrappingAdd, WrappingSub};
 use parity_scale_codec::{Decode, Encode};
 use scale_info::TypeInfo;
 #[cfg(feature = "std")]
@@ -41,7 +43,7 @@ use serde::{Deserialize, Serialize};
 /// Size of Sha2-256 hash output (in bytes)
 pub const SHA256_HASH_SIZE: usize = 32;
 
-/// Byte size of a piece in Kumandra Protocol, 4KiB.
+/// Byte size of a piece in Kumandra Network, 4KiB.
 ///
 /// This can not changed after the network is launched.
 pub const PIECE_SIZE: usize = 4096;
@@ -61,22 +63,68 @@ pub const TAG_SIZE: usize = 8;
 /// Type of the commitment for a particular piece.
 pub type Tag = [u8; TAG_SIZE];
 
+/// Tag prefix
+pub const SALT_HASHING_PREFIX: &[u8] = b"salt";
+
 /// Size of `Tag` in bytes.
 pub const SALT_SIZE: usize = 8;
 
 /// Salt used for creating commitment tags for pieces.
 pub type Salt = [u8; SALT_SIZE];
 
-/// Block number in Kumandra Protocol.
+/// Block number in Kumandra network.
 pub type BlockNumber = u32;
 
-/// Slot number in Kumandra Protocol.
+/// Slot number in Kumandra network.
 pub type SlotNumber = u64;
+
+/// Type of solution range.
+pub type SolutionRange = u64;
+
+/// BlockWeight type for fork choice rules.
+///
+/// The closer solution's tag is to the target, the heavier it is.
+pub type BlockWeight = u128;
+
+/// Segment index type.
+pub type SegmentIndex = u64;
+
+/// Records root type.
+pub type RecordsRoot = Sha256Hash;
+
+/// Eon Index type.
+pub type EonIndex = u64;
 
 /// Length of public key in bytes.
 pub const PUBLIC_KEY_LENGTH: usize = 32;
 
-const REWARD_SIGNATURE_LENGTH: usize = 64;
+/// 128 data records and 128 parity records (as a result of erasure coding) together form a perfect
+/// Merkle Tree and will result in witness size of `log2(MERKLE_NUM_LEAVES) * SHA256_HASH_SIZE`.
+///
+/// This number is a tradeoff:
+/// * as this number goes up, fewer [`RootBlock`]s are required to be stored for verifying archival
+///   history of the network, which makes sync quicker and more efficient, but also more data in
+///   each [`Piece`] will be occupied with witness, thus wasting space that otherwise could have
+///   been used for storing data (record part of a Piece)
+/// * as this number goes down, witness get smaller leading to better piece utilization, but the
+///   number of root blocks goes up making sync less efficient and less records are needed to be
+///   lost before part of the archived history become unrecoverable, reducing reliability of the
+///   data stored on the network
+pub const MERKLE_NUM_LEAVES: u32 = 256;
+/// Size of witness for a segment record (in bytes).
+pub const WITNESS_SIZE: u32 = SHA256_HASH_SIZE as u32 * MERKLE_NUM_LEAVES.log2();
+/// Size of a segment record given the global piece size (in bytes).
+pub const RECORD_SIZE: u32 = PIECE_SIZE as u32 - WITNESS_SIZE;
+/// Recorded History Segment Size includes half of the records (just data records) that will later
+/// be erasure coded and together with corresponding witnesses will result in `MERKLE_NUM_LEAVES`
+/// pieces of archival history.
+pub const RECORDED_HISTORY_SEGMENT_SIZE: u32 = RECORD_SIZE * MERKLE_NUM_LEAVES / 2;
+
+/// Randomness context
+pub const RANDOMNESS_CONTEXT: &[u8] = b"kumandra_randomness";
+
+/// Length of signature in bytes
+pub const REWARD_SIGNATURE_LENGTH: usize = 64;
 const VRF_OUTPUT_LENGTH: usize = 32;
 const VRF_PROOF_LENGTH: usize = 64;
 
@@ -85,7 +133,9 @@ const VRF_PROOF_LENGTH: usize = 64;
     Debug, Default, Copy, Clone, PartialEq, Eq, Ord, PartialOrd, Hash, Encode, Decode, TypeInfo,
 )]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-pub struct PublicKey([u8; PUBLIC_KEY_LENGTH]);
+pub struct PublicKey(
+    #[cfg_attr(feature = "std", serde(with = "hex::serde"))] [u8; PUBLIC_KEY_LENGTH],
+);
 
 impl From<[u8; PUBLIC_KEY_LENGTH]> for PublicKey {
     fn from(bytes: [u8; PUBLIC_KEY_LENGTH]) -> Self {
@@ -94,8 +144,8 @@ impl From<[u8; PUBLIC_KEY_LENGTH]> for PublicKey {
 }
 
 impl From<PublicKey> for [u8; PUBLIC_KEY_LENGTH] {
-    fn from(signature: PublicKey) -> Self {
-        signature.0
+    fn from(public_key: PublicKey) -> Self {
+        public_key.0
     }
 }
 
@@ -168,7 +218,7 @@ pub struct LocalChallenge {
     pub proof: [u8; VRF_PROOF_LENGTH],
 }
 
-/// A piece of archival history in Kumandra Protocol.
+/// A piece of archival history in Kumandra Network.
 ///
 /// Internally piece contains a record and corresponding witness that together with [`RootBlock`] of
 /// the segment this piece belongs to can be used to verify that a piece belongs to the actual
@@ -260,6 +310,12 @@ impl FlatPieces {
     /// Iterator over individual pieces as byte slices.
     pub fn as_pieces_mut(&mut self) -> impl ExactSizeIterator<Item = &mut [u8]> {
         self.0.chunks_exact_mut(PIECE_SIZE)
+    }
+}
+
+impl From<Piece> for FlatPieces {
+    fn from(Piece(piece): Piece) -> Self {
+        Self(piece)
     }
 }
 
@@ -388,9 +444,9 @@ pub enum RootBlock {
     #[cfg_attr(feature = "std", serde(rename_all = "camelCase"))]
     V0 {
         /// Segment index
-        segment_index: u64,
+        segment_index: SegmentIndex,
         /// Merkle root of the records in a segment.
-        records_root: Sha256Hash,
+        records_root: RecordsRoot,
         /// Hash of the root block of the previous segment
         prev_root_block_hash: Sha256Hash,
         /// Last archived block
@@ -412,7 +468,7 @@ impl RootBlock {
     }
 
     /// Merkle root of the records in a segment.
-    pub fn records_root(&self) -> Sha256Hash {
+    pub fn records_root(&self) -> RecordsRoot {
         match self {
             Self::V0 { records_root, .. } => *records_root,
         }
@@ -445,11 +501,23 @@ pub type PieceIndex = u64;
 /// Hash of `PieceIndex`
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Decode, Encode)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
-pub struct PieceIndexHash(pub Sha256Hash);
+pub struct PieceIndexHash(Sha256Hash);
 
-impl From<PieceIndex> for PieceIndexHash {
-    fn from(index: PieceIndex) -> Self {
-        Self::from_index(index)
+impl From<PieceIndexHash> for Sha256Hash {
+    fn from(piece_index_hash: PieceIndexHash) -> Self {
+        piece_index_hash.0
+    }
+}
+
+impl From<Sha256Hash> for PieceIndexHash {
+    fn from(hash: Sha256Hash) -> Self {
+        Self(hash)
+    }
+}
+
+impl AsRef<[u8]> for PieceIndexHash {
+    fn as_ref(&self) -> &[u8] {
+        self.0.as_ref()
     }
 }
 
@@ -547,59 +615,167 @@ pub fn bidirectional_distance<T: num_traits::WrappingSub + Ord>(a: &T, b: &T) ->
 }
 
 #[allow(clippy::assign_op_pattern, clippy::ptr_offset_with_cast)]
-mod construct_uint {
+mod private_u256 {
     //! This module is needed to scope clippy allows
-
-    use super::{bidirectional_distance, PieceIndexHash};
-    use num_traits::{WrappingAdd, WrappingSub};
 
     uint::construct_uint! {
         pub struct U256(4);
     }
+}
 
-    impl U256 {
-        /// Calculates the distance metric between piece index hash and farmer address.
-        pub fn distance(PieceIndexHash(piece): &PieceIndexHash, address: &[u8]) -> U256 {
-            let piece = Self::from_big_endian(piece);
-            let address = Self::from_big_endian(address);
-            bidirectional_distance(&piece, &address)
-        }
+/// 256-bit unsigned integer
+#[derive(Debug, Display, Add, Sub, Mul, Div, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
+pub struct U256(private_u256::U256);
 
-        /// Convert piece distance to big endian bytes
-        pub fn to_bytes(self) -> [u8; 32] {
-            self.into()
-        }
-
-        /// The middle of the piece distance field.
-        /// The analogue of `0b1000_0000` for `u8`.
-        pub const MIDDLE: Self = {
-            // TODO: This assumes that numbers are stored little endian,
-            //  should be replaced with just `Self::MAX / 2`, but it is not `const fn` in Rust yet.
-            Self([u64::MAX, u64::MAX, u64::MAX, u64::MAX / 2])
-        };
+impl U256 {
+    /// Zero (additive identity) of this type.
+    pub const fn zero() -> Self {
+        Self(private_u256::U256::zero())
     }
 
-    impl WrappingAdd for U256 {
-        fn wrapping_add(&self, other: &Self) -> Self {
-            self.overflowing_add(*other).0
-        }
+    /// One (multiplicative identity) of this type.
+    pub fn one() -> Self {
+        Self(private_u256::U256::one())
     }
 
-    impl WrappingSub for U256 {
-        fn wrapping_sub(&self, other: &Self) -> Self {
-            self.overflowing_sub(*other).0
-        }
+    /// Create from big endian bytes
+    pub fn from_be_bytes(bytes: [u8; 32]) -> Self {
+        Self(private_u256::U256::from_big_endian(&bytes))
     }
 
-    impl From<PieceIndexHash> for U256 {
-        fn from(PieceIndexHash(hash): PieceIndexHash) -> Self {
-            hash.into()
-        }
+    /// Convert to big endian bytes
+    pub fn to_be_bytes(self) -> [u8; 32] {
+        let mut arr = [0u8; 32];
+        self.0.to_big_endian(&mut arr);
+        arr
     }
 
-    impl From<U256> for PieceIndexHash {
-        fn from(distance: U256) -> Self {
-            Self(distance.into())
-        }
+    /// Create from little endian bytes
+    pub fn from_le_bytes(bytes: [u8; 32]) -> Self {
+        Self(private_u256::U256::from_little_endian(&bytes))
+    }
+
+    /// Convert to little endian bytes
+    pub fn to_le_bytes(self) -> [u8; 32] {
+        let mut arr = [0u8; 32];
+        self.0.to_little_endian(&mut arr);
+        arr
+    }
+
+    /// Adds two numbers, checking for overflow. If overflow happens, `None` is returned.
+    pub fn checked_add(&self, v: &Self) -> Option<Self> {
+        self.0.checked_add(v.0).map(Self)
+    }
+
+    /// Subtracts two numbers, checking for underflow. If underflow happens, `None` is returned.
+    pub fn checked_sub(&self, v: &Self) -> Option<Self> {
+        self.0.checked_sub(v.0).map(Self)
+    }
+
+    /// Multiplies two numbers, checking for underflow or overflow. If underflow or overflow
+    /// happens, `None` is returned.
+    pub fn checked_mul(&self, v: &Self) -> Option<Self> {
+        self.0.checked_mul(v.0).map(Self)
+    }
+
+    /// Divides two numbers, checking for underflow, overflow and division by zero. If any of that
+    /// happens, `None` is returned.
+    pub fn checked_div(&self, v: &Self) -> Option<Self> {
+        self.0.checked_div(v.0).map(Self)
+    }
+
+    /// Saturating addition. Computes `self + other`, saturating at the relevant high or low
+    /// boundary of the type.
+    pub fn saturating_add(&self, v: &Self) -> Self {
+        Self(self.0.saturating_add(v.0))
+    }
+
+    /// Saturating subtraction. Computes `self - other`, saturating at the relevant high or low
+    /// boundary of the type.
+    pub fn saturating_sub(&self, v: &Self) -> Self {
+        Self(self.0.saturating_sub(v.0))
+    }
+
+    /// Saturating multiplication. Computes `self * other`, saturating at the relevant high or low
+    /// boundary of the type.
+    pub fn saturating_mul(&self, v: &Self) -> Self {
+        Self(self.0.saturating_mul(v.0))
+    }
+
+    /// The middle of the piece distance field.
+    /// The analogue of `0b1000_0000` for `u8`.
+    pub const MIDDLE: Self = {
+        // TODO: This assumes that numbers are stored little endian,
+        //  should be replaced with just `Self::MAX / 2`, but it is not `const fn` in Rust yet.
+        Self(private_u256::U256([
+            u64::MAX,
+            u64::MAX,
+            u64::MAX,
+            u64::MAX / 2,
+        ]))
+    };
+
+    /// Maximum value.
+    pub const MAX: Self = Self(private_u256::U256::MAX);
+}
+
+// Necessary for division derive
+impl From<U256> for private_u256::U256 {
+    fn from(number: U256) -> Self {
+        number.0
+    }
+}
+
+impl WrappingAdd for U256 {
+    fn wrapping_add(&self, other: &Self) -> Self {
+        Self(self.0.overflowing_add(other.0).0)
+    }
+}
+
+impl WrappingSub for U256 {
+    fn wrapping_sub(&self, other: &Self) -> Self {
+        Self(self.0.overflowing_sub(other.0).0)
+    }
+}
+
+impl From<u8> for U256 {
+    fn from(number: u8) -> Self {
+        Self(number.into())
+    }
+}
+
+impl From<u16> for U256 {
+    fn from(number: u16) -> Self {
+        Self(number.into())
+    }
+}
+
+impl From<u32> for U256 {
+    fn from(number: u32) -> Self {
+        Self(number.into())
+    }
+}
+
+impl From<u64> for U256 {
+    fn from(number: u64) -> Self {
+        Self(number.into())
+    }
+}
+
+impl From<u128> for U256 {
+    fn from(number: u128) -> Self {
+        Self(number.into())
+    }
+}
+
+impl From<PieceIndexHash> for U256 {
+    fn from(PieceIndexHash(hash): PieceIndexHash) -> Self {
+        Self(private_u256::U256::from_big_endian(&hash))
+    }
+}
+
+impl From<U256> for PieceIndexHash {
+    fn from(number: U256) -> Self {
+        Self(number.to_be_bytes())
     }
 }

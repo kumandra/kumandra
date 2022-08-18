@@ -10,4 +10,4 @@ The pallet provides the following functionality
 - imports any authority set changes from the header after the verification
 
 This pallet does not
-- verifies or recognizes the forks. So this is left for the admin to reinitialize the chain state after the fork
+- verifies or recognizes the forks. So this is left for the admin to reinitialize the chain state after the fork  

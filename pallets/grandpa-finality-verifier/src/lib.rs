@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,7 +47,7 @@ use sp_std::vec::Vec;
 pub use pallet::*;
 
 /// Data required to initialize a Chain
-#[derive(Default, Debug, Encode, Decode, Clone, PartialEq, TypeInfo)]
+#[derive(Default, Debug, Encode, Decode, Clone, Eq, PartialEq, TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct InitializationData {
     /// Scale encoded best finalized header we know.

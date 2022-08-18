@@ -1,11 +1,11 @@
 [package]
 name = "kumandra-rpc-primitives"
 version = "0.1.0"
-authors = ["Kumandrian <kumandrian@koompi.com"]
-description = "RPC primitives for Kumandra Protocol"
+authors = ["Kumandra <admin@kuamndra.org>"]
+description = "RPC primitives for Kumandra Network"
 edition = "2021"
 license = "Apache-2.0"
-homepage = "https://koompi.com"
+homepage = "https://kumandra.org"
 repository = "https://github.com/kumandra/kumandra"
 include = [
     "/src",
@@ -13,6 +13,6 @@ include = [
 ]
 
 [dependencies]
-hex-buffer-serde = "0.3.0"
-serde = { version = "1.0.137", features = ["derive"] }
+hex = { version = "0.4.3", features = ["serde"] }
+serde = { version = "1.0.139", features = ["derive"] }
 kumandra-core-primitives = { version = "0.1.0", path = "../core" }

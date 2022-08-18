@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,27 @@
 
 //! Primitives for Kumandra RPC.
 
-use hex_buffer_serde::{Hex, HexForm};
 use serde::{Deserialize, Serialize};
+use std::num::NonZeroU32;
 use kumandra_core_primitives::{
-    PublicKey, RewardSignature, Salt, Sha256Hash, SlotNumber, Solution,
+    PublicKey, RewardSignature, Salt, Sha256Hash, SlotNumber, Solution, SolutionRange,
 };
 
-/// Metadata necessary for farmer operation
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Defines a limit for segment indexes array. It affects storage access on the runtime side.
+pub const MAX_SEGMENT_INDEXES_PER_REQUEST: usize = 300;
+
+/// Information about the protocol necessary for farmer operation
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct FarmerMetadata {
+pub struct FarmerProtocolInfo {
+    /// Genesis hash of the chain
+    #[serde(with = "hex::serde")]
+    pub genesis_hash: [u8; 32],
     /// The size of data in one piece (in bytes).
-    pub record_size: u32,
+    pub record_size: NonZeroU32,
     /// Recorded history is encoded and plotted in segments of this size (in bytes).
     pub recorded_history_segment_size: u32,
-    /// Maximum number of pieces in each plot
+    /// Maximum plot size in bytes
     pub max_plot_size: u64,
     /// Total number of pieces stored on the network
     pub total_pieces: u64,
@@ -48,9 +54,9 @@ pub struct SlotInfo {
     /// Salt for the next eon
     pub next_salt: Option<Salt>,
     /// Acceptable solution range for block authoring
-    pub solution_range: u64,
+    pub solution_range: SolutionRange,
     /// Acceptable solution range for voting
-    pub voting_solution_range: u64,
+    pub voting_solution_range: SolutionRange,
 }
 
 /// Response of a slot challenge consisting of an optional solution and
@@ -71,10 +77,10 @@ pub struct SolutionResponse {
 #[serde(rename_all = "camelCase")]
 pub struct RewardSigningInfo {
     /// Hash to be signed.
-    #[serde(with = "HexForm")]
+    #[serde(with = "hex::serde")]
     pub hash: [u8; 32],
     /// Public key of the plot identity that should create signature.
-    #[serde(with = "HexForm")]
+    #[serde(with = "hex::serde")]
     pub public_key: [u8; 32],
 }
 
@@ -83,7 +89,7 @@ pub struct RewardSigningInfo {
 #[serde(rename_all = "camelCase")]
 pub struct RewardSignatureResponse {
     /// Hash that was signed.
-    #[serde(with = "HexForm")]
+    #[serde(with = "hex::serde")]
     pub hash: [u8; 32],
     /// Pre-header or vote hash signature.
     pub signature: Option<RewardSignature>,

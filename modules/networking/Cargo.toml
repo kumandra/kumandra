@@ -1,0 +1,68 @@
+[package]
+name = "kumandra-networking"
+version = "0.1.0"
+authors = [
+    "Nazar Mokrynskyi <nazar@mokrynskyi.com>",
+    "Shamil Gadelshin <shamilgadelshin@gmail.com>",
+    "Hangsia Hong <hangsiahong@koompi.com>"
+]
+description = "Networking functionality of Kumandra Network, primarily used for DSN (Distributed Storage Network)"
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://koompi.com"
+repository = "https://github.com/kumandra/kumandra"
+include = [
+    "/src",
+    "/Cargo.toml",
+]
+
+[dependencies]
+async-trait = "0.1.56"
+bytes = "1.2.0"
+chrono = {version = "0.4.19", features = ["clock", "serde", "std",]}
+derive_more = "0.99.17"
+event-listener-primitives = "2.0.1"
+futures = "0.3.21"
+generic-array = "0.14.5"
+hex = "0.4.3"
+lru = "0.7.8"
+nohash-hasher = "0.2.0"
+once_cell = "1.13.0"
+parity-db = "0.3.14"
+parity-scale-codec = "3.1.5"
+parking_lot = "0.12.1"
+pin-project = "1.0.11"
+serde = { version = "1.0.139", features = ["derive"] }
+serde_json = "1.0.82"
+kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core" }
+thiserror = "1.0.31"
+tokio = { version = "1.20.0", features = ["macros", "parking_lot", "rt-multi-thread", "time"] }
+tracing = "0.1.35"
+typenum = "1.15.0"
+unsigned-varint = { version = "0.7.1", features = ["futures", "asynchronous_codec"] }
+
+[dependencies.libp2p]
+version = "0.46.1"
+default-features = false
+features = [
+    "dns-tokio",
+    "gossipsub",
+    "identify",
+    "kad",
+    "mplex",
+    "noise",
+    "ping",
+    "relay",
+    "request-response",
+    "serde",
+    "sr25519",
+    "tcp-tokio",
+    "websocket",
+    "yamux",
+]
+
+[dev-dependencies]
+anyhow = "1.0.58"
+clap = { version = "3.2.12", features = ["color", "derive"] }
+rand = "0.8.5"
+tracing-subscriber = "0.3.14"

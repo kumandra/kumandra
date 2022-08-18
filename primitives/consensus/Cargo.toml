@@ -1,7 +1,7 @@
 [package]
 name = "kp-consensus"
 version = "0.1.0"
-authors = ["Parity Technologies <admin@parity.io>", "Subspace Labs <admin@subspace.network>", "Kumandrian <kumandraian@koompi.com>"]
+authors = ["Hangsia Hong <hangsiahong@kumandra.org>"]
 description = "Primitives for Kumandra consensus"
 edition = "2021"
 license = "Apache-2.0"
@@ -13,23 +13,26 @@ readme = "README.md"
 targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-async-trait = { version = "0.1.53", optional = true }
-codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false }
-scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
+async-trait = { version = "0.1.56", optional = true }
+codec = { package = "parity-scale-codec", version = "3.1.5", default-features = false }
+log = { version = "0.4.17", default-features = false }
+scale-info = { version = "2.1.2", default-features = false, features = ["derive"] }
 schnorrkel = { version = "0.9.1", default-features = false, features = ["u64_backend"] }
-sp-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-application-crypto = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-consensus = { version = "0.10.0-dev", optional = true, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-consensus-slots = { version = "0.10.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-core = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-inherents = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4" }
-sp-timestamp = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "b49d8ee54f4bd6e4b5b48f45d08f75705fad95b4", default-features = false }
+sp-api = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-application-crypto = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-arithmetic = { version = "5.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-consensus = { version = "0.10.0-dev", optional = true, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-consensus-slots = { version = "0.10.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-core = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-inherents = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-timestamp = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86", default-features = false }
 kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving", default-features = false }
 kumandra-solving = { version = "0.1.0", path = "../../modules/solving", default-features = false }
 kumandra-core-primitives = { version = "0.1.0", path = "../core", default-features = false }
+kumandra-verification = { version = "0.1.0", path = "../verification", default-features = false }
 thiserror = { version = "1.0.31", optional = true }
 
 [features]
@@ -37,10 +40,12 @@ default = ["std"]
 std = [
 	"async-trait",
 	"codec/std",
+	"log/std",
 	"scale-info/std",
 	"schnorrkel/std",
 	"sp-api/std",
 	"sp-application-crypto/std",
+	"sp-arithmetic/std",
 	"sp-consensus",
 	"sp-consensus-slots/std",
 	"sp-core/std",
@@ -52,5 +57,6 @@ std = [
 	"kumandra-archiving/std",
 	"kumandra-solving/std",
 	"kumandra-core-primitives/std",
+	"kumandra-verification/std",
 	"thiserror",
 ]

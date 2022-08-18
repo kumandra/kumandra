@@ -1,21 +1,22 @@
 [package]
 name = "kumandra-archiving"
-description = "Module used for dealing with archived state of Kumandra Protocol"
+description = "Collection of modules used for dealing with archived state of Kumandrah Network"
 license = "Apache-2.0"
 version = "0.1.0"
-authors = ["Nazar Mokrynskyi <nazar@mokrynskyi.com>", "Kumandrain <kumandrain@koompi.com"]
+authors = ["Nazar Mokrynskyi <nazar@mokrynskyi.com>", "Hangsia Hong <hangsiahong@koompi.com>"]
 edition = "2021"
 include = [
     "/benches",
     "/src",
     "/Cargo.toml",
+    "/README.md",
 ]
 
 [dependencies]
 merkle_light = { version = "0.4.0", default-features = false }
 parity-scale-codec = { version = "3.1.5", default-features = false, features = ["derive"] }
 reed-solomon-erasure = { version = "5.0.3", default-features = false }
-serde = { version = "1.0.137", optional = true, features = ["derive"] }
+serde = { version = "1.0.139", optional = true, features = ["derive"] }
 kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core", default-features = false }
 thiserror = { version = "1.0.31", optional = true }
 

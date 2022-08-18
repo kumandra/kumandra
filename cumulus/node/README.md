@@ -18,7 +18,7 @@ $ cargo build --release --bin kumandra-farmer --bin kumandra-node
 $ ./target/release/kumandra-node --dev -d tmp --log=runtime=debug -- --alice --dev --port 40333 --rpc-port 8845 --ws-port 8846
 2022-04-24 17:00:27.700  INFO main sc_cli::runner: Kumandra
 2022-04-24 17:00:27.700  INFO main sc_cli::runner: ✌️  version 0.1.0-98f7e25b9
-2022-04-24 17:00:27.700  INFO main sc_cli::runner: ❤️  by Kumandrain <kumandrain@koompi.com>, 2021-2022
+2022-04-24 17:00:27.700  INFO main sc_cli::runner: ❤️  by KOOMPI <https://koompi.com>, 2022-2023
 2022-04-24 17:00:27.700  INFO main sc_cli::runner: 📋 Chain specification: Kumandra development
 2022-04-24 17:00:27.701  INFO main sc_cli::runner: 🏷  Node name: squeamish-notebook-7882
 2022-04-24 17:00:27.701  INFO main sc_cli::runner: 👤 Role: AUTHORITY

@@ -1,5 +1,6 @@
 #![feature(assert_matches)]
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +27,6 @@ mod mock;
 mod tests;
 
 use codec::{Decode, Encode, MaxEncodedLen};
-use core::mem;
 use equivocation::{HandleEquivocation, KumandraEquivocationOffence};
 use frame_support::dispatch::{DispatchResult, DispatchResultWithPostInfo};
 use frame_support::traits::{Get, OnTimestampSet};
@@ -37,21 +37,13 @@ pub use pallet::*;
 use scale_info::TypeInfo;
 use schnorrkel::SignatureError;
 use sp_consensus_slots::Slot;
-use kp_consensus::digests::{
-    CompatibleDigestItem, GlobalRandomnessDescriptor, SaltDescriptor, SolutionRangeDescriptor,
-};
+use kp_consensus::digests::CompatibleDigestItem;
 use kp_consensus::offence::{OffenceDetails, OffenceError, OnOffenceHandler};
-use kp_consensus::verification::{
-    PieceCheckParams, VerificationError, VerifySolutionParams,
-};
 use kp_consensus::{
-    derive_randomness, verification, EquivocationProof, FarmerPublicKey, FarmerSignature,
-    SignedVote, Vote,
+    EquivocationProof, FarmerPublicKey, FarmerSignature, SignedVote, Vote,
 };
 use sp_runtime::generic::DigestItem;
-use sp_runtime::traits::{
-    BlockNumberProvider, Hash, Header as HeaderT, One, SaturatedConversion, Saturating, Zero,
-};
+use sp_runtime::traits::{BlockNumberProvider, Hash, One, SaturatedConversion, Saturating, Zero};
 use sp_runtime::transaction_validity::{
     InvalidTransaction, TransactionPriority, TransactionSource, TransactionValidity,
     TransactionValidityError, ValidTransaction,
@@ -60,12 +52,15 @@ use sp_runtime::DispatchError;
 use sp_std::collections::btree_map::BTreeMap;
 use sp_std::prelude::*;
 use kumandra_core_primitives::{
-    crypto, Randomness, RootBlock, Salt, PIECE_SIZE, RANDOMNESS_LENGTH, SALT_SIZE,
+    PublicKey, Randomness, RewardSignature, RootBlock, Salt, SolutionRange, MERKLE_NUM_LEAVES,
+    PIECE_SIZE, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
 };
 use kumandra_solving::REWARD_SIGNING_CONTEXT;
-
-const SALT_HASHING_PREFIX: &[u8] = b"salt";
-const SALT_HASHING_PREFIX_LEN: usize = SALT_HASHING_PREFIX.len();
+use kumandra_verification::{
+    check_reward_signature, derive_next_salt_from_randomness, derive_next_solution_range,
+    derive_randomness, verify_solution, Error as VerificationError, PieceCheckParams,
+    VerifySolutionParams,
+};
 
 pub trait WeightInfo {
     fn report_equivocation() -> Weight;
@@ -130,7 +125,7 @@ impl EonChangeTrigger for NormalEonChange {
 #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, MaxEncodedLen, TypeInfo)]
 struct VoteVerificationData {
     global_randomness: Randomness,
-    solution_range: u64,
+    solution_range: SolutionRange,
     salt: Salt,
     record_size: u32,
     recorded_history_segment_size: u32,
@@ -155,7 +150,7 @@ mod pallet {
     use sp_runtime::traits::One;
     use sp_std::collections::btree_map::BTreeMap;
     use sp_std::prelude::*;
-    use kumandra_core_primitives::{Randomness, RootBlock, Sha256Hash};
+    use kumandra_core_primitives::{Randomness, RootBlock, SegmentIndex, SolutionRange};
 
     pub(super) struct InitialSolutionRanges<T: Config> {
         _config: T,
@@ -181,9 +176,9 @@ mod pallet {
     #[derive(Debug, Encode, Decode, TypeInfo)]
     pub struct SolutionRangeOverride {
         /// Value that should be set as solution range
-        pub solution_range: u64,
+        pub solution_range: SolutionRange,
         /// Value that should be set as voting solution range
-        pub voting_solution_range: u64,
+        pub voting_solution_range: SolutionRange,
     }
 
     /// The Kumandra Pallet
@@ -246,6 +241,7 @@ mod pallet {
         #[pallet::constant]
         type ConfirmationDepthK: Get<Self::BlockNumber>;
 
+        // TODO: Remove when breaking protocol
         /// The size of data in one piece (in bytes).
         #[pallet::constant]
         type RecordSize: Get<u32>;
@@ -254,7 +250,7 @@ mod pallet {
         #[pallet::constant]
         type MaxPlotSize: Get<u64>;
 
-        // TODO: This will probably become configurable later
+        // TODO: Remove when breaking protocol
         /// Recorded history is encoded and plotted in segments of this size (in bytes).
         #[pallet::constant]
         type RecordedHistorySegmentSize: Get<u32>;
@@ -356,7 +352,7 @@ mod pallet {
     /// Current eon index.
     #[pallet::storage]
     #[pallet::getter(fn eon_index)]
-    pub type EonIndex<T> = StorageValue<_, u64, ValueQuery>;
+    pub type EonIndex<T> = StorageValue<_, kumandra_core_primitives::EonIndex, ValueQuery>;
 
     /// The slot at which the block was created. This is 0 until the first block of the chain.
     #[pallet::storage]
@@ -409,7 +405,8 @@ mod pallet {
     /// Mapping from segment index to corresponding merkle tree root of segment records.
     #[pallet::storage]
     #[pallet::getter(fn records_root)]
-    pub(super) type RecordsRoot<T> = CountedStorageMap<_, Twox64Concat, u64, Sha256Hash>;
+    pub(super) type RecordsRoot<T> =
+        CountedStorageMap<_, Twox64Concat, SegmentIndex, kumandra_core_primitives::RecordsRoot>;
 
     /// Storage of previous vote verification data, updated on each block during finalization.
     #[pallet::storage]
@@ -663,9 +660,7 @@ impl<T: Config> Pallet<T> {
 
     /// Total number of pieces in the blockchain
     pub fn total_pieces() -> u64 {
-        // TODO: This assumes fixed size segments, which might not be the case
-        let merkle_num_leaves = T::RecordedHistorySegmentSize::get() / T::RecordSize::get() * 2;
-        u64::from(RecordsRoot::<T>::count()) * u64::from(merkle_num_leaves)
+        u64::from(RecordsRoot::<T>::count()) * u64::from(MERKLE_NUM_LEAVES)
     }
 
     /// Determine whether a randomness update should take place at this block.
@@ -687,8 +682,8 @@ impl<T: Config> Pallet<T> {
         *diff >= T::EonDuration::get()
     }
 
-    /// DANGEROUS: Enact era change. Should be done on every block where `should_era_change` has
-    /// returned `true`, and the caller is the only caller of this function.
+    /// DANGEROUS: Enact update of global randomness. Should be done on every block where `should_update_global_randomness`
+    /// has returned `true`, and the caller is the only caller of this function.
     fn enact_update_global_randomness(_block_number: T::BlockNumber, por_randomness: Randomness) {
         GlobalRandomnesses::<T>::mutate(|global_randomnesses| {
             global_randomnesses.next = Some(por_randomness);
@@ -715,38 +710,15 @@ impl<T: Config> Pallet<T> {
                 next_solution_range = solution_range_override.solution_range;
                 next_voting_solution_range = solution_range_override.voting_solution_range;
             } else {
-                // If Era start slot is not found it means we have just finished the first era
-                let era_start_slot = EraStartSlot::<T>::get().unwrap_or_else(GenesisSlot::<T>::get);
-                let era_slot_count = u64::from(current_slot) - u64::from(era_start_slot);
-
-                // Now we need to re-calculate solution range. The idea here is to keep block production at
-                // the same pace while space pledged on the network changes. For this we adjust previous
-                // solution range according to actual and expected number of blocks per era.
-                let era_duration: u64 = T::EraDuration::get()
-                    .try_into()
-                    .unwrap_or_else(|_| panic!("Era duration is always within u64; qed"));
-
-                // Below is code analogous to the following, but without using floats:
-                // ```rust
-                // let actual_slots_per_block = era_slot_count as f64 / era_duration as f64;
-                // let expected_slots_per_block =
-                //     slot_probability.1 as f64 / slot_probability.0 as f64;
-                // let adjustment_factor =
-                //     (actual_slots_per_block / expected_slots_per_block).clamp(0.25, 4.0);
-                //
-                // next_solution_range =
-                //     (solution_ranges.current as f64 * adjustment_factor).round() as u64;
-                // ```
-                next_solution_range = u64::saturated_from(
-                    u128::from(solution_ranges.current)
-                        .saturating_mul(u128::from(era_slot_count))
-                        .saturating_mul(u128::from(slot_probability.0))
-                        / u128::from(era_duration)
-                        / u128::from(slot_probability.1),
-                )
-                .clamp(
-                    solution_ranges.current / 4,
-                    solution_ranges.current.saturating_mul(4),
+                next_solution_range = derive_next_solution_range(
+                    // If Era start slot is not found it means we have just finished the first era
+                    u64::from(EraStartSlot::<T>::get().unwrap_or_else(GenesisSlot::<T>::get)),
+                    u64::from(current_slot),
+                    slot_probability,
+                    solution_ranges.current,
+                    T::EraDuration::get()
+                        .try_into()
+                        .unwrap_or_else(|_| panic!("Era duration is always within u64; qed")),
                 );
 
                 next_voting_solution_range = next_solution_range
@@ -765,7 +737,7 @@ impl<T: Config> Pallet<T> {
     /// returned `true`, and the caller is the only caller of this function.
     fn enact_eon_change(_block_number: T::BlockNumber) {
         let current_slot = *Self::current_slot();
-        let eon_index = current_slot
+        let eon_index: kumandra_core_primitives::EonIndex = current_slot
             .checked_sub(*GenesisSlot::<T>::get())
             .expect("Current slot is never lower than genesis slot; qed")
             .checked_div(T::EonDuration::get())
@@ -784,7 +756,7 @@ impl<T: Config> Pallet<T> {
         Self::eon_start(EonIndex::<T>::get())
     }
 
-    fn eon_start(eon_index: u64) -> Slot {
+    fn eon_start(eon_index: kumandra_core_primitives::EonIndex) -> Slot {
         // (eon_index * eon_duration) + genesis_slot
 
         const PROOF: &str =
@@ -905,7 +877,7 @@ impl<T: Config> Pallet<T> {
         // Extract PoR randomness from pre-digest.
         // Tag signature is validated by the client and is always valid here.
         let por_randomness: Randomness = derive_randomness(
-            &pre_digest.solution.public_key,
+            &PublicKey::from(&pre_digest.solution.public_key),
             pre_digest.solution.tag,
             &pre_digest.solution.tag_signature,
         )
@@ -914,21 +886,15 @@ impl<T: Config> Pallet<T> {
         PorRandomness::<T>::put(por_randomness);
 
         // Deposit global randomness data such that light client can validate blocks later.
-        frame_system::Pallet::<T>::deposit_log(DigestItem::global_randomness_descriptor(
-            GlobalRandomnessDescriptor {
-                global_randomness: GlobalRandomnesses::<T>::get().current,
-            },
+        frame_system::Pallet::<T>::deposit_log(DigestItem::global_randomness(
+            GlobalRandomnesses::<T>::get().current,
         ));
         // Deposit solution range data such that light client can validate blocks later.
-        frame_system::Pallet::<T>::deposit_log(DigestItem::solution_range_descriptor(
-            SolutionRangeDescriptor {
-                solution_range: SolutionRanges::<T>::get().current,
-            },
+        frame_system::Pallet::<T>::deposit_log(DigestItem::solution_range(
+            SolutionRanges::<T>::get().current,
         ));
         // Deposit salt data such that light client can validate blocks later.
-        frame_system::Pallet::<T>::deposit_log(DigestItem::salt_descriptor(SaltDescriptor {
-            salt: Salts::<T>::get().current,
-        }));
+        frame_system::Pallet::<T>::deposit_log(DigestItem::salt(Salts::<T>::get().current));
 
         let next_salt_reveal = Self::current_eon_start()
             .checked_add(T::EonNextSaltReveal::get())
@@ -944,10 +910,9 @@ impl<T: Config> Pallet<T> {
                         eon_index,
                         *current_slot
                     );
-                    salts.next.replace(Self::derive_next_salt_from_randomness(
-                        eon_index,
-                        &por_randomness,
-                    ));
+                    salts
+                        .next
+                        .replace(derive_next_salt_from_randomness(eon_index, &por_randomness));
                 }
             });
         }
@@ -958,6 +923,28 @@ impl<T: Config> Pallet<T> {
         T::EraChangeTrigger::trigger::<T>(block_number);
         // Enact eon change, if necessary.
         T::EonChangeTrigger::trigger::<T>(block_number);
+
+        if let Some(next_global_randomness) = GlobalRandomnesses::<T>::get().next {
+            // Deposit next global randomness data such that light client can validate blocks later.
+            frame_system::Pallet::<T>::deposit_log(DigestItem::next_global_randomness(
+                next_global_randomness,
+            ));
+        }
+        if let Some(next_solution_range) = SolutionRanges::<T>::get().next {
+            // Deposit next solution range data such that light client can validate blocks later.
+            frame_system::Pallet::<T>::deposit_log(DigestItem::next_solution_range(
+                next_solution_range,
+            ));
+        }
+        {
+            let salts = Salts::<T>::get();
+            if salts.switch_next_block {
+                if let Some(next_salt) = salts.next {
+                    // Deposit next salt data such that light client can validate blocks later.
+                    frame_system::Pallet::<T>::deposit_log(DigestItem::next_salt(next_salt));
+                }
+            }
+        }
     }
 
     fn do_finalize(_block_number: T::BlockNumber) {
@@ -997,6 +984,11 @@ impl<T: Config> Pallet<T> {
     fn do_store_root_blocks(root_blocks: Vec<RootBlock>) -> DispatchResult {
         for root_block in root_blocks {
             RecordsRoot::<T>::insert(root_block.segment_index(), root_block.records_root());
+            // Deposit global randomness data such that light client can validate blocks later.
+            frame_system::Pallet::<T>::deposit_log(DigestItem::records_root(
+                root_block.segment_index(),
+                root_block.records_root(),
+            ));
             Self::deposit_event(Event::RootBlockStored { root_block });
         }
         Ok(())
@@ -1072,22 +1064,6 @@ impl<T: Config> Pallet<T> {
         Ok(())
     }
 
-    fn derive_next_salt_from_randomness(
-        eon_index: u64,
-        randomness: &Randomness,
-    ) -> kumandra_core_primitives::Salt {
-        let mut input = [0u8; SALT_HASHING_PREFIX_LEN + RANDOMNESS_LENGTH + mem::size_of::<u64>()];
-        input[..SALT_HASHING_PREFIX_LEN].copy_from_slice(SALT_HASHING_PREFIX);
-        input[SALT_HASHING_PREFIX_LEN..SALT_HASHING_PREFIX_LEN + RANDOMNESS_LENGTH]
-            .copy_from_slice(randomness);
-        input[SALT_HASHING_PREFIX_LEN + RANDOMNESS_LENGTH..]
-            .copy_from_slice(&eon_index.to_le_bytes());
-
-        crypto::sha256_hash(&input)[..SALT_SIZE]
-            .try_into()
-            .expect("Slice has exactly the size needed; qed")
-    }
-
     /// Submits an extrinsic to report an equivocation. This method will create an unsigned
     /// extrinsic with a call to `report_equivocation` and will push the transaction to the pool.
     /// Only useful in an offchain context.
@@ -1114,7 +1090,7 @@ impl<T: Config> Pallet<T> {
     pub fn archived_history_size() -> u64 {
         let archived_segments = RecordsRoot::<T>::count();
         // `*2` because we need to include both data and parity pieces
-        let archived_segment_size = T::RecordedHistorySegmentSize::get() / T::RecordSize::get()
+        let archived_segment_size = RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE
             * u32::try_from(PIECE_SIZE)
                 .expect("Piece size is definitely small enough to fit into u32; qed")
             * 2;
@@ -1251,8 +1227,8 @@ fn current_vote_verification_data<T: Config>(is_block_initialized: bool) -> Vote
                 .next
                 .expect("Next salt must always be available if `switch_next_block` is true; qed")
         },
-        record_size: T::RecordSize::get(),
-        recorded_history_segment_size: T::RecordedHistorySegmentSize::get(),
+        record_size: RECORD_SIZE,
+        recorded_history_segment_size: RECORDED_HISTORY_SEGMENT_SIZE,
         max_plot_size: T::MaxPlotSize::get(),
         total_pieces: Pallet::<T>::total_pieces(),
         current_slot: Pallet::<T>::current_slot(),
@@ -1269,10 +1245,7 @@ fn current_vote_verification_data<T: Config>(is_block_initialized: bool) -> Vote
 }
 
 #[derive(Debug, Eq, PartialEq)]
-enum CheckVoteError<Header>
-where
-    Header: HeaderT,
-{
+enum CheckVoteError {
     BlockListed,
     UnexpectedBeforeHeightTwo,
     HeightInTheFuture,
@@ -1282,16 +1255,13 @@ where
     SlotInThePast,
     BadRewardSignature(SignatureError),
     UnknownRecordsRoot,
-    InvalidSolution(VerificationError<Header>),
+    InvalidSolution(VerificationError),
     DuplicateVote,
     Equivocated(KumandraEquivocationOffence<FarmerPublicKey>),
 }
 
-impl<Header> From<CheckVoteError<Header>> for TransactionValidityError
-where
-    Header: HeaderT,
-{
-    fn from(error: CheckVoteError<Header>) -> Self {
+impl From<CheckVoteError> for TransactionValidityError {
+    fn from(error: CheckVoteError) -> Self {
         TransactionValidityError::Invalid(match error {
             CheckVoteError::BlockListed => InvalidTransaction::BadSigner,
             CheckVoteError::UnexpectedBeforeHeightTwo => InvalidTransaction::Call,
@@ -1312,7 +1282,7 @@ where
 fn check_vote<T: Config>(
     signed_vote: &SignedVote<T::BlockNumber, T::Hash, T::AccountId>,
     pre_dispatch: bool,
-) -> Result<(), CheckVoteError<T::Header>> {
+) -> Result<(), CheckVoteError> {
     let Vote::V0 {
         height,
         parent_hash,
@@ -1411,10 +1381,10 @@ fn check_vote<T: Config>(
         return Err(CheckVoteError::SlotInThePast);
     }
 
-    if let Err(error) = verification::check_reward_signature(
+    if let Err(error) = check_reward_signature(
         signed_vote.vote.hash().as_bytes(),
-        &signed_vote.signature,
-        &solution.public_key,
+        &RewardSignature::from(&signed_vote.signature),
+        &PublicKey::from(&solution.public_key),
         &schnorrkel::signing_context(REWARD_SIGNING_CONTEXT),
     ) {
         debug!(
@@ -1447,9 +1417,9 @@ fn check_vote<T: Config>(
         return Err(CheckVoteError::UnknownRecordsRoot);
     };
 
-    if let Err(error) = verification::verify_solution::<T::Header, T::AccountId>(
+    if let Err(error) = verify_solution::<FarmerPublicKey, T::AccountId>(
         solution,
-        slot,
+        slot.into(),
         VerifySolutionParams {
             global_randomness: &vote_verification_data.global_randomness,
             solution_range: vote_verification_data.solution_range,

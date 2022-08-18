@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ use crate::chain_spec_utils::{
 use crate::secondary_chain;
 use cirrus_runtime::GenesisConfig as ExecutionGenesisConfig;
 use sc_service::ChainType;
-use kc_chain_specs::{ChainSpecExtensions, ConsensusChainSpec};
+use kc_kumandra_chain_specs::{ChainSpecExtensions, ConsensusChainSpec};
 use sc_telemetry::TelemetryEndpoints;
 use sp_core::crypto::Ss58Codec;
 use kp_executor::ExecutorId;
@@ -30,14 +30,14 @@ use kumandra_runtime::{
     BalancesConfig, ExecutorConfig, GenesisConfig, RuntimeConfigsConfig, KumandraConfig,
     SudoConfig, SystemConfig, VestingConfig, MILLISECS_PER_BLOCK, WASM_BINARY,
 };
-use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, KMD};
+use kumandra_runtime_primitives::{AccountId, Balance, BlockNumber, SSC};
 
-const SELENDRA_TELEMETRY_URL: &str = "wss://telemetry.selendra.io/submit/";
-const KUMANDRA_TELEMETRY_URL: &str = "wss://telemetry.kumandra.org/submit/";
-const KTESTNET_1_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-ktestnet-1.json");
-const KTIC_1_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-ktic-1.json");
+const POLKADOT_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+const KUMANDRA_TELEMETRY_URL: &str = "wss://telemetry.kumandra.network/submit/";
+const GEMINI_1_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-gemini-1.json");
+const X_NET_1_CHAIN_SPEC: &[u8] = include_bytes!("../res/chain-spec-raw-x-net-1.json");
 
-/// List of accounts which should receive token grants, amounts are specified in KMD.
+/// List of accounts which should receive token grants, amounts are specified in SSC.
 const TOKEN_GRANTS: &[(&str, u128)] = &[
     (
         "5Dns1SVEeDqnbSm2fVUqHJPCvQFXHVsgiw28uMBwmuaoKFYi",
@@ -72,31 +72,31 @@ struct GenesisParams {
     enable_executor: bool,
 }
 
-pub fn ktestnet_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String>
+pub fn gemini_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String>
 {
-    ConsensusChainSpec::from_json_bytes(KTESTNET_1_CHAIN_SPEC)
+    ConsensusChainSpec::from_json_bytes(GEMINI_1_CHAIN_SPEC)
 }
 
-pub fn ktestnet_config_compiled(
+pub fn gemini_config_compiled(
 ) -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String> {
     Ok(ConsensusChainSpec::from_genesis(
         // Name
-        "Kumandra Testnet 1",
+        "Kumandra Gemini 1",
         // ID
-        "kumandra_testnet_1b",
-        ChainType::Custom("Kumandra Testnet 1".to_string()),
+        "kumandra_gemini_1b",
+        ChainType::Custom("Kumandra Gemini 1".to_string()),
         || {
             let sudo_account =
                 AccountId::from_ss58check("5CXTmJEusve5ixyJufqHThmy4qUrrm6FyLCR7QfE4bbyMTNC")
                     .expect("Wrong root account address");
 
-            let mut balances = vec![(sudo_account.clone(), 1_000 * KMD)];
+            let mut balances = vec![(sudo_account.clone(), 1_000 * SSC)];
             let vesting_schedules = TOKEN_GRANTS
                 .iter()
                 .flat_map(|&(account_address, amount)| {
                     let account_id = AccountId::from_ss58check(account_address)
                         .expect("Wrong vesting account address");
-                    let amount: Balance = amount * KMD;
+                    let amount: Balance = amount * SSC;
 
                     // TODO: Adjust start block to real value before mainnet launch
                     let start_block = 100_000_000;
@@ -128,7 +128,7 @@ pub fn ktestnet_config_compiled(
                 })
                 .collect::<Vec<_>>();
             kumandra_genesis_config(
-                WASM_BINARY.expect("Wasm binary must be built for Kumandra Testnet"),
+                WASM_BINARY.expect("Wasm binary must be built for Gemini"),
                 sudo_account,
                 balances,
                 vesting_schedules,
@@ -151,47 +151,47 @@ pub fn ktestnet_config_compiled(
         // Telemetry
         Some(
             TelemetryEndpoints::new(vec![
-                (SELENDRA_TELEMETRY_URL.into(), 1),
+                (POLKADOT_TELEMETRY_URL.into(), 1),
                 (KUMANDRA_TELEMETRY_URL.into(), 1),
             ])
             .map_err(|error| error.to_string())?,
         ),
         // Protocol ID
-        Some("kumandra-ktestnet-1b"),
+        Some("kumandra-gemini-1b"),
         None,
         // Properties
         Some(chain_spec_properties()),
         // Extensions
         ChainSpecExtensions {
-            execution_chain_spec: secondary_chain::chain_spec::ktestnet_config(),
+            execution_chain_spec: secondary_chain::chain_spec::gemini_config(),
         },
     ))
 }
 
-pub fn ktic_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String> {
-    ConsensusChainSpec::from_json_bytes(KTIC_1_CHAIN_SPEC)
+pub fn x_net_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String> {
+    ConsensusChainSpec::from_json_bytes(X_NET_1_CHAIN_SPEC)
 }
 
-pub fn ktic_config_compiled(
+pub fn x_net_config_compiled(
 ) -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesisConfig>, String> {
     Ok(ConsensusChainSpec::from_genesis(
         // Name
-        "Kumandra Ktic 1",
+        "Kumandra X-Net 1",
         // ID
-        "kumandra_ktic_1a",
-        ChainType::Custom("Kumandra Ktic 1".to_string()),
+        "kumandra_x_net_1a",
+        ChainType::Custom("Kumandra X-Net 1".to_string()),
         || {
             let sudo_account =
                 AccountId::from_ss58check("5CXTmJEusve5ixyJufqHThmy4qUrrm6FyLCR7QfE4bbyMTNC")
                     .expect("Wrong root account address");
 
-            let mut balances = vec![(sudo_account.clone(), 1_000 * KMD)];
+            let mut balances = vec![(sudo_account.clone(), 1_000 * SSC)];
             let vesting_schedules = TOKEN_GRANTS
                 .iter()
                 .flat_map(|&(account_address, amount)| {
                     let account_id = AccountId::from_ss58check(account_address)
                         .expect("Wrong vesting account address");
-                    let amount: Balance = amount * KMD;
+                    let amount: Balance = amount * SSC;
 
                     // TODO: Adjust start block to real value before mainnet launch
                     let start_block = 100_000_000;
@@ -223,7 +223,7 @@ pub fn ktic_config_compiled(
                 })
                 .collect::<Vec<_>>();
             kumandra_genesis_config(
-                WASM_BINARY.expect("Wasm binary must be built for Kumandra Testnet"),
+                WASM_BINARY.expect("Wasm binary must be built for Gemini"),
                 sudo_account,
                 balances,
                 vesting_schedules,
@@ -246,19 +246,19 @@ pub fn ktic_config_compiled(
         // Telemetry
         Some(
             TelemetryEndpoints::new(vec![
-                (SELENDRA_TELEMETRY_URL.into(), 1),
+                (POLKADOT_TELEMETRY_URL.into(), 1),
                 (KUMANDRA_TELEMETRY_URL.into(), 1),
             ])
             .map_err(|error| error.to_string())?,
         ),
         // Protocol ID
-        Some("kumandra-ktic-1a"),
+        Some("kumandra-x-net-1a"),
         None,
         // Properties
         Some(chain_spec_properties()),
         // Extensions
         ChainSpecExtensions {
-            execution_chain_spec: secondary_chain::chain_spec::ktic_config(),
+            execution_chain_spec: secondary_chain::chain_spec::x_net_config(),
         },
     ))
 }
@@ -279,10 +279,10 @@ pub fn dev_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenesis
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice"), 1_000 * SSC),
+                    (get_account_id_from_seed("Bob"), 1_000 * SSC),
+                    (get_account_id_from_seed("Alice//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Bob//stash"), 1_000 * SSC),
                 ],
                 vec![],
                 (
@@ -329,18 +329,18 @@ pub fn local_config() -> Result<ConsensusChainSpec<GenesisConfig, ExecutionGenes
                 get_account_id_from_seed("Alice"),
                 // Pre-funded accounts
                 vec![
-                    (get_account_id_from_seed("Alice"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob"), 1_000 * KMD),
-                    (get_account_id_from_seed("Charlie"), 1_000 * KMD),
-                    (get_account_id_from_seed("Dave"), 1_000 * KMD),
-                    (get_account_id_from_seed("Eve"), 1_000 * KMD),
-                    (get_account_id_from_seed("Ferdie"), 1_000 * KMD),
-                    (get_account_id_from_seed("Alice//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Bob//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Charlie//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Dave//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Eve//stash"), 1_000 * KMD),
-                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * KMD),
+                    (get_account_id_from_seed("Alice"), 1_000 * SSC),
+                    (get_account_id_from_seed("Bob"), 1_000 * SSC),
+                    (get_account_id_from_seed("Charlie"), 1_000 * SSC),
+                    (get_account_id_from_seed("Dave"), 1_000 * SSC),
+                    (get_account_id_from_seed("Eve"), 1_000 * SSC),
+                    (get_account_id_from_seed("Ferdie"), 1_000 * SSC),
+                    (get_account_id_from_seed("Alice//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Bob//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Charlie//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Dave//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Eve//stash"), 1_000 * SSC),
+                    (get_account_id_from_seed("Ferdie//stash"), 1_000 * SSC),
                 ],
                 vec![],
                 (

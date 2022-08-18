@@ -1,21 +1,24 @@
 [package]
 name = "kumandra-core-primitives"
-description = "Core primitives for Kumandra Protocol"
+description = "Core primitives for Kumandra Network"
 license = "Apache-2.0"
 version = "0.1.0"
-authors = ["Kumandrian <kumandrian@koompi.com"]
+authors = ["Nazar Mokrynskyi <nazar@mokrynskyi.com>", "Hangsia Hong <hangsiahong@koompi.com>"]
 edition = "2021"
 include = [
     "/src",
     "/Cargo.toml",
+    "/README.md",
 ]
 
 [dependencies]
+derive_more = "0.99.17"
+hex = { version  = "0.4.3", default-features = false }
 hmac = { version  = "0.12.1", default-features = false }
 num-traits = { version = "0.2.15", default-features = false }
-parity-scale-codec = { version = "3.1.2", default-features = false, features = ["derive"] }
-scale-info = { version = "2.1.1", default-features = false, features = ["derive"] }
-serde = { version = "1.0.137", optional = true, features = ["derive"] }
+parity-scale-codec = { version = "3.1.5", default-features = false, features = ["derive"] }
+scale-info = { version = "2.1.2", default-features = false, features = ["derive"] }
+serde = { version = "1.0.139", optional = true, features = ["derive"] }
 serde_arrays = "0.1.0"
 uint = { version = "0.9", default-features = false }
 
@@ -33,6 +36,8 @@ version = "0.10.2"
 [features]
 default = ["std"]
 std = [
+    "hex/serde",
+    "hex/std",
     "hmac/std",
     "num-traits/std",
     "parity-scale-codec/std",

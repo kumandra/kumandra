@@ -1,0 +1,43 @@
+[package]
+name = "kumandra-verification"
+version = "0.1.0"
+authors = ["Hangsia Hong <hangsiahong@kumandra.org>"]
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://koompi.com"
+repository = "https://github.com/kumandra/kumandra"
+description = "Verification primitives for Kumandra"
+include = [
+    "/src",
+    "/Cargo.toml",
+    "/README.md",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "3.1.5", default-features = false }
+merlin = { version = "2.0.1", default-features = false }
+scale-info = { version = "2.1.2", default-features = false, features = ["derive"] }
+schnorrkel = { version = "0.9.1", default-features = false, features = ["u64_backend"] }
+sp-arithmetic = { version = "5.0.0", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+sp-std = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", rev = "1399afdcd8ab4d7fad149c96f9cadcaf04b94f86" }
+kumandra-archiving = { version = "0.1.0", path = "../../modules/archiving", default-features = false }
+kumandra-solving = { version = "0.1.0", path = "../../modules/solving", default-features = false }
+kumandra-core-primitives = { version = "0.1.0", path = "../../primitives/core", default-features = false }
+thiserror = { version = "1.0.31", optional = true }
+
+[features]
+default = ["std"]
+std = [
+    "codec/std",
+    "merlin/std",
+    "scale-info/std",
+    "schnorrkel/std",
+    "sp-arithmetic/std",
+    "sp-std/std",
+    "kumandra-archiving/std",
+    "kumandra-core-primitives/std",
+    "kumandra-solving/std",
+    "thiserror"
+]

@@ -2,20 +2,11 @@
 resolver = "2"
 members = [
     "pallets/*",
-    "primitives/*",
     "modules/*",
-    "orml/vesting",
-    "runtime",
     "utils/*",
+    "primitives/*",
     "node/",
     "node/service",
-    "clients/chain-specs",
-    "clients/consensus/fraud-proof",
-    "clients/consensus/kumandra",
-    "clients/consensus/kumandra/rpc",
-    # "ktest/client",
-    # "ktest/runtime",
-    # "ktest/service",
     "cumulus/client/block-builder",
     "cumulus/client/cirrus-executor",
     "cumulus/client/consensus/relay-chain",
@@ -24,10 +15,12 @@ members = [
     "cumulus/node",
     "cumulus/runtime",
     "cumulus/primitives",
-    # "cumulus/test/runtime",
-    # "cumulus/test/service",
-    # "substrate/*",
-
+    "cumulus/test/runtime",
+    "cumulus/test/service",
+    "substrate/*",
+    "test/kumandra-test-client",
+    "test/kumandra-test-runtime",
+    "test/kumandra-test-service",
 ]
 
 # The list of dependencies below (which can be both direct and indirect dependencies) are crates
@@ -97,4 +90,4 @@ codegen-units = 1
 [patch.crates-io]
 # TODO: Remove once chacha20poly1305 0.10 appears in libp2p's dependencies
 chacha20poly1305 = { git = "https://github.com/RustCrypto/AEADs", rev = "06dbfb5571687fd1bbe9d3c9b2193a1ba17f8e99" }
-libp2p = { git = "https://github.com/subspace/rust-libp2p", branch = "subspace-v2" }
+libp2p = { git = "https://github.com/subspace/rust-libp2p", branch = "subspace-v3" }

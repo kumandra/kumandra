@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ use sc_cli::{
 };
 use sc_service::config::PrometheusConfig;
 use sc_service::BasePath;
-use kc_chain_specs::ExecutionChainSpec;
+use kc_kumandra_chain_specs::ExecutionChainSpec;
 use serde_json::Value;
 use std::net::SocketAddr;
 use std::path::PathBuf;
@@ -114,7 +114,7 @@ impl SubstrateCli for SecondaryChainCli {
                 }
             }
             // Such mess because native serialization of the chain spec serializes it twice, see
-            // docs on `kc_chain_specs::utils::SerializableChainSpec`.
+            // docs on `kc_kumandra_chain_specs::utils::SerializableChainSpec`.
             chain_spec = serde_json::to_string(&chain_spec_value.to_string())
                 .and_then(|chain_spec_string| serde_json::from_str(&chain_spec_string))
                 .map_err(|error| error.to_string())?;
@@ -198,8 +198,8 @@ impl CliConfiguration<Self> for SecondaryChainCli {
         self.run.role(is_dev)
     }
 
-    fn transaction_pool(&self) -> Result<sc_service::config::TransactionPoolOptions> {
-        self.run.transaction_pool()
+    fn transaction_pool(&self, is_dev: bool) -> Result<sc_service::config::TransactionPoolOptions> {
+        self.run.transaction_pool(is_dev)
     }
 
     fn state_cache_child_ratio(&self) -> Result<Option<usize>> {

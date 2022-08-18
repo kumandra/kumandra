@@ -1,4 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -64,7 +65,7 @@ pub trait Offence<Offender> {
 }
 
 /// Errors that may happen on offence reports.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum OffenceError {
     /// The report has already been submitted.
     DuplicateReport,

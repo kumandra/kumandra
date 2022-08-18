@@ -16,5 +16,3 @@ will be reinitialized.
 4. Close: Closes the feed and doesn't accept any new objects
 5. Put: Puts a new object in the Feed. The object is passed to FeedProcessor for verification if any.
 
-
-Folked from Subspace

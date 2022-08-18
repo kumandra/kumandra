@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -36,9 +36,8 @@ pub use crate::feed_processor::FeedProcessorKind;
 use crate::fees::{OnChargeTransaction, TransactionByteFee};
 use crate::object_mapping::extract_block_object_mapping;
 use crate::signed_extensions::{CheckStorageAccess, DisablePallets};
-use codec::{Decode, Encode};
 use core::time::Duration;
-use frame_support::traits::{ConstU128, ConstU16, ConstU32, ConstU64, ConstU8, Contains, Get};
+use frame_support::traits::{ConstU16, ConstU32, ConstU64, ConstU8, Contains, Get};
 use frame_support::weights::constants::{RocksDbWeight, WEIGHT_PER_SECOND};
 use frame_support::weights::{ConstantMultiplier, IdentityFee};
 use frame_support::{construct_runtime, parameter_types};
@@ -48,29 +47,33 @@ use pallet_feeds::feed_processor::FeedProcessor;
 use sp_api::{impl_runtime_apis, BlockT, HashT, HeaderT};
 use kp_consensus::digests::CompatibleDigestItem;
 use kp_consensus::{
-    derive_randomness, EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SignedVote,
-    SolutionRanges, Vote,
+    EquivocationProof, FarmerPublicKey, GlobalRandomnesses, Salts, SignedVote, SolutionRanges, Vote,
 };
 use sp_core::crypto::{ByteArray, KeyTypeId};
 use sp_core::OpaqueMetadata;
-use kp_executor::{FraudProof, OpaqueBundle};
+use kp_executor::{
+    BundleEquivocationProof, FraudProof, InvalidTransactionProof, OpaqueBundle,
+    SignedExecutionReceipt, SignedOpaqueBundle,
+};
 use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, NumberFor, Zero};
 use sp_runtime::transaction_validity::{TransactionSource, TransactionValidity};
-use sp_runtime::{
-    create_runtime_str, generic, AccountId32, ApplyExtrinsicResult, OpaqueExtrinsic, Perbill,
-};
+use sp_runtime::{create_runtime_str, generic, AccountId32, ApplyExtrinsicResult, Perbill};
 use sp_std::borrow::Cow;
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
 use sp_version::NativeVersion;
 use sp_version::RuntimeVersion;
 use kumandra_core_primitives::objects::BlockObjectMapping;
-use kumandra_core_primitives::{Randomness, RootBlock, Sha256Hash, PIECE_SIZE};
+use kumandra_core_primitives::{
+    PublicKey, Randomness, RecordsRoot, RootBlock, SegmentIndex, SolutionRange, PIECE_SIZE,
+    RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
+};
 use kumandra_runtime_primitives::{
     opaque, AccountId, Balance, BlockNumber, Hash, Index, Moment, Signature, CONFIRMATION_DEPTH_K,
-    MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE, KTIC,
-    KMD, STORAGE_FEES_ESCROW_BLOCK_REWARD, STORAGE_FEES_ESCROW_BLOCK_TAX,
+    MAX_PLOT_SIZE, MIN_REPLICATION_FACTOR, SHANNON, SSC, STORAGE_FEES_ESCROW_BLOCK_REWARD,
+    STORAGE_FEES_ESCROW_BLOCK_TAX,
 };
+use kumandra_verification::derive_randomness;
 
 sp_runtime::impl_opaque_keys! {
     pub struct SessionKeys {
@@ -143,9 +146,10 @@ const EON_NEXT_SALT_REVEAL: u64 = EON_DURATION_IN_SLOTS
 
 // We assume initial plot size starts with the a single recorded history segment (which is erasure
 // coded of course, hence `*2`).
-const INITIAL_SOLUTION_RANGE: u64 =
-    u64::MAX / (RECORDED_HISTORY_SEGMENT_SIZE * 2 / RECORD_SIZE as u32) as u64 * SLOT_PROBABILITY.0
-        / SLOT_PROBABILITY.1;
+const INITIAL_SOLUTION_RANGE: SolutionRange = SolutionRange::MAX
+    / (RECORDED_HISTORY_SEGMENT_SIZE * 2 / RECORD_SIZE as u32) as SolutionRange
+    * SLOT_PROBABILITY.0
+    / SLOT_PROBABILITY.1;
 
 /// Number of votes expected per block.
 ///
@@ -283,6 +287,11 @@ impl pallet_timestamp::Config for Runtime {
     type WeightInfo = ();
 }
 
+parameter_types! {
+    // TODO: Correct value
+    pub const ExistentialDeposit: Balance = 500 * SHANNON;
+}
+
 impl pallet_balances::Config for Runtime {
     type MaxLocks = ConstU32<50>;
     type MaxReserves = ();
@@ -292,8 +301,7 @@ impl pallet_balances::Config for Runtime {
     /// The ubiquitous event type.
     type Event = Event;
     type DustRemoval = ();
-    // TODO: Correct value
-    type ExistentialDeposit = ConstU128<{ 500 * KTIC }>;
+    type ExistentialDeposit = ExistentialDeposit;
     type AccountStore = System;
     type WeightInfo = pallet_balances::weights::SubstrateWeight<Runtime>;
 }
@@ -395,8 +403,8 @@ impl pallet_executor::Config for Runtime {
 }
 
 parameter_types! {
-    pub const BlockReward: Balance = KMD / (ExpectedVotesPerBlock::get() as Balance + 1);
-    pub const VoteReward: Balance = KMD / (ExpectedVotesPerBlock::get() as Balance + 1);
+    pub const BlockReward: Balance = SSC / (ExpectedVotesPerBlock::get() as Balance + 1);
+    pub const VoteReward: Balance = SSC / (ExpectedVotesPerBlock::get() as Balance + 1);
 }
 
 impl pallet_rewards::Config for Runtime {
@@ -525,22 +533,50 @@ fn extract_root_blocks(ext: &UncheckedExtrinsic) -> Option<Vec<RootBlock>> {
     }
 }
 
-fn extract_bundles(extrinsics: Vec<OpaqueExtrinsic>) -> Vec<OpaqueBundle> {
+fn extract_bundles(extrinsics: Vec<UncheckedExtrinsic>) -> Vec<OpaqueBundle> {
     extrinsics
         .into_iter()
-        .filter_map(|opaque_extrinsic| {
-            match <UncheckedExtrinsic>::decode(&mut opaque_extrinsic.encode().as_slice()) {
-                Ok(uxt) => {
-                    if let Call::Executor(pallet_executor::Call::submit_transaction_bundle {
-                        signed_opaque_bundle,
-                    }) = uxt.function
-                    {
-                        Some(signed_opaque_bundle.opaque_bundle)
-                    } else {
-                        None
-                    }
-                }
-                Err(_) => None,
+        .filter_map(|uxt| {
+            if let Call::Executor(pallet_executor::Call::submit_transaction_bundle {
+                signed_opaque_bundle,
+            }) = uxt.function
+            {
+                Some(signed_opaque_bundle.opaque_bundle)
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn extract_receipts(
+    extrinsics: Vec<UncheckedExtrinsic>,
+) -> Vec<SignedExecutionReceipt<BlockNumber, Hash, cirrus_primitives::Hash>> {
+    extrinsics
+        .into_iter()
+        .filter_map(|uxt| {
+            if let Call::Executor(pallet_executor::Call::submit_execution_receipt {
+                signed_execution_receipt,
+            }) = uxt.function
+            {
+                Some(signed_execution_receipt)
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn extract_fraud_proofs(extrinsics: Vec<UncheckedExtrinsic>) -> Vec<FraudProof> {
+    extrinsics
+        .into_iter()
+        .filter_map(|uxt| {
+            if let Call::Executor(pallet_executor::Call::submit_fraud_proof { fraud_proof }) =
+                uxt.function
+            {
+                Some(fraud_proof)
+            } else {
+                None
             }
         })
         .collect()
@@ -575,7 +611,7 @@ fn extrinsics_shuffling_seed<Block: BlockT>(header: Block::Header) -> Randomness
 
         let seed: &[u8] = b"extrinsics-shuffling-seed";
         let randomness = derive_randomness(
-            &pre_digest.solution.public_key,
+            &Into::<PublicKey>::into(&pre_digest.solution.public_key),
             pre_digest.solution.tag,
             &pre_digest.solution.tag_signature,
         )
@@ -689,11 +725,11 @@ impl_runtime_apis! {
         }
 
         fn record_size() -> u32 {
-            <Self as pallet_kumandra::Config>::RecordSize::get()
+            RECORD_SIZE
         }
 
         fn recorded_history_segment_size() -> u32 {
-            <Self as pallet_kumandra::Config>::RecordedHistorySegmentSize::get()
+            RECORDED_HISTORY_SEGMENT_SIZE
         }
 
         fn slot_duration() -> Duration {
@@ -746,7 +782,7 @@ impl_runtime_apis! {
             Kumandra::is_in_block_list(farmer_public_key)
         }
 
-        fn records_root(segment_index: u64) -> Option<Sha256Hash> {
+        fn records_root(segment_index: SegmentIndex) -> Option<RecordsRoot> {
             Kumandra::records_root(segment_index)
         }
 
@@ -761,12 +797,12 @@ impl_runtime_apis! {
 
     impl kp_executor::ExecutorApi<Block, cirrus_primitives::Hash> for Runtime {
         fn submit_execution_receipt_unsigned(
-            execution_receipt: kp_executor::SignedExecutionReceipt<NumberFor<Block>, <Block as BlockT>::Hash, cirrus_primitives::Hash>,
+            execution_receipt: SignedExecutionReceipt<NumberFor<Block>, <Block as BlockT>::Hash, cirrus_primitives::Hash>,
         ) {
             Executor::submit_execution_receipt_unsigned(execution_receipt)
         }
 
-        fn submit_transaction_bundle_unsigned(opaque_bundle: kp_executor::SignedOpaqueBundle) {
+        fn submit_transaction_bundle_unsigned(opaque_bundle: SignedOpaqueBundle) {
             Executor::submit_transaction_bundle_unsigned(opaque_bundle)
         }
 
@@ -775,26 +811,36 @@ impl_runtime_apis! {
         }
 
         fn submit_bundle_equivocation_proof_unsigned(
-            bundle_equivocation_proof: kp_executor::BundleEquivocationProof,
+            bundle_equivocation_proof: BundleEquivocationProof,
         ) {
             Executor::submit_bundle_equivocation_proof_unsigned(bundle_equivocation_proof)
         }
 
         fn submit_invalid_transaction_proof_unsigned(
-            invalid_transaction_proof: kp_executor::InvalidTransactionProof,
+            invalid_transaction_proof: InvalidTransactionProof,
         ) {
             Executor::submit_invalid_transaction_proof_unsigned(invalid_transaction_proof)
         }
 
-        fn extract_bundles(extrinsics: Vec<OpaqueExtrinsic>) -> Vec<OpaqueBundle> {
+        fn extract_bundles(extrinsics: Vec<<Block as BlockT>::Extrinsic>) -> Vec<OpaqueBundle> {
             extract_bundles(extrinsics)
+        }
+
+        fn extract_receipts(
+            extrinsics: Vec<<Block as BlockT>::Extrinsic>,
+        ) -> Vec<SignedExecutionReceipt<NumberFor<Block>, <Block as BlockT>::Hash, cirrus_primitives::Hash>> {
+            extract_receipts(extrinsics)
+        }
+
+        fn extract_fraud_proofs(extrinsics: Vec<<Block as BlockT>::Extrinsic>) -> Vec<FraudProof> {
+            extract_fraud_proofs(extrinsics)
         }
 
         fn extrinsics_shuffling_seed(header: <Block as BlockT>::Header) -> Randomness {
             extrinsics_shuffling_seed::<Block>(header)
         }
 
-        fn extract_fraud_proof(ext: &<Block as BlockT>::Extrinsic) -> Option<kp_executor::FraudProof> {
+        fn extract_fraud_proof(ext: &<Block as BlockT>::Extrinsic) -> Option<FraudProof> {
             extract_fraud_proof(ext)
         }
 
@@ -810,6 +856,10 @@ impl_runtime_apis! {
 
         fn best_execution_chain_number() -> NumberFor<Block> {
             Executor::best_execution_chain_number()
+        }
+
+        fn oldest_receipt_number() -> NumberFor<Block> {
+            Executor::oldest_receipt_number()
         }
 
         fn maximum_receipt_drift() -> NumberFor<Block> {

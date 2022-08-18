@@ -1,11 +1,10 @@
 # Kumandra Node
 
-Reference Node implementation for Kumandra Protocol Blockchain using [Substrate](https://docs.substrate.io/) framework.
+Reference Node implementation for Kumandra Network Blockchain using [Substrate](https://docs.substrate.io/) framework.
 
 ## Getting Started
 
 Follow these steps to get started with the Kumandra Node :hammer_and_wrench:
-
 
 ## Running
 
@@ -17,7 +16,7 @@ Rust toolchain is expected to be installed for anything in this repository to co
 
 Prost library from libp2p dependency needs CMake:
 ```bash
-sudo pacman -S cmake
+sudo apt-get install cmake
 ```
 
 Then build the farmer using Cargo:
@@ -41,7 +40,7 @@ By default, node data are written to `kumandra-node` subdirectory of the OS-spec
 ```
 Linux
 $XDG_DATA_HOME or                   /home/alice/.local/share
-$HOME/.local/share
+$HOME/.local/share 
 
 macOS
 $HOME/Library/Application Support   /Users/Alice/Library/Application Support

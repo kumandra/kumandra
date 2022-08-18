@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -22,9 +22,10 @@ use futures::future::TryFutureExt;
 use futures::StreamExt;
 use sc_cli::{ChainSpec, CliConfiguration, SubstrateCli};
 use sc_client_api::HeaderBackend;
+use sc_consensus_slots::SlotProportion;
 use sc_executor::NativeExecutionDispatch;
 use sc_service::PartialComponents;
-use kc_chain_specs::ExecutionChainSpec;
+use kc_kumandra_chain_specs::ExecutionChainSpec;
 use sp_core::crypto::Ss58AddressFormat;
 use std::any::TypeId;
 use kumandra_node::{Cli, ExecutorDispatch, SecondaryChainCli, Subcommand};
@@ -96,7 +97,7 @@ fn set_default_ss58_version<C: AsRef<dyn ChainSpec>>(chain_spec: C) {
 }
 
 fn main() -> Result<(), Error> {
-    let cli = Cli::from_args();
+    let mut cli = Cli::from_args();
 
     match &cli.subcommand {
         Some(Subcommand::Key(cmd)) => cmd.run(&cli)?,
@@ -218,7 +219,7 @@ fn main() -> Result<(), Error> {
                     base_dir
                         .join("kumandra-node")
                         .join("chains")
-                        .join("kumandra_testnet_1a"),
+                        .join("kumandra_gemini_1a"),
                 );
             }
 
@@ -324,6 +325,22 @@ fn main() -> Result<(), Error> {
                         &config,
                         frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE.clone(),
                     ),
+                    BenchmarkCmd::Extrinsic(_cmd) => {
+                        todo!("Not implemented")
+                        // let PartialComponents { client, .. } =
+                        //     kumandra_service::new_partial(&config)?;
+                        // // Register the *Remark* and *TKA* builders.
+                        // let ext_factory = ExtrinsicFactory(vec![
+                        //     Box::new(RemarkBuilder::new(client.clone())),
+                        //     Box::new(TransferKeepAliveBuilder::new(
+                        //         client.clone(),
+                        //         Sr25519Keyring::Alice.to_account_id(),
+                        //         ExistentialDeposit: get(),
+                        //     )),
+                        // ]);
+                        //
+                        // cmd.run(client, inherent_benchmark_data()?, &ext_factory)
+                    }
                 }
             })?;
         }
@@ -331,6 +348,10 @@ fn main() -> Result<(), Error> {
             unimplemented!("Executor subcommand");
         }
         None => {
+            // Increase default number of peers
+            if cli.run.network_params.out_peers == 25 {
+                cli.run.network_params.out_peers = 50;
+            }
             let runner = cli.create_runner(&cli.run)?;
             set_default_ss58_version(&runner.config().chain_spec);
             runner.run_node_until_exit(|primary_chain_config| async move {
@@ -343,6 +364,9 @@ fn main() -> Result<(), Error> {
                     .downcast_ref()
                     .cloned();
 
+                // TODO: proper value
+                let block_import_throttling_buffer_size = 10;
+
                 let (mut primary_chain_node, config_dir) = {
                     let span = sc_tracing::tracing::info_span!(
                         sc_tracing::logging::PREFIX_LOG_SPAN,
@@ -353,23 +377,46 @@ fn main() -> Result<(), Error> {
                     let config_dir = primary_chain_config
                         .base_path
                         .as_ref()
-                        .map(|base_path| base_path.config_dir("kumandra_testnet_1b"));
+                        .map(|base_path| base_path.config_dir("kumandra_gemini_1b"));
+
+                    let dsn_config = {
+                        let network_keypair = primary_chain_config
+                            .network
+                            .node_key
+                            .clone()
+                            .into_keypair()
+                            .map_err(|error| {
+                                sc_service::Error::Other(format!(
+                                    "Failed to convert network keypair: {error:?}"
+                                ))
+                            })?;
+
+                        (!cli.dsn_listen_on.is_empty()).then(|| kumandra_networking::Config {
+                            keypair: network_keypair,
+                            listen_on: cli.dsn_listen_on,
+                            ..kumandra_networking::Config::with_generated_keypair()
+                        })
+                    };
 
                     let primary_chain_config = KumandraConfiguration {
                         base: primary_chain_config,
                         // Secondary node needs slots notifications for bundle production.
                         force_new_slot_notifications: !cli.secondary_chain_args.is_empty(),
+                        dsn_config,
                     };
 
-                    let primary_chain_node = kumandra_service::new_full::<
-                        RuntimeApi,
-                        ExecutorDispatch,
-                    >(primary_chain_config, true)
-                    .map_err(|error| {
-                        sc_service::Error::Other(format!(
-                            "Failed to build a full kumandra node: {error:?}"
-                        ))
-                    })?;
+                    let primary_chain_node =
+                        kumandra_service::new_full::<RuntimeApi, ExecutorDispatch>(
+                            primary_chain_config,
+                            true,
+                            SlotProportion::new(2f32 / 3f32),
+                        )
+                        .await
+                        .map_err(|error| {
+                            sc_service::Error::Other(format!(
+                                "Failed to build a full kumandra node: {error:?}"
+                            ))
+                        })?;
 
                     (primary_chain_node, config_dir)
                 };
@@ -382,7 +429,7 @@ fn main() -> Result<(), Error> {
                     );
                     let _enter = span.enter();
 
-                    let secondary_chain_cli = SecondaryChainCli::new(
+                    let mut secondary_chain_cli = SecondaryChainCli::new(
                         cli.run
                             .base_path()?
                             .map(|base_path| base_path.path().to_path_buf()),
@@ -391,6 +438,11 @@ fn main() -> Result<(), Error> {
                         })?,
                         cli.secondary_chain_args.iter(),
                     );
+
+                    // Increase default number of peers
+                    if secondary_chain_cli.run.network_params.out_peers == 25 {
+                        secondary_chain_cli.run.network_params.out_peers = 50;
+                    }
 
                     let secondary_chain_config = SubstrateCli::create_configuration(
                         &secondary_chain_cli,
@@ -420,7 +472,10 @@ fn main() -> Result<(), Error> {
                             .imported_block_notification_stream
                             .subscribe()
                             .then(|imported_block_notification| async move {
-                                imported_block_notification.block_number
+                                (
+                                    imported_block_notification.block_number,
+                                    imported_block_notification.block_import_acknowledgement_sender,
+                                )
                             }),
                         primary_chain_node
                             .new_slot_notification_stream
@@ -431,6 +486,7 @@ fn main() -> Result<(), Error> {
                                     slot_notification.new_slot_info.global_challenge,
                                 )
                             }),
+                        block_import_throttling_buffer_size,
                     );
 
                     let secondary_chain_node = secondary_chain_node_fut.await?;
@@ -442,20 +498,20 @@ fn main() -> Result<(), Error> {
                     secondary_chain_node.network_starter.start_network();
                 }
 
-                // TODO: Workaround for regression in Kumandra Testnet 1b 2022-jun-08 release:
+                // TODO: Workaround for regression in Gemini 1b 2022-jun-08 release:
                 //  we need to reset network identity of the node to remove it from block list of
                 //  other nodes on the network
                 if primary_chain_node.client.info().best_number == 33670 {
                     if let Some(config_dir) = config_dir {
                         let workaround_file =
-                            config_dir.join("network").join("ktestnet_1b_workaround");
+                            config_dir.join("network").join("gemini_1b_workaround");
                         if !workaround_file.exists() {
                             let _ = std::fs::write(workaround_file, &[]);
                             let _ = std::fs::remove_file(
                                 config_dir.join("network").join("secret_ed25519"),
                             );
                             return Err(Error::Other(
-                                "Applied workaround for upgrade from ktestnet-1b-2022-jun-08, \
+                                "Applied workaround for upgrade from gemini-1b-2022-jun-08, \
                                 please restart this node"
                                     .to_string(),
                             ));

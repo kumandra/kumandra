@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // This program is free software: you can redistribute it and/or modify
@@ -17,40 +17,18 @@
 //! Runtime primitives for Kumandra Network.
 
 #![cfg_attr(not(feature = "std"), no_std)]
-#![feature(int_log)]
 
 use sp_runtime::traits::{IdentifyAccount, Verify};
 use sp_runtime::MultiSignature;
 use sp_std::vec::Vec;
 pub use kumandra_core_primitives::BlockNumber;
-use kumandra_core_primitives::{PIECE_SIZE, SHA256_HASH_SIZE};
+use kumandra_core_primitives::PIECE_SIZE;
 
 // TODO: Proper value here
 pub const CONFIRMATION_DEPTH_K: BlockNumber = 100;
-/// 128 data records and 128 parity records (as a result of erasure coding) together form a perfect
-/// Merkle Tree and will result in witness size of `log2(MERKLE_NUM_LEAVES) * SHA256_HASH_SIZE`.
-///
-/// This number is a tradeoff:
-/// * as this number goes up, fewer [`RootBlock`]s are required to be stored for verifying archival
-///   history of the network, which makes sync quicker and more efficient, but also more data in
-///   each [`Piece`] will be occupied with witness, thus wasting space that otherwise could have
-///   been used for storing data (record part of a Piece)
-/// * as this number goes down, witness get smaller leading to better piece utilization, but the
-///   number of root blocks goes up making sync less efficient and less records are needed to be
-///   lost before part of the archived history become unrecoverable, reducing reliability of the
-///   data stored on the network
-const MERKLE_NUM_LEAVES: u32 = 256;
-/// Size of witness for a segment record (in bytes).
-const WITNESS_SIZE: u32 = SHA256_HASH_SIZE as u32 * MERKLE_NUM_LEAVES.log2();
-/// Size of a segment record given the global piece size (in bytes).
-pub const RECORD_SIZE: u32 = PIECE_SIZE as u32 - WITNESS_SIZE;
 ///Maximum number of pieces in each plot
 // TODO: Proper value here
 pub const MAX_PLOT_SIZE: u64 = 100 * 1024 * 1024 * 1024 / PIECE_SIZE as u64;
-/// Recorded History Segment Size includes half of the records (just data records) that will later
-/// be erasure coded and together with corresponding witnesses will result in `MERKLE_NUM_LEAVES`
-/// pieces of archival history.
-pub const RECORDED_HISTORY_SEGMENT_SIZE: u32 = RECORD_SIZE * MERKLE_NUM_LEAVES / 2;
 /// Minimum desired number of replicas of the blockchain to be stored by the network,
 /// impacts storage fees.
 // TODO: Proper value here
@@ -63,13 +41,12 @@ pub const STORAGE_FEES_ESCROW_BLOCK_REWARD: (u64, u64) = (1, 10000);
 // TODO: Proper value here
 pub const STORAGE_FEES_ESCROW_BLOCK_TAX: (u64, u64) = (1, 10);
 
-/// The smallest unit of the token is called Ktic.
-/// It is just temporary name
-pub const KTIC: Balance = 1;
+/// The smallest unit of the token is called Shannon.
+pub const SHANNON: Balance = 1;
 /// Kumandra Credits have 18 decimal places.
 pub const DECIMAL_PLACES: u8 = 18;
 /// One Kumandra Credit.
-pub const KMD: Balance = (10 * KTIC).pow(DECIMAL_PLACES as u32);
+pub const SSC: Balance = (10 * SHANNON).pow(DECIMAL_PLACES as u32);
 
 /// Alias to 512-bit hash when used in the context of a transaction signature on the chain.
 pub type Signature = MultiSignature;
@@ -95,13 +72,14 @@ pub type Moment = u64;
 /// of data like extrinsics, allowing for them to continue syncing the network through upgrades
 /// to even the core data structures.
 pub mod opaque {
-    use super::{BlockNumber, RECORDED_HISTORY_SEGMENT_SIZE};
+    use super::BlockNumber;
     use parity_scale_codec::{Decode, Encode};
     #[cfg(feature = "std")]
     use serde::{Deserialize, Serialize};
     use sp_runtime::traits::{BlakeTwo256, Block as BlockT, Header as HeaderT};
     use sp_runtime::{generic, DigestItem, OpaqueExtrinsic};
     use sp_std::prelude::*;
+    use kumandra_core_primitives::RECORDED_HISTORY_SEGMENT_SIZE;
 
     /// Opaque block header type.
     pub type Header = generic::Header<BlockNumber, BlakeTwo256>;

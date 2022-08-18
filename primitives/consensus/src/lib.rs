@@ -1,5 +1,5 @@
 // Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,36 +19,35 @@
 #![forbid(unsafe_code, missing_docs)]
 #![cfg_attr(not(feature = "std"), no_std)]
 
+extern crate core;
+
 pub mod digests;
 pub mod inherents;
 pub mod offence;
 #[cfg(test)]
 mod tests;
-pub mod verification;
 
-use crate::digests::{
-    CompatibleDigestItem, GlobalRandomnessDescriptor, PreDigest, SaltDescriptor,
-    SolutionRangeDescriptor,
-};
+use crate::digests::{CompatibleDigestItem, PreDigest};
 use codec::{Decode, Encode, MaxEncodedLen};
 use core::time::Duration;
 use scale_info::TypeInfo;
-use schnorrkel::vrf::VRFOutput;
-use schnorrkel::{PublicKey, SignatureResult};
+use schnorrkel::context::SigningContext;
 use sp_api::{BlockT, HeaderT};
 use sp_consensus_slots::Slot;
 use sp_core::crypto::KeyTypeId;
 use sp_core::H256;
 use sp_io::hashing;
-use sp_runtime::ConsensusEngineId;
+use sp_runtime::{ConsensusEngineId, DigestItem};
 use sp_std::vec::Vec;
 use kumandra_core_primitives::{
-    Randomness, RootBlock, Salt, Sha256Hash, Solution, Tag, TagSignature,
+    PublicKey, Randomness, RecordsRoot, RewardSignature, RootBlock, Salt, SegmentIndex, Solution,
+    SolutionRange, PUBLIC_KEY_LENGTH, REWARD_SIGNATURE_LENGTH,
 };
-use kumandra_solving::{create_tag_signature_transcript, REWARD_SIGNING_CONTEXT};
+use kumandra_solving::REWARD_SIGNING_CONTEXT;
+use kumandra_verification::{check_reward_signature, verify_solution, Error, VerifySolutionParams};
 
 /// Key type for Kumandra pallet.
-const KEY_TYPE: KeyTypeId = KeyTypeId(*b"sub_");
+const KEY_TYPE: KeyTypeId = KeyTypeId(*b"kum_");
 
 // TODO: Remove this and replace with simple encodable wrappers of Schnorrkel's types
 mod app {
@@ -61,14 +60,30 @@ mod app {
 /// A Kumandra farmer signature.
 pub type FarmerSignature = app::Signature;
 
+impl From<&FarmerSignature> for RewardSignature {
+    fn from(signature: &FarmerSignature) -> Self {
+        RewardSignature::from(
+            TryInto::<[u8; REWARD_SIGNATURE_LENGTH]>::try_into(AsRef::<[u8]>::as_ref(signature))
+                .expect("Always correct length; qed"),
+        )
+    }
+}
+
 /// A Kumandra farmer identifier. Necessarily equivalent to the schnorrkel public key used in
 /// the main Kumandra module. If that ever changes, then this must, too.
 pub type FarmerPublicKey = app::Public;
 
-/// The `ConsensusEngineId` of Kumandra.
-const KUMANDRA_ENGINE_ID: ConsensusEngineId = *b"KMD_";
+impl From<&FarmerPublicKey> for PublicKey {
+    fn from(pub_key: &FarmerPublicKey) -> Self {
+        PublicKey::from(
+            TryInto::<[u8; PUBLIC_KEY_LENGTH]>::try_into(AsRef::<[u8]>::as_ref(pub_key))
+                .expect("Always correct length; qed"),
+        )
+    }
+}
 
-const RANDOMNESS_CONTEXT: &[u8] = b"kumandra_randomness";
+/// The `ConsensusEngineId` of Kumandra.
+const KUMANDRA_ENGINE_ID: ConsensusEngineId = *b"KUM_";
 
 /// An equivocation proof for multiple block authorships on the same slot (i.e. double vote).
 pub type EquivocationProof<Header> = sp_consensus_slots::EquivocationProof<Header, FarmerPublicKey>;
@@ -78,13 +93,25 @@ pub type EquivocationProof<Header> = sp_consensus_slots::EquivocationProof<Heade
 enum ConsensusLog {
     /// Global randomness for this block/interval.
     #[codec(index = 1)]
-    GlobalRandomness(GlobalRandomnessDescriptor),
+    GlobalRandomness(Randomness),
     /// Solution range for this block/era.
     #[codec(index = 2)]
-    SolutionRange(SolutionRangeDescriptor),
+    SolutionRange(SolutionRange),
     /// Salt for this block/eon.
     #[codec(index = 3)]
-    Salt(SaltDescriptor),
+    Salt(Salt),
+    /// Global randomness for next block/interval.
+    #[codec(index = 4)]
+    NextGlobalRandomness(Randomness),
+    /// Solution range for next block/era.
+    #[codec(index = 5)]
+    NextSolutionRange(SolutionRange),
+    /// Salt for next block/eon.
+    #[codec(index = 6)]
+    NextSalt(Salt),
+    /// Records roots.
+    #[codec(index = 7)]
+    RecordsRoot((SegmentIndex, RecordsRoot)),
 }
 
 /// Farmer vote.
@@ -164,10 +191,10 @@ where
     };
     let pre_hash = header.hash();
 
-    verification::check_reward_signature(
+    check_reward_signature(
         pre_hash.as_ref(),
-        &seal,
-        offender,
+        &RewardSignature::from(&seal),
+        &PublicKey::from(offender),
         &schnorrkel::signing_context(REWARD_SIGNING_CONTEXT),
     )
     .is_ok()
@@ -250,23 +277,6 @@ impl Default for SolutionRanges {
     }
 }
 
-/// Derive on-chain randomness from tag signature.
-///
-/// NOTE: If you are not the signer then you must verify the local challenge before calling this
-/// function.
-pub fn derive_randomness(
-    public_key: &FarmerPublicKey,
-    tag: Tag,
-    tag_signature: &TagSignature,
-) -> SignatureResult<Randomness> {
-    let in_out = VRFOutput(tag_signature.output).attach_input_hash(
-        &PublicKey::from_bytes(public_key.as_ref())?,
-        create_tag_signature_transcript(tag),
-    )?;
-
-    Ok(in_out.make_bytes(RANDOMNESS_CONTEXT))
-}
-
 /// Kumandra salts used for challenges.
 #[derive(Default, Decode, Encode, MaxEncodedLen, PartialEq, Eq, Clone, Copy, Debug, TypeInfo)]
 pub struct Salts {
@@ -286,10 +296,14 @@ sp_api::decl_runtime_apis! {
         /// to the client-dependent transaction confirmation depth `k`).
         fn confirmation_depth_k() -> <<Block as BlockT>::Header as HeaderT>::Number;
 
+        // TODO: Remove, this is a protocol constant
         /// The size of data in one piece (in bytes).
+        #[deprecated = "This is a protocol constant, can be found in kumandra-core-primitives"]
         fn record_size() -> u32;
 
+        // TODO: Remove, this is a protocol constant
         /// Recorded history is encoded and plotted in segments of this size (in bytes).
+        #[deprecated = "This is a protocol constant, can be found in kumandra-core-primitives"]
         fn recorded_history_segment_size() -> u32;
 
         /// Maximum number of pieces in each plot
@@ -334,7 +348,7 @@ sp_api::decl_runtime_apis! {
         fn total_pieces() -> u64;
 
         /// Get the merkle tree root of records for specified segment index
-        fn records_root(segment_index: u64) -> Option<Sha256Hash>;
+        fn records_root(segment_index: SegmentIndex) -> Option<RecordsRoot>;
 
         /// Returns `Vec<RootBlock>` if a given extrinsic has them.
         fn extract_root_blocks(ext: &Block::Extrinsic) -> Option<Vec<RootBlock>>;
@@ -342,4 +356,135 @@ sp_api::decl_runtime_apis! {
         /// Returns root plot public key in case block authoring is restricted.
         fn root_plot_public_key() -> Option<FarmerPublicKey>;
     }
+}
+
+/// Errors encountered by the Kumandra authorship task.
+#[derive(Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "thiserror", derive(thiserror::Error))]
+pub enum VerificationError<Header: HeaderT> {
+    /// No Kumandra pre-runtime digest found
+    #[cfg_attr(feature = "thiserror", error("No Kumandra pre-runtime digest found"))]
+    NoPreRuntimeDigest,
+    /// Header has a bad seal
+    #[cfg_attr(feature = "thiserror", error("Header {0:?} has a bad seal"))]
+    HeaderBadSeal(Header::Hash),
+    /// Header is unsealed
+    #[cfg_attr(feature = "thiserror", error("Header {0:?} is unsealed"))]
+    HeaderUnsealed(Header::Hash),
+    /// Bad reward signature
+    #[cfg_attr(feature = "thiserror", error("Bad reward signature on {0:?}"))]
+    BadRewardSignature(Header::Hash),
+    /// Verification error
+    #[cfg_attr(
+        feature = "thiserror",
+        error("Verification error on slot {0:?}: {1:?}")
+    )]
+    VerificationError(Slot, Error),
+}
+
+/// A header which has been checked
+pub enum CheckedHeader<H, S> {
+    /// A header which has slot in the future. this is the full header (not stripped)
+    /// and the slot in which it should be processed.
+    Deferred(H, Slot),
+    /// A header which is fully checked, including signature. This is the pre-header
+    /// accompanied by the seal components.
+    ///
+    /// Includes the digest item that encoded the seal.
+    Checked(H, S),
+}
+
+/// Kumandra verification parameters
+pub struct VerificationParams<'a, Header>
+where
+    Header: HeaderT + 'a,
+{
+    /// The header being verified.
+    pub header: Header,
+    /// The slot number of the current time.
+    pub slot_now: Slot,
+    /// Parameters for solution verification
+    pub verify_solution_params: VerifySolutionParams<'a>,
+    /// Signing context for reward signature
+    pub reward_signing_context: &'a SigningContext,
+}
+
+/// Information from verified header
+pub struct VerifiedHeaderInfo<RewardAddress> {
+    /// Pre-digest
+    pub pre_digest: PreDigest<FarmerPublicKey, RewardAddress>,
+    /// Seal (signature)
+    pub seal: DigestItem,
+}
+
+/// Check a header has been signed correctly and whether solution is correct. If the slot is too far
+/// in the future, an error will be returned. If successful, returns the pre-header and the digest
+/// item containing the seal.
+///
+/// The seal must be the last digest. Otherwise, the whole header is considered unsigned. This is
+/// required for security and must not be changed.
+///
+/// This digest item will always return `Some` when used with `as_kumandra_pre_digest`.
+///
+/// `pre_digest` argument is optional in case it is available to avoid doing the work of extracting
+/// it from the header twice.
+pub fn check_header<Header, RewardAddress>(
+    params: VerificationParams<Header>,
+    pre_digest: Option<PreDigest<FarmerPublicKey, RewardAddress>>,
+) -> Result<CheckedHeader<Header, VerifiedHeaderInfo<RewardAddress>>, VerificationError<Header>>
+where
+    Header: HeaderT,
+    RewardAddress: Decode,
+{
+    let VerificationParams {
+        mut header,
+        slot_now,
+        verify_solution_params,
+        reward_signing_context,
+    } = params;
+
+    let pre_digest = match pre_digest {
+        Some(pre_digest) => pre_digest,
+        None => find_pre_digest::<Header, RewardAddress>(&header)
+            .ok_or(VerificationError::NoPreRuntimeDigest)?,
+    };
+    let slot = pre_digest.slot;
+
+    let seal = header
+        .digest_mut()
+        .pop()
+        .ok_or_else(|| VerificationError::HeaderUnsealed(header.hash()))?;
+
+    let signature = seal
+        .as_kumandra_seal()
+        .ok_or_else(|| VerificationError::HeaderBadSeal(header.hash()))?;
+
+    // The pre-hash of the header doesn't include the seal and that's what we sign
+    let pre_hash = header.hash();
+
+    if pre_digest.slot > slot_now {
+        header.digest_mut().push(seal);
+        return Ok(CheckedHeader::Deferred(header, pre_digest.slot));
+    }
+
+    // Verify that block is signed properly
+    if check_reward_signature(
+        pre_hash.as_ref(),
+        &RewardSignature::from(&signature),
+        &PublicKey::from(&pre_digest.solution.public_key),
+        reward_signing_context,
+    )
+    .is_err()
+    {
+        return Err(VerificationError::BadRewardSignature(pre_hash));
+    }
+
+    // Verify that solution is valid
+    verify_solution(&pre_digest.solution, slot.into(), verify_solution_params)
+        .map_err(|error| VerificationError::VerificationError(slot, error))?;
+
+    Ok(CheckedHeader::Checked(
+        header,
+        VerifiedHeaderInfo { pre_digest, seal },
+    ))
 }

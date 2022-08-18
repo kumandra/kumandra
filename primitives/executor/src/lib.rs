@@ -1,4 +1,4 @@
-// Copyright (C) 2022 KOOMPI
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -231,9 +231,9 @@ pub struct SignedExecutionReceipt<Number, Hash, SecondaryHash> {
 impl<Number: Encode, Hash: Encode, SecondaryHash: Encode>
     SignedExecutionReceipt<Number, Hash, SecondaryHash>
 {
-    /// Returns the hash of inner execution receipt.
+    /// Returns the hash of signed execution receipt.
     pub fn hash(&self) -> H256 {
-        self.execution_receipt.hash()
+        BlakeTwo256::hash_of(self)
     }
 }
 
@@ -352,6 +352,8 @@ pub enum VerificationError {
 /// Fraud proof for the state computation.
 #[derive(Debug, Decode, Encode, TypeInfo, PartialEq, Eq, Clone)]
 pub struct FraudProof {
+    /// Hash of the signed execution receipt in which an invalid state transition occurred.
+    pub bad_signed_receipt_hash: H256,
     /// Parent number.
     pub parent_number: BlockNumber,
     /// Parent hash of the block at which the invalid execution occurred.
@@ -409,12 +411,12 @@ impl BundleEquivocationProof {
 }
 
 /// Represents an invalid transaction proof.
-#[derive(Clone, Debug, Decode, Encode, PartialEq, TypeInfo)]
+#[derive(Clone, Debug, Decode, Encode, Eq, PartialEq, TypeInfo)]
 pub struct InvalidTransactionProof;
 
 sp_api::decl_runtime_apis! {
     /// API necessary for executor pallet.
-    #[api_version(2)]
+    #[api_version(3)]
     pub trait ExecutorApi<SecondaryHash: Encode + Decode> {
         /// Submits the execution receipt via an unsigned extrinsic.
         fn submit_execution_receipt_unsigned(
@@ -437,9 +439,18 @@ sp_api::decl_runtime_apis! {
             invalid_transaction_proof: InvalidTransactionProof,
         );
 
-        /// Extract the bundles from extrinsics in a block.
-        fn extract_bundles(extrinsics: Vec<OpaqueExtrinsic>) -> Vec<OpaqueBundle>;
+        /// Extract the bundles from the given extrinsics.
+        fn extract_bundles(extrinsics: Vec<Block::Extrinsic>) -> Vec<OpaqueBundle>;
 
+        /// Extract the receipts from the given extrinsics.
+        fn extract_receipts(
+            extrinsics: Vec<Block::Extrinsic>,
+        ) -> Vec<SignedExecutionReceipt<NumberFor<Block>, Block::Hash, SecondaryHash>>;
+
+        /// Extract the fraud proofs from the given extrinsics.
+        fn extract_fraud_proofs(extrinsics: Vec<Block::Extrinsic>) -> Vec<FraudProof>;
+
+        // TODO: remove and replace the usages with `extract_fraud_proofs` once api version is reset.
         /// Extract a fraud proof from given extrinsic if any.
         fn extract_fraud_proof(ext: &Block::Extrinsic) -> Option<FraudProof>;
 
@@ -454,6 +465,9 @@ sp_api::decl_runtime_apis! {
 
         /// Returns the best execution chain number.
         fn best_execution_chain_number() -> NumberFor<Block>;
+
+        /// Returns the block number of oldest execution receipt.
+        fn oldest_receipt_number() -> NumberFor<Block>;
 
         /// Returns the maximum receipt drift.
         fn maximum_receipt_drift() -> NumberFor<Block>;

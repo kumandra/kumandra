@@ -1,4 +1,6 @@
-// Copyright (C) 2022 KOOMPI.
+// Copyright (C) 2019-2021 Parity Technologies (UK) Ltd.
+// Copyright (C) 2021 Kumandra Labs, Inc.
+// Copyright (C) 2022 KOOMPI Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,8 +37,9 @@ use sp_runtime::Perbill;
 use std::sync::Once;
 use kumandra_archiving::archiver::{ArchivedSegment, Archiver};
 use kumandra_core_primitives::{
-    ArchivedBlockProgress, LastArchivedBlock, LocalChallenge, Piece, Randomness, RootBlock, Salt,
-    Sha256Hash, Solution, Tag, PIECE_SIZE,
+    ArchivedBlockProgress, LastArchivedBlock, LocalChallenge, Piece, Randomness, RecordsRoot,
+    RootBlock, Salt, SegmentIndex, Sha256Hash, Solution, SolutionRange, Tag, PIECE_SIZE,
+    RECORDED_HISTORY_SEGMENT_SIZE, RECORD_SIZE,
 };
 use kumandra_solving::{
     create_tag, create_tag_signature, derive_global_challenge, derive_local_challenge,
@@ -128,7 +131,7 @@ impl pallet_offences_kumandra::Config for Test {
 /// 1 in 6 slots (on average, not counting collisions) will have a block.
 pub const SLOT_PROBABILITY: (u64, u64) = (3, 10);
 
-pub const INITIAL_SOLUTION_RANGE: u64 =
+pub const INITIAL_SOLUTION_RANGE: SolutionRange =
     u64::MAX / (1024 * 1024 * 1024 / 4096) * SLOT_PROBABILITY.0 / SLOT_PROBABILITY.1;
 
 parameter_types! {
@@ -333,10 +336,10 @@ pub fn generate_equivocation_proof(
     }
 }
 
-pub fn create_root_block(segment_index: u64) -> RootBlock {
+pub fn create_root_block(segment_index: SegmentIndex) -> RootBlock {
     RootBlock::V0 {
         segment_index,
-        records_root: Sha256Hash::default(),
+        records_root: RecordsRoot::default(),
         prev_root_block_hash: Sha256Hash::default(),
         last_archived_block: LastArchivedBlock {
             number: 0,
@@ -346,11 +349,8 @@ pub fn create_root_block(segment_index: u64) -> RootBlock {
 }
 
 pub fn create_archived_segment() -> ArchivedSegment {
-    let mut archiver = Archiver::new(
-        RecordSize::get() as usize,
-        RecordedHistorySegmentSize::get() as usize,
-    )
-    .unwrap();
+    let mut archiver =
+        Archiver::new(RECORD_SIZE as usize, RECORDED_HISTORY_SEGMENT_SIZE as usize).unwrap();
 
     let mut block = vec![0u8; 1024 * 1024];
     rand::thread_rng().fill(block.as_mut_slice());
