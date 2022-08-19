@@ -51,7 +51,7 @@ Note the `Primary node identity`(`12D3KooWEna4n2m3B6EKXQE1jZhQ5sfYcr9TpVmr8Yk9S8
 Start a farmer:
 
 ```bash
-$ ./target/release/kumandra-farmer wipe && ./target/release/kumandra-farmer farm --reward-address REWARD_ADDRESS --plot-size 10G
+$ ./target/release/kumandra-farmer wipe && ./target/release/kumandra-farmer farm --reward-address stBhBdjmvZxcm93oJcrJHggVKe9gXqKodtDqSbU8RyRcMydxt --plot-size 10G
 ```
 
 Now the primary node should be producing blocks.
@@ -62,12 +62,12 @@ Now the primary node should be producing blocks.
 $ ./target/release/kumandra-node \
     --chain dev \
     -d db1 \
-    --bootnodes "/ip4/127.0.0.1/tcp/30333/p2p/PRIMARY_PEER_ID" \
+    --bootnodes "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWNXdbNxYj3Ek1cKzSPU9hqcVDAnYQc26zXCG7hQCqEBJw" \
     --port 30443 \
     --ws-port 9987 \
     -- \
-        -- \
-        --port 40233 \
-        --rpc-port 8745 \
-        --ws-port 8746
+    -- \
+    --port 40233 \
+    --rpc-port 8745 \
+    --ws-port 8746
 ```

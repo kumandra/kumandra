@@ -27,3 +27,8 @@ cargo run --bin kumandra-node -- --dev --tmp
 # Run Farmer (second terminal)
 cargo run --bin kumandra-farmer -- farm --plot-size 10G
 ```
+
+#### Build Node
+
+```bash
+cargo build --release --bin kumandra-farmer --bin kumandra-node
