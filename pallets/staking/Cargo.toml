@@ -1,0 +1,74 @@
+[package]
+name = "pallet-kumandra-staking"
+version = "4.0.0-dev"
+authors = ["KOOMPI"]
+edition = "2021"
+license = "Apache-2.0"
+repository = "https://github.com/kumandra/kumandra/"
+description = "FRAME pallet kumandra staking"
+readme = "README.md"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.136", optional = true }
+codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = [
+	"derive",
+] }
+scale-info = { version = "2.0.1", default-features = false, features = ["derive"] }
+sp-std = { version = "4.0.0", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-runtime = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-staking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+frame-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+frame-system = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-session = { version = "4.0.0-dev", default-features = false, features = [
+	"historical",
+], git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-authorship = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-application-crypto = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+frame-election-provider-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+log = { version = "0.4.14", default-features = false }
+
+# Optional imports for benchmarking
+frame-benchmarking = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra", optional = true }
+rand_chacha = { version = "0.2", default-features = false, optional = true }
+
+[dev-dependencies]
+sp-tracing = { version = "5.0.0", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-core = { version = "6.0.0", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+sp-npos-elections = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-balances = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-timestamp = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-staking-reward-curve = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+pallet-bags-list = { version = "4.0.0-dev", features = ["runtime-benchmarks"], git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+substrate-test-utils = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+frame-benchmarking = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+frame-election-provider-support = { version = "4.0.0-dev", git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
+rand_chacha = { version = "0.2" }
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+	"codec/std",
+	"scale-info/std",
+	"sp-std/std",
+	"sp-io/std",
+	"frame-support/std",
+	"sp-runtime/std",
+	"sp-staking/std",
+	"pallet-session/std",
+	"frame-system/std",
+	"pallet-authorship/std",
+	"sp-application-crypto/std",
+	"log/std",
+	"frame-election-provider-support/std",
+]
+runtime-benchmarks = [
+	"frame-benchmarking/runtime-benchmarks",
+	"frame-election-provider-support/runtime-benchmarks",
+	"rand_chacha",
+]
+try-runtime = ["frame-support/try-runtime"]
