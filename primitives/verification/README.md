@@ -1,1 +1,0 @@
-# Verification primitives for Kumandra 
