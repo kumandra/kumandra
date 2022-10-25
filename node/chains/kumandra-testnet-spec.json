@@ -3,7 +3,7 @@
   "id": "Kumandra-Testnet",
   "chainType": "Live",
   "bootNodes": [
-    "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWRfmuXYGxJkJWb5s6ouEH88HrfpnUhx9fnwJaGYqhSp9k"
+    "/ip4/118.67.207.98/tcp/30333/p2p/12D3KooWFRXhr3vNyGxqBHkZA3rrjuEhentXa4EGWrj2TEVUrNAt"
   ],
   "telemetryEndpoints": [
     [
