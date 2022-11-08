@@ -4,7 +4,7 @@ edition = '2021'
 license = 'Unlicense'
 name = 'kumandra-node-runtime'
 repository = 'https://github.com/kumandra/kumandra'
-version = '0.1.0'
+version = '0.1.1'
 
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
@@ -23,8 +23,8 @@ pallet-evm-precompile-modexp = { git = "https://github.com/kumandra/frontier", b
 pallet-evm-precompile-sha3fips = { git = "https://github.com/kumandra/frontier", branch = "monthly-2022-10-kumandra", default-features = false }
 pallet-evm-precompile-simple = { git = "https://github.com/kumandra/frontier", branch = "monthly-2022-10-kumandra", default-features = false }
 
-kp-scheduler-credit = { default-features = false, version = "0.1.0", path = "../primitives/scheduler-credit" }
-pallet-scheduler-credit = { default-features = false, version = "0.1.0", path = "../pallets/scheduler-credit" }
+kp-scheduler-credit = { default-features = false, version = "0.1.1", path = "../primitives/scheduler-credit" }
+pallet-scheduler-credit = { default-features = false, version = "0.1.1", path = "../pallets/scheduler-credit" }
 
 [build-dependencies.substrate-wasm-builder]
 git = 'https://github.com/kumandra/substrate.git'
@@ -365,25 +365,25 @@ version = '4.0.0-dev'
 [dependencies.pallet-sminer]
 default-features = false
 path = '../pallets/sminer'
-version = '0.1.0'
+version = '0.1.1'
 
 # local dependencies
 [dependencies.pallet-segment-book]
 default-features = false
 path = '../pallets/segment-book'
-version = '0.1.0'
+version = '0.1.1'
 
 # local dependencies
 [dependencies.pallet-file-bank]
 default-features = false
 path = '../pallets/file-bank'
-version = '0.1.0'
+version = '0.1.1'
 
 # local dependencies
 [dependencies.pallet-file-map]
 default-features = false
 path = '../pallets/file-map'
-version = '0.1.0'
+version = '0.1.1'
 
 [features]
 default = ['std']

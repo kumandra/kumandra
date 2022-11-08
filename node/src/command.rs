@@ -53,7 +53,9 @@ impl SubstrateCli for Cli {
 	fn load_spec(&self, id: &str) -> Result<Box<dyn sc_service::ChainSpec>, String> {
 		Ok(match id {
 			"" | "kumandra-testnet" => Box::new(chain_spec::kumandra_testnet_config()),
-			"kumandra-staking-testnet" => Box::new(chain_spec::kumandra_testnet_generate_config()),
+			"initial-devnet" | "kumandra-initial-devnet" => Box::new(chain_spec::kumandra_testnet_generate_config()),
+			"devnet" |"kumandra-devnet" => Box::new(chain_spec::kumandra_develop_config()),
+			"initial-testnet" | "kumandra-initial-testnet" => Box::new(chain_spec::kumandra_main()),
 			"dev" => Box::new(chain_spec::development_config()),
 			"local" => Box::new(chain_spec::local_testnet_config()),
 			path =>
@@ -156,6 +158,8 @@ pub fn run() -> sc_cli::Result<()> {
 			if cfg!(feature = "runtime-benchmarks") {
 				let runner = cli.create_runner(cmd)?;
 			  let chain_spec = &runner.config().chain_spec;
+
+			  set_default_ss58_version(chain_spec);
 
 				runner.sync_run(|config| cmd.run::<Block, service::ExecutorDispatch>(config))
 			} else {

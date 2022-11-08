@@ -1,6 +1,6 @@
 [package]
 name = "pallet-scheduler-credit"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -14,7 +14,7 @@ sp-runtime = { version = "6.0.0", default-features = false, git = "https://githu
 frame-support = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
 frame-system = { version = "4.0.0-dev", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }
 
-kp-scheduler-credit = { version = "0.1.0", default-features = false, path = '../../primitives/scheduler-credit' }
+kp-scheduler-credit = { version = "0.1.1", default-features = false, path = '../../primitives/scheduler-credit' }
 
 [dev-dependencies]
 sp-io = { version = "6.0.0", default-features = false, git = "https://github.com/kumandra/substrate", branch = "monthly-2022-10-kumandra" }

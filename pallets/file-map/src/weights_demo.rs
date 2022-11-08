@@ -37,7 +37,7 @@
 // --repeat
 // 20
 // --template=./.maintain/frame-weight-template.hbs
-// --output=./pallets/file-map/src/weights_demo.rs
+// --output=./pallets/file-map/src/weights
 
 #![cfg_attr(rustfmt, rustfmt_skip)]
 #![allow(unused_parens)]

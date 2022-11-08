@@ -100,7 +100,7 @@ benchmarks! {
             };
             challenge_list.push(challenge_info);
         }
-        
+
         let mut prove_list: Vec<ProveInfo<T>> = Vec::new();
         for challenge_info in challenge_list.iter() {
             let prove_info = ProveInfo::<T>{

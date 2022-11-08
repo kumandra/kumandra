@@ -1,6 +1,6 @@
 [package]
 name = "kp-scheduler-credit"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -12,6 +12,7 @@ sp-api = { version = "4.0.0-dev", default-features = false, git = 'https://githu
 sp-core = { version = "6.0.0", default-features = false, git = 'https://github.com/kumandra/substrate.git', branch = 'monthly-2022-10-kumandra' }
 sp-std = { version = "4.0.0", default-features = false, git = 'https://github.com/kumandra/substrate.git', branch = 'monthly-2022-10-kumandra' }
 sp-application-crypto = { version = "6.0.0", default-features = false, git = 'https://github.com/kumandra/substrate.git', branch = 'monthly-2022-10-kumandra' }
+frame-support = {default-features = false, git = 'https://github.com/kumandra/substrate.git', branch = 'monthly-2022-10-kumandra', version = '4.0.0-dev'}
 
 [features]
 default = ["std"]
@@ -22,4 +23,5 @@ std = [
     "sp-core/std",
     "sp-std/std",
     "sp-application-crypto/std",
+	  "frame-support/std",
 ]

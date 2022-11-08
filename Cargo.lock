@@ -3320,9 +3320,20 @@ dependencies = [
 ]
 
 [[package]]
-name = "kp-scheduler-credit"
+name = "kp-common"
 version = "0.1.0"
 dependencies = [
+ "frame-support",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-std",
+]
+
+[[package]]
+name = "kp-scheduler-credit"
+version = "0.1.1"
+dependencies = [
+ "frame-support",
  "parity-scale-codec",
  "scale-info",
  "sp-api",
@@ -3333,7 +3344,7 @@ dependencies = [
 
 [[package]]
 name = "kumandra-node"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap 3.2.23",
  "fc-consensus",
@@ -3409,7 +3420,7 @@ dependencies = [
 
 [[package]]
 name = "kumandra-node-runtime"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "fp-rpc",
  "fp-self-contained",
@@ -5147,13 +5158,14 @@ dependencies = [
 
 [[package]]
 name = "pallet-file-bank"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
  "frame-support",
  "frame-support-test",
  "frame-system",
+ "kp-common",
  "kp-scheduler-credit",
  "log",
  "pallet-bags-list",
@@ -5181,12 +5193,13 @@ dependencies = [
 
 [[package]]
 name = "pallet-file-map"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
  "frame-support",
  "frame-system",
+ "kp-common",
  "kp-scheduler-credit",
  "log",
  "pallet-bags-list",
@@ -5456,7 +5469,7 @@ dependencies = [
 
 [[package]]
 name = "pallet-scheduler-credit"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-support",
  "frame-system",
@@ -5472,13 +5485,14 @@ dependencies = [
 
 [[package]]
 name = "pallet-segment-book"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-benchmarking",
  "frame-election-provider-support",
  "frame-support",
  "frame-support-test",
  "frame-system",
+ "kp-common",
  "kp-scheduler-credit",
  "log",
  "pallet-bags-list",
@@ -5525,11 +5539,12 @@ dependencies = [
 
 [[package]]
 name = "pallet-sminer"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
+ "kp-common",
  "log",
  "pallet-balances",
  "pallet-scheduler",

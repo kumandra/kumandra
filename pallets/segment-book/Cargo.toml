@@ -1,7 +1,7 @@
 [package]
 name = "pallet-segment-book"
 authors = ["KOOMPI"]
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 license = "Apache-2.0"
 repository = "https://github.com/kumandra/kumandra"
@@ -16,6 +16,7 @@ codec = { package = "parity-scale-codec", version = "3.0.0", default-features = 
 scale-info = { default-features = false, features = ['derive'], version = "2.0.1" }
 log = { version = "0.4.14", default-features = false }
 pallet-kumandra-staking = { path = '../staking', version = '4.0.0-dev', default-features = false }
+kp-common = { path = '../../primitives/common', version = '0.1.0', default-features = false }
 
 [dependencies.frame-benchmarking]
 default-features = false
@@ -76,13 +77,13 @@ version = '6.0.0'
 [dependencies.pallet-file-bank]
 default-features = false
 path = '../file-bank'
-version = '0.1.0'
+version = '0.1.1'
 
 # local dependencies
 [dependencies.pallet-sminer]
 default-features = false
 path = '../sminer'
-version = '0.1.0'
+version = '0.1.1'
 
 [dev-dependencies.frame-support-test]
 default-features = false
@@ -106,7 +107,7 @@ version = '4.0.0-dev'
 [dependencies.pallet-file-map]
 default-features = false
 path = '../file-map'
-version = '0.1.0'
+version = '0.1.1'
 
 [dev-dependencies]
 pallet-kumandra-staking = { path = '../staking', version = '4.0.0-dev', default-features = false}
@@ -117,8 +118,9 @@ pallet-session = { version = "4.0.0-dev", default-features = false, features = [
 	"historical",
 ], git = "https://github.com/kumandra/substrate.git", branch = "monthly-2022-10-kumandra" }
 pallet-bags-list = { version = "4.0.0-dev", features = ["runtime-benchmarks"], git = "https://github.com/kumandra/substrate.git", branch = "monthly-2022-10-kumandra" }
-pallet-scheduler-credit = { version = "0.1.0", default-features = false, path = '../scheduler-credit'}
-kp-scheduler-credit = { path = '../../primitives/scheduler-credit', version = '0.1.0', default-features = false }
+pallet-scheduler-credit = { version = "0.1.1", default-features = false, path = '../scheduler-credit'}
+kp-scheduler-credit = { path = '../../primitives/scheduler-credit', version = '0.1.1', default-features = false }
+kp-common = { path = '../../primitives/common', version = '0.1.0', default-features = false }
 
 [features]
 default = ["std"]
@@ -135,6 +137,7 @@ std = [
 	"pallet-sminer/std",
 	"pallet-file-bank/std",
 	"pallet-file-map/std",
+	"kp-common/std",
 ]
 runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
