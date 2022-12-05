@@ -4,8 +4,8 @@ use codec::Encode;
 use forests_client_cli::generate_genesis_block;
 use forests_primitives_core::ParaId;
 use frame_benchmarking_cli::{BenchmarkCmd, SUBSTRATE_REFERENCE_HARDWARE};
-use log::info;
 use kumandra_runtime::{Block, RuntimeApi};
+use log::info;
 use sc_cli::{
 	ChainSpec, CliConfiguration, DefaultConfigurationValues, ImportParams, KeystoreParams,
 	NetworkParams, Result, RuntimeVersion, SharedParams, SubstrateCli,

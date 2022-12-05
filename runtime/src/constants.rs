@@ -46,6 +46,7 @@ pub mod time {
 
 /// Fee-related.
 pub mod fee {
+	use crate::MILLIUNIT;
 	use frame_support::weights::{
 		constants::ExtrinsicBaseWeight, WeightToFeeCoefficient, WeightToFeeCoefficients,
 		WeightToFeePolynomial,
@@ -53,7 +54,6 @@ pub mod fee {
 	use kumandra_primitive::Balance;
 	use smallvec::smallvec;
 	pub use sp_runtime::Perbill;
-	use crate::MILLIUNIT;
 
 	/// The block saturation level. Fees will be updates based on this value.
 	pub const TARGET_BLOCK_FULLNESS: Perbill = Perbill::from_percent(25);

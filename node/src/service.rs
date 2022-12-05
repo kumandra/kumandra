@@ -1,4 +1,3 @@
-
 //! Service and ServiceFactory implementation. Specialized wrapper over substrate service.
 
 // std
@@ -9,8 +8,8 @@ use jsonrpsee::RpcModule;
 
 use forests_client_cli::CollatorOptions;
 // Local Runtime Types
-use kumandra_runtime::RuntimeApi;
 use kumandra_primitive::{opaque::Block, AccountId, Balance, Hash, Index as Nonce};
+use kumandra_runtime::RuntimeApi;
 
 // Forests Imports
 use forests_client_consensus_aura::{AuraConsensus, BuildAuraConsensusParams, SlotProportion};

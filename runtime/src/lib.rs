@@ -6,9 +6,9 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+pub mod constants;
 mod weights;
 pub mod xcm_config;
-pub mod constants;
 
 use forests_pallet_parachain_system::RelayNumberStrictlyIncreases;
 use sp_api::impl_runtime_apis;
@@ -27,9 +27,7 @@ use sp_version::RuntimeVersion;
 use frame_support::{
 	construct_runtime, parameter_types,
 	traits::Everything,
-	weights::{
-		constants::WEIGHT_PER_SECOND, ConstantMultiplier, DispatchClass, Weight,
-	},
+	weights::{constants::WEIGHT_PER_SECOND, ConstantMultiplier, DispatchClass, Weight},
 	PalletId,
 };
 use frame_system::{
@@ -49,10 +47,10 @@ use selendra_runtime_common::{BlockHashCount, SlowAdjustingFeeUpdate};
 use xcm::latest::prelude::BodyId;
 use xcm_executor::XcmExecutor;
 
+pub use constants::{currency::*, fee::WeightToFee, time::*};
 use kumandra_primitive::{
 	opaque, AccountId, AuraId, Balance, BlockNumber, Hash, Header, Index, Signature,
 };
-pub use constants::{currency::*, fee::WeightToFee, time::*};
 use weights::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight};
 
 /// Import the template pallet.
@@ -402,7 +400,6 @@ pub type Executive = frame_executive::Executive<
 	Runtime,
 	AllPalletsWithSystem,
 >;
-
 
 #[cfg(feature = "runtime-benchmarks")]
 #[macro_use]
