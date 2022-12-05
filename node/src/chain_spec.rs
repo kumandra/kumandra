@@ -1,5 +1,6 @@
 use forests_primitives_core::ParaId;
-use kumandra_runtime::{AccountId, AuraId, Signature, EXISTENTIAL_DEPOSIT};
+use kumandra_runtime::EXISTENTIAL_DEPOSIT;
+use kumandra_primitive::{AccountId, AuraId, Signature};
 use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
