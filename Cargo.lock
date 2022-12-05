@@ -3481,6 +3481,7 @@ dependencies = [
  "frame-benchmarking-cli",
  "hex-literal",
  "jsonrpsee",
+ "kumandra-primitive",
  "kumandra-runtime",
  "log",
  "pallet-transaction-payment-rpc",
@@ -3527,6 +3528,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "kumandra-primitive"
+version = "1.0.0"
+dependencies = [
+ "sp-consensus-aura",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "kumandra-runtime"
 version = "0.1.0"
 dependencies = [
@@ -3548,6 +3560,7 @@ dependencies = [
  "frame-system-rpc-runtime-api",
  "frame-try-runtime",
  "hex-literal",
+ "kumandra-primitive",
  "log",
  "pallet-aura",
  "pallet-authorship",

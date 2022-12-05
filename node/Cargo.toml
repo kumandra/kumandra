@@ -18,6 +18,7 @@ jsonrpsee = { version = "0.14.0", features = ["server"] }
 
 # Local
 kumandra-runtime = { path = "../runtime" }
+kumandra-primitive = { path = "../primitives"}
 
 # Substrate
 frame-benchmarking = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.27" }
