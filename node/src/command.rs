@@ -95,7 +95,7 @@ impl SubstrateCli for RelayChainCli {
 	}
 
 	fn support_url() -> String {
-		"https://github.com/selendra/selendra/issues/new".into()
+		"https://github.com/kumandra/kumandra/issues/new".into()
 	}
 
 	fn copyright_start_year() -> i32 {
