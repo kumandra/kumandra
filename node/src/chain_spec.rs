@@ -7,6 +7,18 @@ use serde::{Deserialize, Serialize};
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
+/// Returns the properties for the [`KumandraChainSpec`].
+pub fn kumandra_chain_spec_properties() -> serde_json::map::Map<String, serde_json::Value> {
+	serde_json::json!({
+		"tokenDecimals": 12,
+		"tokenSymbol": "KMD",
+		"ss58Format": 42
+	})
+	.as_object()
+	.expect("Map given; qed")
+	.clone()
+}
+
 /// Specialized `ChainSpec` for the normal parachain runtime.
 pub type ChainSpec = sc_service::GenericChainSpec<kumandra_runtime::GenesisConfig, Extensions>;
 
@@ -62,12 +74,6 @@ pub fn template_session_keys(keys: AuraId) -> kumandra_runtime::SessionKeys {
 }
 
 pub fn development_config() -> ChainSpec {
-	// Give your base currency a unit name and decimal places
-	let mut properties = sc_chain_spec::Properties::new();
-	properties.insert("tokenSymbol".into(), "UNIT".into());
-	properties.insert("tokenDecimals".into(), 12.into());
-	properties.insert("ss58Format".into(), 42.into());
-
 	ChainSpec::from_genesis(
 		// Name
 		"Development",
@@ -108,7 +114,7 @@ pub fn development_config() -> ChainSpec {
 		None,
 		None,
 		None,
-		None,
+		Some(kumandra_chain_spec_properties()),
 		Extensions {
 			relay_chain: "selendra-local".into(), // You MUST set this to the correct network!
 			para_id: 2000,
@@ -117,12 +123,6 @@ pub fn development_config() -> ChainSpec {
 }
 
 pub fn local_testnet_config() -> ChainSpec {
-	// Give your base currency a unit name and decimal places
-	let mut properties = sc_chain_spec::Properties::new();
-	properties.insert("tokenSymbol".into(), "UNIT".into());
-	properties.insert("tokenDecimals".into(), 12.into());
-	properties.insert("ss58Format".into(), 42.into());
-
 	ChainSpec::from_genesis(
 		// Name
 		"Local Testnet",
@@ -168,7 +168,7 @@ pub fn local_testnet_config() -> ChainSpec {
 		// Fork ID
 		None,
 		// Properties
-		Some(properties),
+		Some(kumandra_chain_spec_properties()),
 		// Extensions
 		Extensions {
 			relay_chain: "selendra-local".into(), // You MUST set this to the correct network!
