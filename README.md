@@ -1,2 +1,2 @@
-## Kumandra Parachain
+## Kumandra Network
 ### WORK IN PROGRESS
