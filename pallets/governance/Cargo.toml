@@ -1,0 +1,19 @@
+[package]
+name = "pallet-governance"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+frame-support = { version = "2.0", default-features = false, features = ["std"] }
+frame-system = { version = "2.0", default-features = false }
+sp-runtime = { version = "3.0", features = ["std"] }
+sp-std = { version = "3.0", features = ["std"] }
+
+[features]
+default = ["std"]
+std = [
+  "frame-support/std",
+  "frame-system/std",
+  "sp-runtime/std",
+  "sp-std/std",
+]

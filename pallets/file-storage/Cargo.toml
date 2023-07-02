@@ -1,0 +1,36 @@
+[package]
+name = "pallet-file-storage"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+frame-support = { version = "3.0", default-features = false, features = ["std"] }
+frame-system = { version = "3.0", default-features = false, features = ["std"] }
+frame-executive = { version = "3.0", default-features = false, features = ["std"] }
+frame-support-parity-alloc = { version = "3.0", default-features = false, features = ["std"] }
+sp-core = { version = "3.0", default-features = false, features = ["std"] }
+sp-io = { version = "3.0", default-features = false, features = ["std"] }
+sp-runtime = { version = "3.0", default-features = false, features = ["std"] }
+sp-std = { version = "3.0", default-features = false, features = ["std"] }
+sp-version = { version = "3.0", default-features = false, features = ["std"] }
+sp-utils = { version = "3.0", default-features = false, features = ["std"] }
+sp-io-storage = { version = "3.0", default-features = false, features = ["std"] }
+pallet = { version = "2.0", default-features = false, features = ["std"] }
+frame-executor = { version = "3.0", default-features = false, features = ["std"] }
+
+[features]
+std = [
+    "frame-support/std",
+    "frame-system/std",
+    "frame-executive/std",
+    "frame-support-parity-alloc/std",
+    "sp-core/std",
+    "sp-io/std",
+    "sp-runtime/std",
+    "sp-std/std",
+    "sp-version/std",
+    "sp-utils/std",
+    "sp-io-storage/std",
+    "pallet/std",
+    "frame-executor/std",
+]
